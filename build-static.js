@@ -11,7 +11,7 @@ const src = fs.readFileSync(path.join(__dirname, "public", "index.html"), "utf8"
 
 // The data processing logic (same as server.js but runs in browser)
 const CLIENT_DATA_LOGIC = `
-const LINEAR_API_KEY = "lin_api_TwIy5Fu6iNh1Vb8ePSCxxjh9v7FBrItXmNDejjIt";
+const LINEAR_API_KEY = localStorage.getItem("linear_api_key") || prompt("Enter Linear API Key:");\nif (LINEAR_API_KEY && !localStorage.getItem("linear_api_key")) localStorage.setItem("linear_api_key", LINEAR_API_KEY);
 const LINEAR_TEAM_ID = "d4d5bf63-fae7-4938-9531-b1fb80618a8a";
 
 async function fetchFromLinear() {
