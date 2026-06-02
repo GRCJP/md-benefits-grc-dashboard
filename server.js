@@ -58,6 +58,17 @@ async function fetchLinearData() {
   const isDone = (issue) => issue.state.type === "completed";
   const isMetrics = (issue) => issue.title.startsWith("📊");
 
+  // Parse assignee name from description if no Linear assignee
+  const ownerRegex = /(?:Assigned Owner|Owner|Assigned To|State Owner|Incident Commander|Reported By|Assessor):\s*\*?\*?([^*\n(]+)/i;
+  function resolveAssignee(issue) {
+    if (issue.assignee?.name) return issue.assignee.name;
+    if (issue.description) {
+      const m = issue.description.match(ownerRegex);
+      if (m) return m[1].trim();
+    }
+    return "Unassigned";
+  }
+
   // Filter out metrics dashboard issues from counts
   const workIssues = issues.filter((i) => !isMetrics(i));
 
@@ -167,6 +178,7 @@ async function fetchLinearData() {
       project: i.project?.name,
       description: i.description,
       createdAt: i.createdAt,
+      assignee: resolveAssignee(i),
       source: hasLabel(i, "Pen Test Finding") ? "Pen Test" : hasLabel(i, "External Audit") ? "External Audit" : hasLabel(i, "Incident Response") ? "Incident" : hasLabel(i, "Aging Finding") ? "Aging Finding" : "Other",
     }));
 
@@ -256,7 +268,7 @@ async function fetchLinearData() {
   // ─── NOTIFICATIONS FEED ────────────────────────────────
   const notifications = [];
   const issueRef = (i) => ({
-    id: i.identifier, title: i.title, assignee: i.assignee?.name || "Unassigned",
+    id: i.identifier, title: i.title, assignee: resolveAssignee(i),
     assigneeEmail: i.assignee?.email || null, dueDate: i.dueDate, url: i.url,
     labels: getLabels(i), priority: i.priority,
   });
@@ -301,7 +313,7 @@ async function fetchLinearData() {
     status: i.state.name, statusType: i.state.type,
     labels: getLabels(i), project: i.project?.name,
     description: i.description, dueDate: i.dueDate,
-    assignee: i.assignee?.name || "Unassigned",
+    assignee: resolveAssignee(i),
   });
 
   return {

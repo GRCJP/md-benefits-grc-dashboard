@@ -46,6 +46,13 @@ function processLinearData(issues) {
   const workIssues = issues.filter(i => !i.title.startsWith("📊"));
   const now = new Date(), DAY = 86400000;
 
+  const ownerRe = /(?:Assigned Owner|Owner|Assigned To|State Owner|Incident Commander|Reported By|Assessor):\\s*\\*?\\*?([^*\\n(]+)/i;
+  function resolveAssignee(i) {
+    if (i.assignee?.name) return i.assignee.name;
+    if (i.description) { const m = i.description.match(ownerRe); if (m) return m[1].trim(); }
+    return "Unassigned";
+  }
+
   const summary = {
     total: workIssues.length,
     open: workIssues.filter(isOpen).length,
@@ -83,7 +90,7 @@ function processLinearData(issues) {
   const poamByStatus = { inProgress:poamIssues.filter(i=>i.state.type==="started").length, todo:poamIssues.filter(i=>i.state.type==="unstarted").length, backlog:poamIssues.filter(i=>i.state.type==="backlog").length, done:poamIssues.filter(isDone).length };
 
   const actionTags = ["Pen Test Finding","External Audit","Incident Response","Aging Finding","Accountability Gap"];
-  const actionItems = workIssues.filter(i=>actionTags.some(t=>hasLabel(i,t))).map(i=>({id:i.identifier,title:i.title,priority:i.priority,status:i.state.name,statusType:i.state.type,labels:getLabels(i),project:i.project?.name,description:i.description,createdAt:i.createdAt,assignee:i.assignee?.name||"Unassigned",source:hasLabel(i,"Pen Test Finding")?"Pen Test":hasLabel(i,"External Audit")?"External Audit":hasLabel(i,"Incident Response")?"Incident":hasLabel(i,"Aging Finding")?"Aging Finding":"Other"}));
+  const actionItems = workIssues.filter(i=>actionTags.some(t=>hasLabel(i,t))).map(i=>({id:i.identifier,title:i.title,priority:i.priority,status:i.state.name,statusType:i.state.type,labels:getLabels(i),project:i.project?.name,description:i.description,createdAt:i.createdAt,assignee:resolveAssignee(i),source:hasLabel(i,"Pen Test Finding")?"Pen Test":hasLabel(i,"External Audit")?"External Audit":hasLabel(i,"Incident Response")?"Incident":hasLabel(i,"Aging Finding")?"Aging Finding":"Other"}));
   const incidents = workIssues.filter(i=>hasLabel(i,"Incident Response")).map(i=>({id:i.identifier,title:i.title,priority:i.priority,status:i.state.name,statusType:i.state.type,labels:getLabels(i),description:i.description}));
 
   const openIssues = workIssues.filter(isOpen);
@@ -102,7 +109,7 @@ function processLinearData(issues) {
   const docs = { total:docIssues.length, overdue:docIssues.filter(i=>isOpen(i)&&i.dueDate&&new Date(i.dueDate)<now).length, dueSoon:docIssues.filter(i=>{const d=i.dueDate?Math.ceil((new Date(i.dueDate)-now)/DAY):999;return isOpen(i)&&d>=0&&d<=30;}).length, onTrack:docIssues.filter(i=>{const d=i.dueDate?Math.ceil((new Date(i.dueDate)-now)/DAY):999;return isOpen(i)&&d>30;}).length, completed:docIssues.filter(isDone).length, items:docIssues.map(mkDateItem).sort((a,b)=>(a.daysLeft||999)-(b.daysLeft||999)) };
 
   const notifications = [];
-  const issueRef = i => ({id:i.identifier,title:i.title,assignee:i.assignee?.name||"Unassigned",dueDate:i.dueDate,url:i.url,labels:getLabels(i),priority:i.priority});
+  const issueRef = i => ({id:i.identifier,title:i.title,assignee:resolveAssignee(i),dueDate:i.dueDate,url:i.url,labels:getLabels(i),priority:i.priority});
   for (const i of workIssues.filter(isOpen)) {
     if (!i.dueDate) continue;
     const dl = Math.ceil((new Date(i.dueDate)-now)/DAY);
@@ -118,7 +125,7 @@ function processLinearData(issues) {
   notifications.sort((a,b)=>{const s={critical:0,high:1,medium:2,low:3};return(s[a.severity]??4)-(s[b.severity]??4);});
 
   return { summary,byFramework,byCategory,byProject,poamByStatus,actionItems,incidents,ageBuckets,kevs,certs,docs,notifications,frameworks,categories,actionTags,
-    issues:workIssues.map(i=>({id:i.identifier,title:i.title,priority:i.priority,status:i.state.name,statusType:i.state.type,labels:getLabels(i),project:i.project?.name,description:i.description,dueDate:i.dueDate,assignee:i.assignee?.name||"Unassigned"})) };
+    issues:workIssues.map(i=>({id:i.identifier,title:i.title,priority:i.priority,status:i.state.name,statusType:i.state.type,labels:getLabels(i),project:i.project?.name,description:i.description,dueDate:i.dueDate,assignee:resolveAssignee(i)})) };
 }
 `;
 

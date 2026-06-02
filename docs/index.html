@@ -80,6 +80,20 @@
     .notif-item:hover { background: #f8fafc; }
     .notif-item:last-child { border-bottom: none; }
     .notif-badge { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; border-radius: 9px; background: #dc2626; color: white; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 4px; border: 2px solid #0d2137; }
+
+    /* Sidebar */
+    .sidebar { position: fixed; left: 0; top: 0; width: 220px; height: 100vh; background: linear-gradient(180deg, #0d2137 0%, #1a3a5c 100%); z-index: 35; display: flex; flex-direction: column; overflow-y: auto; }
+    .sidebar-logo { padding: 16px 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .sidebar-nav { padding: 12px 0; flex: 1; }
+    .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 9px 18px; margin: 2px 8px; border-radius: 8px; font-size: 13px; font-weight: 500; color: rgba(191,219,254,0.7); cursor: pointer; transition: all 0.15s; text-decoration: none; }
+    .sidebar-item:hover { color: #ffffff; background: rgba(255,255,255,0.08); }
+    .sidebar-item.active { color: #1e293b; background: #ffffff; font-weight: 600; }
+    .sidebar-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .sidebar-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 8px 18px; }
+    .sidebar-section-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(147,197,253,0.4); padding: 8px 18px 4px; }
+
+    .main-with-sidebar { margin-left: 220px; }
+    .header-with-sidebar { margin-left: 220px; }
   </style>
 </head>
 <body class="min-h-screen">
@@ -88,25 +102,72 @@
     <div class="text-center"><div class="w-12 h-12 border-4 border-blue-700 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div><p class="text-slate-400 text-sm">Loading GRC data...</p></div>
   </div>
 
-  <!-- Header -->
-  <header class="header-gradient sticky top-0 z-30 shadow-lg">
-    <div class="max-w-[1440px] mx-auto px-6 py-3.5 flex items-center justify-between">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
       <div class="flex items-center gap-3">
         <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-white/15 border border-white/20">
           <svg class="w-5 h-5 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
         </div>
         <div>
-          <h1 class="text-base font-bold text-white tracking-tight">MD Benefits</h1>
-          <p class="text-[10px] text-blue-200/60 uppercase tracking-widest">GRC Trust Center</p>
+          <h1 class="text-sm font-bold text-white tracking-tight">MD Benefits</h1>
+          <p class="text-[9px] text-blue-200/60 uppercase tracking-widest">GRC Trust Center</p>
         </div>
       </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="sidebar-section-label">Views</div>
+      <a onclick="showView('executive')" id="tab-executive" class="sidebar-item active">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        Executive Dashboard
+      </a>
+      <a onclick="showView('action')" id="tab-action" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+        Action Items
+      </a>
+      <a onclick="showView('operations')" id="tab-operations" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+        Operations
+      </a>
+      <a onclick="showView('frameworks')" id="tab-frameworks" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        Frameworks
+      </a>
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-label">Categories</div>
+
+      <a onclick="drillDown('POA&M')" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        POA&Ms
+      </a>
+      <a onclick="drillDown('Assessment')" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Assessments
+      </a>
+      <a onclick="drillDown('Evidence')" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+        Evidence
+      </a>
+      <a onclick="drillDown('ATO')" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        ATO Packages
+      </a>
+      <a onclick="drillDown('External Request')" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+        External Requests
+      </a>
+      <a onclick="drillDown('Compliance')" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        Controls
+      </a>
+    </div>
+  </nav>
+
+  <!-- Header (simplified) -->
+  <header class="header-gradient header-with-sidebar sticky top-0 z-30 shadow-lg">
+    <div class="max-w-[1440px] mx-auto px-6 py-3.5 flex items-center justify-end">
       <div class="flex items-center gap-5">
-        <div class="flex gap-0.5 p-0.5 rounded-lg bg-white/10 backdrop-blur">
-          <button onclick="showView('executive')" id="tab-executive" class="px-3.5 py-1.5 text-xs font-medium rounded-md bg-white text-slate-800 shadow-sm">Executive</button>
-          <button onclick="showView('action')" id="tab-action" class="px-3.5 py-1.5 text-xs font-medium rounded-md text-blue-100/70 hover:text-white hover:bg-white/10">Action Items</button>
-          <button onclick="showView('operations')" id="tab-operations" class="px-3.5 py-1.5 text-xs font-medium rounded-md text-blue-100/70 hover:text-white hover:bg-white/10">Operations</button>
-          <button onclick="showView('frameworks')" id="tab-frameworks" class="px-3.5 py-1.5 text-xs font-medium rounded-md text-blue-100/70 hover:text-white hover:bg-white/10">Frameworks</button>
-        </div>
         <!-- Notification Bell -->
         <div class="relative">
           <button onclick="toggleNotifications()" id="notifBtn" class="relative w-9 h-9 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 transition-colors">
@@ -126,7 +187,7 @@
     </div>
   </header>
 
-  <main class="max-w-[1440px] mx-auto px-6 py-6">
+  <main class="max-w-[1440px] mx-auto px-6 py-6 main-with-sidebar">
 
     <!-- ═══ EXECUTIVE VIEW ═══ -->
     <div id="view-executive">
@@ -289,6 +350,13 @@ function processLinearData(issues) {
   const workIssues = issues.filter(i => !i.title.startsWith("📊"));
   const now = new Date(), DAY = 86400000;
 
+  const ownerRe = /(?:Assigned Owner|Owner|Assigned To|State Owner|Incident Commander|Reported By|Assessor):\s*\*?\*?([^*\n(]+)/i;
+  function resolveAssignee(i) {
+    if (i.assignee?.name) return i.assignee.name;
+    if (i.description) { const m = i.description.match(ownerRe); if (m) return m[1].trim(); }
+    return "Unassigned";
+  }
+
   const summary = {
     total: workIssues.length,
     open: workIssues.filter(isOpen).length,
@@ -326,7 +394,7 @@ function processLinearData(issues) {
   const poamByStatus = { inProgress:poamIssues.filter(i=>i.state.type==="started").length, todo:poamIssues.filter(i=>i.state.type==="unstarted").length, backlog:poamIssues.filter(i=>i.state.type==="backlog").length, done:poamIssues.filter(isDone).length };
 
   const actionTags = ["Pen Test Finding","External Audit","Incident Response","Aging Finding","Accountability Gap"];
-  const actionItems = workIssues.filter(i=>actionTags.some(t=>hasLabel(i,t))).map(i=>({id:i.identifier,title:i.title,priority:i.priority,status:i.state.name,statusType:i.state.type,labels:getLabels(i),project:i.project?.name,description:i.description,createdAt:i.createdAt,assignee:i.assignee?.name||"Unassigned",source:hasLabel(i,"Pen Test Finding")?"Pen Test":hasLabel(i,"External Audit")?"External Audit":hasLabel(i,"Incident Response")?"Incident":hasLabel(i,"Aging Finding")?"Aging Finding":"Other"}));
+  const actionItems = workIssues.filter(i=>actionTags.some(t=>hasLabel(i,t))).map(i=>({id:i.identifier,title:i.title,priority:i.priority,status:i.state.name,statusType:i.state.type,labels:getLabels(i),project:i.project?.name,description:i.description,createdAt:i.createdAt,assignee:resolveAssignee(i),source:hasLabel(i,"Pen Test Finding")?"Pen Test":hasLabel(i,"External Audit")?"External Audit":hasLabel(i,"Incident Response")?"Incident":hasLabel(i,"Aging Finding")?"Aging Finding":"Other"}));
   const incidents = workIssues.filter(i=>hasLabel(i,"Incident Response")).map(i=>({id:i.identifier,title:i.title,priority:i.priority,status:i.state.name,statusType:i.state.type,labels:getLabels(i),description:i.description}));
 
   const openIssues = workIssues.filter(isOpen);
@@ -345,7 +413,7 @@ function processLinearData(issues) {
   const docs = { total:docIssues.length, overdue:docIssues.filter(i=>isOpen(i)&&i.dueDate&&new Date(i.dueDate)<now).length, dueSoon:docIssues.filter(i=>{const d=i.dueDate?Math.ceil((new Date(i.dueDate)-now)/DAY):999;return isOpen(i)&&d>=0&&d<=30;}).length, onTrack:docIssues.filter(i=>{const d=i.dueDate?Math.ceil((new Date(i.dueDate)-now)/DAY):999;return isOpen(i)&&d>30;}).length, completed:docIssues.filter(isDone).length, items:docIssues.map(mkDateItem).sort((a,b)=>(a.daysLeft||999)-(b.daysLeft||999)) };
 
   const notifications = [];
-  const issueRef = i => ({id:i.identifier,title:i.title,assignee:i.assignee?.name||"Unassigned",dueDate:i.dueDate,url:i.url,labels:getLabels(i),priority:i.priority});
+  const issueRef = i => ({id:i.identifier,title:i.title,assignee:resolveAssignee(i),dueDate:i.dueDate,url:i.url,labels:getLabels(i),priority:i.priority});
   for (const i of workIssues.filter(isOpen)) {
     if (!i.dueDate) continue;
     const dl = Math.ceil((new Date(i.dueDate)-now)/DAY);
@@ -361,7 +429,7 @@ function processLinearData(issues) {
   notifications.sort((a,b)=>{const s={critical:0,high:1,medium:2,low:3};return(s[a.severity]??4)-(s[b.severity]??4);});
 
   return { summary,byFramework,byCategory,byProject,poamByStatus,actionItems,incidents,ageBuckets,kevs,certs,docs,notifications,frameworks,categories,actionTags,
-    issues:workIssues.map(i=>({id:i.identifier,title:i.title,priority:i.priority,status:i.state.name,statusType:i.state.type,labels:getLabels(i),project:i.project?.name,description:i.description,dueDate:i.dueDate,assignee:i.assignee?.name||"Unassigned"})) };
+    issues:workIssues.map(i=>({id:i.identifier,title:i.title,priority:i.priority,status:i.state.name,statusType:i.state.type,labels:getLabels(i),project:i.project?.name,description:i.description,dueDate:i.dueDate,assignee:resolveAssignee(i)})) };
 }
 
 async function loadData() {
@@ -376,8 +444,8 @@ function showView(view) {
   ['executive','action','operations','frameworks'].forEach(v => {
     document.getElementById(`view-${v}`).classList.toggle('hidden', v !== view);
     const t = document.getElementById(`tab-${v}`);
-    if (v === view) { t.className = 'px-3.5 py-1.5 text-xs font-medium rounded-md bg-white text-slate-800 shadow-sm'; }
-    else { t.className = 'px-3.5 py-1.5 text-xs font-medium rounded-md text-blue-100/70 hover:text-white hover:bg-white/10'; }
+    if (v === view) { t.className = 'sidebar-item active'; }
+    else { t.className = 'sidebar-item'; }
   });
   if (view === 'action') renderActionItems();
   if (view === 'operations') renderOperations();
