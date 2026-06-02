@@ -33,13 +33,13 @@ async function gql(query) {
 async function fetchLinearData() {
   // Fetch issues with labels, state, project, priority
   const issueData = await gql(`{
-    issues(filter: { team: { id: { eq: "${TEAM_ID}" } } }, first: 100) {
+    issues(filter: { team: { id: { eq: "${TEAM_ID}" } } }, first: 150) {
       nodes {
         id identifier title description priority
         state { name type }
         labels { nodes { name } }
         project { name }
-        createdAt updatedAt
+        createdAt updatedAt dueDate
       }
     }
   }`);
@@ -182,6 +182,76 @@ async function fetchLinearData() {
       description: i.description,
     }));
 
+  // ─── AGE BUCKETS (for risk acceptance view) ───────────
+  const now = new Date();
+  const openIssues = workIssues.filter(isOpen);
+  const ageMs = (i) => now - new Date(i.createdAt);
+  const DAY = 86400000;
+  const ageBuckets = {
+    under1Month: openIssues.filter((i) => ageMs(i) < 30 * DAY).length,
+    months1to6: openIssues.filter((i) => ageMs(i) >= 30 * DAY && ageMs(i) < 180 * DAY).length,
+    months6to12: openIssues.filter((i) => ageMs(i) >= 180 * DAY && ageMs(i) < 365 * DAY).length,
+    over12: openIssues.filter((i) => ageMs(i) >= 365 * DAY).length,
+  };
+
+  // ─── KEVs (CISA Known Exploited Vulnerabilities) ─────
+  const kevIssues = workIssues.filter((i) => hasLabel(i, "KEV"));
+  const kevs = {
+    total: kevIssues.length,
+    open: kevIssues.filter(isOpen).length,
+    resolved: kevIssues.filter(isDone).length,
+    overdue: kevIssues.filter((i) => isOpen(i) && i.dueDate && new Date(i.dueDate) < now).length,
+    items: kevIssues.map((i) => {
+      const due = i.dueDate ? new Date(i.dueDate) : null;
+      const daysLeft = due ? Math.ceil((due - now) / DAY) : null;
+      return {
+        id: i.identifier, title: i.title, priority: i.priority,
+        status: i.state.name, statusType: i.state.type,
+        labels: getLabels(i), description: i.description,
+        dueDate: i.dueDate, daysLeft,
+      };
+    }),
+  };
+
+  // ─── CERTIFICATE EXPIRATIONS ─────────────────────────
+  const certIssues = workIssues.filter((i) => hasLabel(i, "Certificate"));
+  const certs = {
+    total: certIssues.length,
+    critical: certIssues.filter((i) => i.dueDate && Math.ceil((new Date(i.dueDate) - now) / DAY) <= 7).length,
+    warning: certIssues.filter((i) => { const d = i.dueDate ? Math.ceil((new Date(i.dueDate) - now) / DAY) : 999; return d > 7 && d <= 30; }).length,
+    ok: certIssues.filter((i) => { const d = i.dueDate ? Math.ceil((new Date(i.dueDate) - now) / DAY) : 999; return d > 30; }).length,
+    items: certIssues.map((i) => {
+      const due = i.dueDate ? new Date(i.dueDate) : null;
+      const daysLeft = due ? Math.ceil((due - now) / DAY) : null;
+      return {
+        id: i.identifier, title: i.title, priority: i.priority,
+        status: i.state.name, statusType: i.state.type,
+        labels: getLabels(i), description: i.description,
+        dueDate: i.dueDate, daysLeft,
+      };
+    }).sort((a, b) => (a.daysLeft || 999) - (b.daysLeft || 999)),
+  };
+
+  // ─── DOCUMENT REVIEWS ────────────────────────────────
+  const docIssues = workIssues.filter((i) => hasLabel(i, "Document Review"));
+  const docs = {
+    total: docIssues.length,
+    overdue: docIssues.filter((i) => isOpen(i) && i.dueDate && new Date(i.dueDate) < now).length,
+    dueSoon: docIssues.filter((i) => { const d = i.dueDate ? Math.ceil((new Date(i.dueDate) - now) / DAY) : 999; return isOpen(i) && d >= 0 && d <= 30; }).length,
+    onTrack: docIssues.filter((i) => { const d = i.dueDate ? Math.ceil((new Date(i.dueDate) - now) / DAY) : 999; return isOpen(i) && d > 30; }).length,
+    completed: docIssues.filter(isDone).length,
+    items: docIssues.map((i) => {
+      const due = i.dueDate ? new Date(i.dueDate) : null;
+      const daysLeft = due ? Math.ceil((due - now) / DAY) : null;
+      return {
+        id: i.identifier, title: i.title, priority: i.priority,
+        status: i.state.name, statusType: i.state.type,
+        labels: getLabels(i), description: i.description,
+        dueDate: i.dueDate, daysLeft,
+      };
+    }).sort((a, b) => (a.daysLeft || 999) - (b.daysLeft || 999)),
+  };
+
   return {
     summary,
     byFramework,
@@ -190,6 +260,10 @@ async function fetchLinearData() {
     poamByStatus,
     actionItems,
     incidents,
+    ageBuckets,
+    kevs,
+    certs,
+    docs,
     frameworks,
     categories,
     actionTags,
@@ -202,6 +276,7 @@ async function fetchLinearData() {
       labels: getLabels(i),
       project: i.project?.name,
       description: i.description,
+      dueDate: i.dueDate,
     })),
   };
 }
