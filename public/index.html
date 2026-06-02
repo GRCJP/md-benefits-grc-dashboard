@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MD Benefits - GRC Trust Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .card-hover { transition: all 0.2s ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .severity-critical { color: #dc2626; }
+    .severity-high { color: #ea580c; }
+    .severity-medium { color: #ca8a04; }
+    .severity-low { color: #16a34a; }
+    .bg-severity-critical { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
+    .bg-severity-high { background: #fff7ed; border: 1px solid #fed7aa; color: #ea580c; }
+    .bg-severity-medium { background: #fefce8; border: 1px solid #fde68a; color: #ca8a04; }
+    .bg-severity-low { background: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a; }
+    .bg-severity-urgent { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .status-started { background: #3b82f6; }
+    .status-unstarted { background: #9ca3af; }
+    .status-completed { background: #22c55e; }
+    .status-backlog { background: #d1d5db; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 500; }
+    .drawer { position: fixed; right: -600px; top: 0; width: 600px; height: 100vh; transition: right 0.3s ease; z-index: 50; overflow-y: auto; }
+    .drawer.open { right: 0; }
+    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 40; display: none; }
+    .drawer-overlay.open { display: block; }
+    .progress-bar { height: 8px; border-radius: 4px; background: #f3f4f6; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+    .fade-in { animation: fadeIn 0.3s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .metric-ring { position: relative; width: 120px; height: 120px; }
+    canvas { max-height: 100%; }
+    table th { font-size: 10px; letter-spacing: 0.05em; }
+    select { cursor: pointer; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen">
+
+  <!-- Loading -->
+  <div id="loading" class="fixed inset-0 bg-white flex items-center justify-center z-50">
+    <div class="text-center">
+      <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+      <p class="text-gray-500">Loading GRC data...</p>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="border-b border-gray-200 bg-white sticky top-0 z-30 shadow-sm">
+    <div class="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-gray-900">MD Benefits - GRC Trust Center</h1>
+          <p class="text-xs text-gray-500">Governance, Risk & Compliance Operations</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="flex gap-1 bg-gray-100 rounded-lg p-1">
+          <button onclick="showView('executive')" id="tab-executive" class="px-3 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white">Executive</button>
+          <button onclick="showView('operations')" id="tab-operations" class="px-3 py-1.5 text-xs font-medium rounded-md text-gray-500 hover:text-gray-900">Operations</button>
+          <button onclick="showView('frameworks')" id="tab-frameworks" class="px-3 py-1.5 text-xs font-medium rounded-md text-gray-500 hover:text-gray-900">Frameworks</button>
+        </div>
+        <div class="text-xs text-gray-400" id="last-updated"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-[1400px] mx-auto px-6 py-6">
+
+    <!-- EXECUTIVE VIEW -->
+    <div id="view-executive">
+
+      <!-- Health Score + Key Metrics -->
+      <div class="grid grid-cols-12 gap-4 mb-6">
+        <div class="col-span-3 card p-5">
+          <p class="text-xs text-gray-500 uppercase tracking-wider mb-3">Overall Compliance</p>
+          <div class="flex items-center gap-4">
+            <div class="metric-ring">
+              <canvas id="healthRing"></canvas>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span id="healthPct" class="text-2xl font-bold text-gray-900">--</span>
+              </div>
+            </div>
+            <div class="text-xs text-gray-500 space-y-1">
+              <p><span class="text-green-600 font-semibold" id="closedCount">--</span> Closed</p>
+              <p><span class="text-blue-600 font-semibold" id="openCount">--</span> Open</p>
+              <p><span class="text-red-600 font-semibold" id="critCount">--</span> Critical</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-span-9 grid grid-cols-5 gap-3">
+          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('POA&M')">
+            <p class="text-xs text-gray-500 mb-1">Open POA&Ms</p>
+            <p class="text-2xl font-bold text-gray-900" id="poamOpen">--</p>
+            <p class="text-xs mt-1"><span class="text-red-600 font-medium" id="poamCrit">--</span></p>
+          </div>
+          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('Assessment')">
+            <p class="text-xs text-gray-500 mb-1">Active Assessments</p>
+            <p class="text-2xl font-bold text-gray-900" id="assessOpen">--</p>
+            <p class="text-xs mt-1 text-blue-600 font-medium" id="assessProgress">--</p>
+          </div>
+          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('External Request')">
+            <p class="text-xs text-gray-500 mb-1">External Requests</p>
+            <p class="text-2xl font-bold text-gray-900" id="extOpen">--</p>
+            <p class="text-xs mt-1 text-amber-600 font-medium" id="extUrgent">--</p>
+          </div>
+          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('ATO')">
+            <p class="text-xs text-gray-500 mb-1">ATO Packages</p>
+            <p class="text-2xl font-bold text-gray-900" id="atoOpen">--</p>
+            <p class="text-xs mt-1 text-purple-600 font-medium" id="atoPending">--</p>
+          </div>
+          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('Evidence')">
+            <p class="text-xs text-gray-500 mb-1">Evidence Items</p>
+            <p class="text-2xl font-bold text-gray-900" id="evidOpen">--</p>
+            <p class="text-xs mt-1 text-orange-600 font-medium" id="evidStale">--</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Severity + Framework -->
+      <div class="grid grid-cols-12 gap-4 mb-6">
+        <div class="col-span-5 card p-5">
+          <p class="text-xs text-gray-500 uppercase tracking-wider mb-4">Findings by Severity</p>
+          <div id="severityBars" class="space-y-3"></div>
+        </div>
+        <div class="col-span-7 card p-5">
+          <p class="text-xs text-gray-500 uppercase tracking-wider mb-4">Compliance by Framework</p>
+          <canvas id="frameworkChart" height="180"></canvas>
+        </div>
+      </div>
+
+      <!-- Category Cards -->
+      <div class="grid grid-cols-6 gap-3 mb-6">
+        <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('POA&M')">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center"><svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div>
+            <span class="text-sm font-semibold text-gray-900">POA&Ms</span>
+          </div>
+          <div id="catPOAM" class="text-xs text-gray-500 space-y-1"></div>
+        </div>
+        <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('Assessment')">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center"><svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+            <span class="text-sm font-semibold text-gray-900">Assessments</span>
+          </div>
+          <div id="catAssessment" class="text-xs text-gray-500 space-y-1"></div>
+        </div>
+        <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('External Request')">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center"><svg class="w-4 h-4 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg></div>
+            <span class="text-sm font-semibold text-gray-900">Ext. Requests</span>
+          </div>
+          <div id="catExternal" class="text-xs text-gray-500 space-y-1"></div>
+        </div>
+        <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('ATO')">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center"><svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+            <span class="text-sm font-semibold text-gray-900">ATO Packages</span>
+          </div>
+          <div id="catATO" class="text-xs text-gray-500 space-y-1"></div>
+        </div>
+        <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('Evidence')">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 rounded-lg bg-cyan-50 flex items-center justify-center"><svg class="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg></div>
+            <span class="text-sm font-semibold text-gray-900">Evidence</span>
+          </div>
+          <div id="catEvidence" class="text-xs text-gray-500 space-y-1"></div>
+        </div>
+        <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('Compliance')">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center"><svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
+            <span class="text-sm font-semibold text-gray-900">Controls</span>
+          </div>
+          <div id="catCompliance" class="text-xs text-gray-500 space-y-1"></div>
+        </div>
+      </div>
+
+      <!-- Critical Table -->
+      <div class="card p-5">
+        <div class="flex items-center justify-between mb-4">
+          <p class="text-sm font-semibold text-gray-900">Critical & High Priority Items</p>
+          <div class="flex gap-2">
+            <select id="filterFramework" onchange="filterTable()" class="bg-gray-50 text-xs rounded-lg px-3 py-1.5 border border-gray-200 text-gray-700">
+              <option value="">All Frameworks</option>
+            </select>
+            <select id="filterCategory" onchange="filterTable()" class="bg-gray-50 text-xs rounded-lg px-3 py-1.5 border border-gray-200 text-gray-700">
+              <option value="">All Categories</option>
+            </select>
+          </div>
+        </div>
+        <table class="w-full text-xs">
+          <thead>
+            <tr class="text-gray-400 uppercase tracking-wider border-b border-gray-100">
+              <th class="text-left py-2 px-2">ID</th>
+              <th class="text-left py-2 px-2">Item</th>
+              <th class="text-left py-2 px-2">Severity</th>
+              <th class="text-left py-2 px-2">Framework</th>
+              <th class="text-left py-2 px-2">Status</th>
+              <th class="text-left py-2 px-2">Category</th>
+            </tr>
+          </thead>
+          <tbody id="criticalTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- OPERATIONS VIEW -->
+    <div id="view-operations" class="hidden">
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="card p-5">
+          <p class="text-sm font-semibold text-gray-900 mb-4">POA&M Status Distribution</p>
+          <canvas id="poamStatusChart" height="200"></canvas>
+        </div>
+        <div class="card p-5">
+          <p class="text-sm font-semibold text-gray-900 mb-4">All Items by Status</p>
+          <canvas id="statusChart" height="200"></canvas>
+        </div>
+      </div>
+      <div class="card p-5">
+        <div class="flex items-center justify-between mb-4">
+          <p class="text-sm font-semibold text-gray-900">All GRC Items</p>
+          <div class="flex gap-2">
+            <select id="opsFilterProject" onchange="filterOpsTable()" class="bg-gray-50 text-xs rounded-lg px-3 py-1.5 border border-gray-200 text-gray-700">
+              <option value="">All Projects</option>
+            </select>
+            <select id="opsFilterStatus" onchange="filterOpsTable()" class="bg-gray-50 text-xs rounded-lg px-3 py-1.5 border border-gray-200 text-gray-700">
+              <option value="">All Statuses</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Todo">Todo</option>
+              <option value="Backlog">Backlog</option>
+              <option value="Done">Done</option>
+            </select>
+          </div>
+        </div>
+        <table class="w-full text-xs">
+          <thead>
+            <tr class="text-gray-400 uppercase tracking-wider border-b border-gray-100">
+              <th class="text-left py-2 px-2">ID</th>
+              <th class="text-left py-2 px-2">Item</th>
+              <th class="text-left py-2 px-2">Project</th>
+              <th class="text-left py-2 px-2">Priority</th>
+              <th class="text-left py-2 px-2">Status</th>
+              <th class="text-left py-2 px-2">Labels</th>
+            </tr>
+          </thead>
+          <tbody id="opsTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FRAMEWORKS VIEW -->
+    <div id="view-frameworks" class="hidden">
+      <div id="frameworkCards" class="grid grid-cols-1 gap-4"></div>
+    </div>
+
+  </main>
+
+  <!-- Drawer -->
+  <div id="drawerOverlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+  <div id="drawer" class="drawer bg-white border-l border-gray-200 p-6 shadow-xl">
+    <div class="flex items-center justify-between mb-6">
+      <h2 id="drawerTitle" class="text-lg font-bold text-gray-900"></h2>
+      <button onclick="closeDrawer()" class="text-gray-400 hover:text-gray-700">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="drawerContent"></div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div id="detailModal" class="fixed inset-0 bg-black/30 z-50 hidden flex items-center justify-center p-4" onclick="if(event.target===this)closeDetail()">
+    <div class="bg-white border border-gray-200 rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="detailTitle" class="text-base font-bold text-gray-900 pr-4"></h3>
+        <button onclick="closeDetail()" class="text-gray-400 hover:text-gray-700 flex-shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div id="detailBody" class="text-sm text-gray-600 whitespace-pre-wrap"></div>
+    </div>
+  </div>
+
+<script>
+let DATA = null;
+
+async function loadData() {
+  const res = await fetch('/api/data');
+  DATA = await res.json();
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('last-updated').textContent = `Updated: ${new Date().toLocaleTimeString()}`;
+  renderExecutive();
+}
+
+function showView(view) {
+  ['executive','operations','frameworks'].forEach(v => {
+    document.getElementById(`view-${v}`).classList.toggle('hidden', v !== view);
+    const tab = document.getElementById(`tab-${v}`);
+    if (v === view) { tab.classList.add('bg-blue-600','text-white'); tab.classList.remove('text-gray-500'); }
+    else { tab.classList.remove('bg-blue-600','text-white'); tab.classList.add('text-gray-500'); }
+  });
+  if (view === 'operations') renderOperations();
+  if (view === 'frameworks') renderFrameworks();
+}
+
+function renderExecutive() {
+  const s = DATA.summary;
+  const pct = s.total > 0 ? Math.round((s.closed / s.total) * 100) : 0;
+  document.getElementById('healthPct').textContent = pct + '%';
+  document.getElementById('closedCount').textContent = s.closed;
+  document.getElementById('openCount').textContent = s.open;
+  document.getElementById('critCount').textContent = s.critical;
+
+  new Chart(document.getElementById('healthRing'), {
+    type: 'doughnut',
+    data: { datasets: [{ data: [s.closed, s.open], backgroundColor: ['#22c55e','#e5e7eb'], borderWidth: 0 }] },
+    options: { cutout: '78%', responsive: true, plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+  });
+
+  const poam = DATA.byCategory['POA&M'] || {};
+  const assess = DATA.byCategory['Assessment'] || {};
+  const ext = DATA.byCategory['External Request'] || {};
+  const ato = DATA.byCategory['ATO'] || {};
+  const evid = DATA.byCategory['Evidence'] || {};
+
+  document.getElementById('poamOpen').textContent = poam.open || 0;
+  document.getElementById('poamCrit').textContent = (poam.critical || 0) + ' critical';
+  document.getElementById('assessOpen').textContent = assess.open || 0;
+  document.getElementById('assessProgress').textContent = (assess.inProgress || 0) + ' in progress';
+  document.getElementById('extOpen').textContent = ext.open || 0;
+  document.getElementById('extUrgent').textContent = (ext.critical || 0) + ' urgent';
+  document.getElementById('atoOpen').textContent = ato.open || 0;
+  document.getElementById('atoPending').textContent = (ato.inProgress || 0) + ' in review';
+  document.getElementById('evidOpen').textContent = evid.open || 0;
+  document.getElementById('evidStale').textContent = (evid.todo || 0) + ' need refresh';
+
+  const sevDiv = document.getElementById('severityBars');
+  const sevs = [
+    { label: 'Critical', count: s.critical, color: '#dc2626', max: s.open },
+    { label: 'High', count: s.high, color: '#ea580c', max: s.open },
+    { label: 'Medium', count: s.medium, color: '#ca8a04', max: s.open },
+    { label: 'Low', count: s.low, color: '#16a34a', max: s.open },
+  ];
+  sevDiv.innerHTML = sevs.map(sv => `
+    <div>
+      <div class="flex justify-between text-xs mb-1">
+        <span class="font-medium" style="color:${sv.color}">${sv.label}</span>
+        <span class="text-gray-500">${sv.count}</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:${sv.max?Math.round(sv.count/sv.max*100):0}%;background:${sv.color}"></div>
+      </div>
+    </div>
+  `).join('');
+
+  const fwLabels = DATA.frameworks;
+  new Chart(document.getElementById('frameworkChart'), {
+    type: 'bar',
+    data: {
+      labels: fwLabels,
+      datasets: [
+        { label: 'Open', data: fwLabels.map(fw => DATA.byFramework[fw]?.open || 0), backgroundColor: '#3b82f6', borderRadius: 4 },
+        { label: 'Closed', data: fwLabels.map(fw => DATA.byFramework[fw]?.closed || 0), backgroundColor: '#22c55e', borderRadius: 4 },
+        { label: 'Critical', data: fwLabels.map(fw => DATA.byFramework[fw]?.critical || 0), backgroundColor: '#dc2626', borderRadius: 4 },
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#6b7280', font: { size: 10 } } },
+        y: { grid: { color: '#f3f4f6' }, ticks: { color: '#6b7280', font: { size: 10 } } }
+      },
+      plugins: { legend: { labels: { color: '#6b7280', font: { size: 10 } } } }
+    }
+  });
+
+  ['POA&M','Assessment','External Request','ATO','Evidence','Compliance'].forEach((cat, i) => {
+    const c = DATA.byCategory[cat] || {};
+    const ids = ['catPOAM','catAssessment','catExternal','catATO','catEvidence','catCompliance'];
+    document.getElementById(ids[i]).innerHTML = `
+      <p><span class="text-gray-900 font-semibold">${c.inProgress||0}</span> In Progress</p>
+      <p><span class="text-gray-900 font-semibold">${c.todo||0}</span> Queued</p>
+      <p><span class="text-green-600 font-semibold">${c.closed||0}</span> Completed</p>
+      <p><span class="text-red-600 font-semibold">${c.critical||0}</span> Critical</p>
+    `;
+  });
+
+  renderCriticalTable();
+  const fwSelect = document.getElementById('filterFramework');
+  DATA.frameworks.forEach(fw => { const o = document.createElement('option'); o.value = fw; o.textContent = fw; fwSelect.appendChild(o); });
+  const catSelect = document.getElementById('filterCategory');
+  DATA.categories.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; catSelect.appendChild(o); });
+}
+
+function renderCriticalTable() {
+  const items = DATA.issues.filter(i => (i.labels.includes('Critical') || i.labels.includes('High')) && !['completed','canceled'].includes(i.statusType));
+  updateTable('criticalTable', items);
+}
+
+function filterTable() {
+  const fw = document.getElementById('filterFramework').value;
+  const cat = document.getElementById('filterCategory').value;
+  let items = DATA.issues.filter(i => (i.labels.includes('Critical') || i.labels.includes('High')) && !['completed','canceled'].includes(i.statusType));
+  if (fw) items = items.filter(i => i.labels.includes(fw));
+  if (cat) items = items.filter(i => i.labels.includes(cat));
+  updateTable('criticalTable', items);
+}
+
+function updateTable(id, items) {
+  const pMap = { 1: ['Urgent','bg-severity-urgent'], 2: ['High','bg-severity-high'], 3: ['Medium','bg-severity-medium'], 4: ['Low','bg-severity-low'] };
+  document.getElementById(id).innerHTML = items.map(i => {
+    const [pLabel, pClass] = pMap[i.priority] || ['--',''];
+    const fw = i.labels.filter(l => DATA.frameworks.includes(l)).join(', ') || '--';
+    const cats = i.labels.filter(l => DATA.categories.includes(l)).join(', ') || '--';
+    return `<tr class="border-b border-gray-50 hover:bg-blue-50/50 cursor-pointer" onclick="showDetail('${i.id}')">
+      <td class="py-2.5 px-2 text-gray-400 font-mono">${i.id}</td>
+      <td class="py-2.5 px-2 text-gray-800 max-w-xs truncate font-medium">${i.title}</td>
+      <td class="py-2.5 px-2"><span class="pill ${pClass}">${pLabel}</span></td>
+      <td class="py-2.5 px-2 text-gray-500">${fw}</td>
+      <td class="py-2.5 px-2"><span class="status-dot status-${i.statusType}"></span>${i.status}</td>
+      <td class="py-2.5 px-2 text-gray-500">${cats}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6" class="py-4 text-center text-gray-400">No items match filters</td></tr>';
+}
+
+function renderOperations() {
+  const ps = DATA.poamByStatus;
+  new Chart(document.getElementById('poamStatusChart'), {
+    type: 'doughnut',
+    data: { labels: ['In Progress','Todo','Backlog','Done'], datasets: [{ data: [ps.inProgress, ps.todo, ps.backlog, ps.done], backgroundColor: ['#3b82f6','#9ca3af','#d1d5db','#22c55e'], borderWidth: 0 }] },
+    options: { cutout: '60%', responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#6b7280', font: { size: 11 }, padding: 15 } } } }
+  });
+  const sc = { started:0, unstarted:0, backlog:0, completed:0 };
+  DATA.issues.forEach(i => { if(sc[i.statusType]!==undefined) sc[i.statusType]++; });
+  new Chart(document.getElementById('statusChart'), {
+    type: 'doughnut',
+    data: { labels: ['In Progress','Todo','Backlog','Completed'], datasets: [{ data: [sc.started,sc.unstarted,sc.backlog,sc.completed], backgroundColor: ['#3b82f6','#f59e0b','#d1d5db','#22c55e'], borderWidth: 0 }] },
+    options: { cutout: '60%', responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#6b7280', font: { size: 11 }, padding: 15 } } } }
+  });
+  const projSelect = document.getElementById('opsFilterProject');
+  if (projSelect.options.length <= 1) Object.keys(DATA.byProject).forEach(p => { const o = document.createElement('option'); o.value=p; o.textContent=p; projSelect.appendChild(o); });
+  renderOpsTable(DATA.issues);
+}
+
+function filterOpsTable() {
+  let items = DATA.issues;
+  const proj = document.getElementById('opsFilterProject').value;
+  const status = document.getElementById('opsFilterStatus').value;
+  if (proj) items = items.filter(i => i.project === proj);
+  if (status) items = items.filter(i => i.status === status);
+  renderOpsTable(items);
+}
+
+function renderOpsTable(items) {
+  const pMap = { 1: ['Urgent','bg-red-50 text-red-700 border border-red-200'], 2: ['High','bg-orange-50 text-orange-700 border border-orange-200'], 3: ['Medium','bg-amber-50 text-amber-700 border border-amber-200'], 4: ['Low','bg-green-50 text-green-700 border border-green-200'] };
+  document.getElementById('opsTable').innerHTML = items.map(i => {
+    const [pLabel, pClass] = pMap[i.priority] || ['--',''];
+    const labels = i.labels.filter(l => !['Critical','High','Medium','Low'].includes(l)).slice(0,3);
+    return `<tr class="border-b border-gray-50 hover:bg-blue-50/50 cursor-pointer" onclick="showDetail('${i.id}')">
+      <td class="py-2.5 px-2 text-gray-400 font-mono">${i.id}</td>
+      <td class="py-2.5 px-2 text-gray-800 max-w-sm truncate font-medium">${i.title}</td>
+      <td class="py-2.5 px-2 text-gray-500 text-[11px]">${i.project || '--'}</td>
+      <td class="py-2.5 px-2"><span class="pill ${pClass}">${pLabel}</span></td>
+      <td class="py-2.5 px-2"><span class="status-dot status-${i.statusType}"></span>${i.status}</td>
+      <td class="py-2.5 px-2">${labels.map(l => `<span class="pill bg-gray-100 text-gray-600 mr-1">${l}</span>`).join('')}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderFrameworks() {
+  const fwColors = { 'CMS ARC-AMPE':'#2563eb', 'IRS Pub 1075':'#dc2626', 'NIST 800-53':'#7c3aed', 'SSA':'#0d9488', 'OLA':'#9333ea' };
+  document.getElementById('frameworkCards').innerHTML = DATA.frameworks.map(fw => {
+    const f = DATA.byFramework[fw];
+    const pct = f.total > 0 ? Math.round((f.closed / f.total) * 100) : 0;
+    const items = DATA.issues.filter(i => i.labels.includes(fw));
+    const color = fwColors[fw] || '#6b7280';
+    return `
+      <div class="card p-6 fade-in">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-3 h-3 rounded-full" style="background:${color}"></div>
+            <h3 class="text-base font-bold text-gray-900">${fw}</h3>
+          </div>
+          <div class="flex items-center gap-4 text-xs">
+            <span class="text-gray-500">${f.total} items</span>
+            <span class="text-blue-600 font-medium">${f.open} open</span>
+            <span class="text-green-600 font-medium">${f.closed} closed</span>
+            <span class="text-red-600 font-medium">${f.critical} critical</span>
+          </div>
+        </div>
+        <div class="progress-bar mb-4"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div>
+        <table class="w-full text-xs">
+          <thead><tr class="text-gray-400 uppercase tracking-wider border-b border-gray-100">
+            <th class="text-left py-2">ID</th><th class="text-left py-2">Item</th><th class="text-left py-2">Category</th><th class="text-left py-2">Status</th>
+          </tr></thead>
+          <tbody>${items.map(i => {
+            const cats = i.labels.filter(l => DATA.categories.includes(l)).join(', ');
+            return `<tr class="border-b border-gray-50 hover:bg-blue-50/50 cursor-pointer" onclick="showDetail('${i.id}')">
+              <td class="py-1.5 text-gray-400 font-mono">${i.id}</td>
+              <td class="py-1.5 text-gray-800 max-w-md truncate font-medium">${i.title}</td>
+              <td class="py-1.5 text-gray-500">${cats}</td>
+              <td class="py-1.5"><span class="status-dot status-${i.statusType}"></span>${i.status}</td>
+            </tr>`;
+          }).join('')}</tbody>
+        </table>
+      </div>`;
+  }).join('');
+}
+
+function drillDown(category) {
+  const cat = DATA.byCategory[category];
+  if (!cat) return;
+  document.getElementById('drawerTitle').textContent = category;
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('open');
+  let html = `
+    <div class="grid grid-cols-4 gap-3 mb-6">
+      <div class="bg-gray-50 rounded-lg p-3 text-center"><p class="text-lg font-bold text-gray-900">${cat.open}</p><p class="text-[10px] text-gray-500">Open</p></div>
+      <div class="bg-blue-50 rounded-lg p-3 text-center"><p class="text-lg font-bold text-blue-600">${cat.inProgress}</p><p class="text-[10px] text-gray-500">In Progress</p></div>
+      <div class="bg-green-50 rounded-lg p-3 text-center"><p class="text-lg font-bold text-green-600">${cat.closed}</p><p class="text-[10px] text-gray-500">Completed</p></div>
+      <div class="bg-red-50 rounded-lg p-3 text-center"><p class="text-lg font-bold text-red-600">${cat.critical}</p><p class="text-[10px] text-gray-500">Critical</p></div>
+    </div>
+    <p class="text-xs text-gray-400 uppercase tracking-wider mb-3">All ${category} Items</p>
+  `;
+  html += cat.issues.map(i => {
+    const sevLabel = i.labels.find(l => ['Critical','High','Medium','Low'].includes(l)) || '';
+    const sevClass = sevLabel ? `bg-severity-${sevLabel.toLowerCase()}` : 'bg-gray-100 text-gray-600';
+    const fws = i.labels.filter(l => DATA.frameworks.includes(l));
+    return `
+      <div class="bg-gray-50 rounded-lg p-3 mb-2 hover:bg-blue-50 cursor-pointer transition-colors border border-gray-100" onclick="showDetail('${i.id}')">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex-1 min-w-0">
+            <p class="text-xs text-gray-400 mb-0.5 font-mono">${i.id}</p>
+            <p class="text-sm font-medium text-gray-800 truncate">${i.title}</p>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            ${sevLabel ? `<span class="pill ${sevClass} text-[10px]">${sevLabel}</span>` : ''}
+            <span class="status-dot status-${i.statusType}"></span>
+          </div>
+        </div>
+        ${fws.length ? `<div class="mt-1.5">${fws.map(f => `<span class="pill bg-white border border-gray-200 text-gray-500 text-[10px] mr-1">${f}</span>`).join('')}</div>` : ''}
+      </div>`;
+  }).join('');
+  document.getElementById('drawerContent').innerHTML = html;
+}
+
+function closeDrawer() { document.getElementById('drawer').classList.remove('open'); document.getElementById('drawerOverlay').classList.remove('open'); }
+
+function showDetail(id) {
+  const item = DATA.issues.find(i => i.id === id);
+  if (!item) return;
+  document.getElementById('detailTitle').textContent = `${item.id}: ${item.title}`;
+  let desc = item.description || 'No details available.';
+  desc = desc.replace(/\*\*(.*?)\*\*/g, '<strong class="text-gray-900">$1</strong>');
+  desc = desc.replace(/^### (.*$)/gm, '<h4 class="text-gray-900 font-semibold mt-3 mb-1">$1</h4>');
+  desc = desc.replace(/^## (.*$)/gm, '<h3 class="text-gray-900 font-bold mt-4 mb-2 text-base">$1</h3>');
+  desc = desc.replace(/- \[x\] (.*)/g, '<div class="flex items-center gap-2 ml-2"><span class="text-green-600">&#10003;</span> <span class="text-gray-700">$1</span></div>');
+  desc = desc.replace(/- \[ \] (.*)/g, '<div class="flex items-center gap-2 ml-2"><span class="text-gray-300">&#9675;</span> <span class="text-gray-500">$1</span></div>');
+  desc = desc.replace(/\|(.+)\|\n\|[-| ]+\|\n((?:\|.+\|\n?)*)/g, (m, header, body) => {
+    const ths = header.split('|').filter(Boolean).map(h => `<th class="text-left py-1.5 px-2 text-gray-500 font-medium bg-gray-50">${h.trim()}</th>`).join('');
+    const rows = body.trim().split('\n').map(row => {
+      const cells = row.split('|').filter(Boolean).map(c => {
+        let cell = c.trim();
+        if (cell.includes('✅')) cell = `<span class="text-green-600">${cell}</span>`;
+        if (cell.includes('❌')) cell = `<span class="text-red-600">${cell}</span>`;
+        if (cell.includes('⏳')) cell = `<span class="text-amber-600">${cell}</span>`;
+        if (cell.includes('⚠️')) cell = `<span class="text-orange-600">${cell}</span>`;
+        return `<td class="py-1.5 px-2 text-gray-700">${cell}</td>`;
+      }).join('');
+      return `<tr class="border-b border-gray-100">${cells}</tr>`;
+    }).join('');
+    return `<table class="w-full text-xs my-2 border border-gray-200 rounded-lg overflow-hidden"><thead><tr class="border-b border-gray-200">${ths}</tr></thead><tbody>${rows}</tbody></table>`;
+  });
+  desc = desc.replace(/\\n/g, '<br>');
+  const sevLabel = item.labels.find(l => ['Critical','High','Medium','Low'].includes(l));
+  const fws = item.labels.filter(l => DATA.frameworks.includes(l));
+  const bar = `<div class="flex flex-wrap gap-2 mb-4 pb-4 border-b border-gray-200">
+    <span class="pill bg-gray-100 text-gray-700"><span class="status-dot status-${item.statusType}"></span>${item.status}</span>
+    ${sevLabel ? `<span class="pill bg-severity-${sevLabel.toLowerCase()}">${sevLabel}</span>` : ''}
+    ${fws.map(f => `<span class="pill bg-gray-100 text-gray-600">${f}</span>`).join('')}
+    ${item.project ? `<span class="pill bg-gray-100 text-gray-600">${item.project}</span>` : ''}
+  </div>`;
+  document.getElementById('detailBody').innerHTML = bar + desc;
+  document.getElementById('detailModal').classList.remove('hidden');
+}
+
+function closeDetail() { document.getElementById('detailModal').classList.add('hidden'); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); closeDetail(); } });
+loadData();
+</script>
+</body>
+</html>
