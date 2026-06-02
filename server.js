@@ -49,7 +49,7 @@ async function fetchLinearData() {
   // Categorize
   const frameworks = ["CMS ARC-AMPE", "IRS Pub 1075", "NIST 800-53", "SSA", "OLA"];
   const severities = ["Critical", "High", "Medium", "Low"];
-  const categories = ["Assessment", "POA&M", "Evidence", "ATO", "External Request", "Compliance"];
+  const categories = ["Assessment", "POA&M", "Evidence", "ATO", "External Request", "Compliance", "Incident Response", "Pen Test Finding", "External Audit", "Aging Finding"];
 
   const getLabels = (issue) => issue.labels.nodes.map((l) => l.name);
   const hasLabel = (issue, label) => getLabels(issue).includes(label);
@@ -152,14 +152,47 @@ async function fetchLinearData() {
     done: poamIssues.filter(isDone).length,
   };
 
+  // Action Items & Accountability — high-visibility items
+  const actionTags = ["Pen Test Finding", "External Audit", "Incident Response", "Aging Finding", "Accountability Gap"];
+  const actionItems = workIssues
+    .filter((i) => actionTags.some((t) => hasLabel(i, t)))
+    .map((i) => ({
+      id: i.identifier,
+      title: i.title,
+      priority: i.priority,
+      status: i.state.name,
+      statusType: i.state.type,
+      labels: getLabels(i),
+      project: i.project?.name,
+      description: i.description,
+      createdAt: i.createdAt,
+      source: hasLabel(i, "Pen Test Finding") ? "Pen Test" : hasLabel(i, "External Audit") ? "External Audit" : hasLabel(i, "Incident Response") ? "Incident" : hasLabel(i, "Aging Finding") ? "Aging Finding" : "Other",
+    }));
+
+  // Incidents specifically
+  const incidents = workIssues
+    .filter((i) => hasLabel(i, "Incident Response"))
+    .map((i) => ({
+      id: i.identifier,
+      title: i.title,
+      priority: i.priority,
+      status: i.state.name,
+      statusType: i.state.type,
+      labels: getLabels(i),
+      description: i.description,
+    }));
+
   return {
     summary,
     byFramework,
     byCategory,
     byProject,
     poamByStatus,
+    actionItems,
+    incidents,
     frameworks,
     categories,
+    actionTags,
     issues: workIssues.map((i) => ({
       id: i.identifier,
       title: i.title,
