@@ -1,9 +1,10 @@
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
 
 const app = express();
 const PORT = 3000;
-const API_KEY = "lin_api_TwIy5Fu6iNh1Vb8ePSCxxjh9v7FBrItXmNDejjIt";
+const API_KEY = process.env.LINEAR_API_KEY;
 const TEAM_ID = "d4d5bf63-fae7-4938-9531-b1fb80618a8a";
 
 app.use(express.static(path.join(__dirname, "public")));

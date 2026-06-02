@@ -15,7 +15,8 @@
  *   crontab: 0 8 * * 1-5 cd /path/to/dashboard && node notify.js --teams <url>
  */
 
-const API_KEY = "lin_api_TwIy5Fu6iNh1Vb8ePSCxxjh9v7FBrItXmNDejjIt";
+require("dotenv").config();
+const API_KEY = process.env.LINEAR_API_KEY;
 const TEAM_ID = "d4d5bf63-fae7-4938-9531-b1fb80618a8a";
 
 async function gql(query) {
