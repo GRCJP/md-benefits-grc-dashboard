@@ -35,10 +35,11 @@ async function fetchLinearData() {
   const issueData = await gql(`{
     issues(filter: { team: { id: { eq: "${TEAM_ID}" } } }, first: 150) {
       nodes {
-        id identifier title description priority
+        id identifier title description priority url
         state { name type }
         labels { nodes { name } }
         project { name }
+        assignee { id name email }
         createdAt updatedAt dueDate
       }
     }
@@ -252,6 +253,57 @@ async function fetchLinearData() {
     }).sort((a, b) => (a.daysLeft || 999) - (b.daysLeft || 999)),
   };
 
+  // ─── NOTIFICATIONS FEED ────────────────────────────────
+  const notifications = [];
+  const issueRef = (i) => ({
+    id: i.identifier, title: i.title, assignee: i.assignee?.name || "Unassigned",
+    assigneeEmail: i.assignee?.email || null, dueDate: i.dueDate, url: i.url,
+    labels: getLabels(i), priority: i.priority,
+  });
+
+  for (const i of workIssues.filter(isOpen)) {
+    if (!i.dueDate) continue;
+    const daysLeft = Math.ceil((new Date(i.dueDate) - now) / DAY);
+
+    if (daysLeft < 0) {
+      notifications.push({ type: "overdue", severity: "critical", daysOverdue: Math.abs(daysLeft),
+        message: `OVERDUE by ${Math.abs(daysLeft)} days`, ...issueRef(i) });
+    } else if (daysLeft <= 3) {
+      notifications.push({ type: "due_imminent", severity: "critical", daysLeft,
+        message: `Due in ${daysLeft} day${daysLeft===1?'':'s'}`, ...issueRef(i) });
+    } else if (daysLeft <= 7) {
+      notifications.push({ type: "due_soon", severity: "high", daysLeft,
+        message: `Due in ${daysLeft} days`, ...issueRef(i) });
+    } else if (daysLeft <= 14) {
+      notifications.push({ type: "upcoming", severity: "medium", daysLeft,
+        message: `Due in ${daysLeft} days`, ...issueRef(i) });
+    } else if (daysLeft <= 30) {
+      notifications.push({ type: "reminder", severity: "low", daysLeft,
+        message: `Due in ${daysLeft} days`, ...issueRef(i) });
+    }
+  }
+
+  // Flag unassigned high-priority items
+  for (const i of workIssues.filter(isOpen)) {
+    if (!i.assignee && i.priority <= 2) {
+      notifications.push({ type: "unassigned", severity: "high",
+        message: "High priority item has no assignee", ...issueRef(i) });
+    }
+  }
+
+  notifications.sort((a, b) => {
+    const sev = { critical: 0, high: 1, medium: 2, low: 3 };
+    return (sev[a.severity] ?? 4) - (sev[b.severity] ?? 4);
+  });
+
+  const mapIssue = (i) => ({
+    id: i.identifier, title: i.title, priority: i.priority,
+    status: i.state.name, statusType: i.state.type,
+    labels: getLabels(i), project: i.project?.name,
+    description: i.description, dueDate: i.dueDate,
+    assignee: i.assignee?.name || "Unassigned",
+  });
+
   return {
     summary,
     byFramework,
@@ -264,20 +316,11 @@ async function fetchLinearData() {
     kevs,
     certs,
     docs,
+    notifications,
     frameworks,
     categories,
     actionTags,
-    issues: workIssues.map((i) => ({
-      id: i.identifier,
-      title: i.title,
-      priority: i.priority,
-      status: i.state.name,
-      statusType: i.state.type,
-      labels: getLabels(i),
-      project: i.project?.name,
-      description: i.description,
-      dueDate: i.dueDate,
-    })),
+    issues: workIssues.map(mapIssue),
   };
 }
 

@@ -8,77 +8,120 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    body { font-family: 'Inter', sans-serif; }
-    .card { background: #fffdf9; border: 1px solid #e8e0d4; border-radius: 12px; box-shadow: 0 1px 3px rgba(120,100,70,0.06); }
-    .card-hover { transition: all 0.2s ease; }
-    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(120,100,70,0.12); border-color: #d4c9b8; }
-    .card-accent { background: #faf6ef; border: 1px solid #e0d5c3; }
-    .card-danger { background: #fdf6f3; border: 1px solid #f0d4c4; }
+    * { font-family: 'Inter', system-ui, sans-serif; }
+
+    body { background: linear-gradient(135deg, #faf8f5 0%, #f3efe8 50%, #ede8df 100%); color: #3c3836; }
+
+    .card {
+      background: linear-gradient(145deg, #fffefa, #faf7f2);
+      border: 1px solid #e6dfd4;
+      border-radius: 14px;
+      box-shadow: 0 1px 3px rgba(100,80,50,0.05), 0 4px 12px rgba(100,80,50,0.04);
+    }
+    .card-hover { transition: all 0.25s cubic-bezier(.4,0,.2,1); }
+    .card-hover:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(100,80,50,0.1), 0 2px 6px rgba(100,80,50,0.06); border-color: #d4cabb; }
+
+    .card-alert {
+      background: linear-gradient(145deg, #fef6f3, #fdf0ea);
+      border: 1px solid #f0c9b8;
+      border-radius: 14px;
+      box-shadow: 0 1px 3px rgba(180,60,30,0.06);
+    }
+
+    .header-gradient { background: linear-gradient(135deg, #2c2419 0%, #3d3225 40%, #4a3c2c 100%); }
+
     .sev-crit { color: #b91c1c; } .sev-high { color: #c2410c; } .sev-med { color: #a16207; } .sev-low { color: #15803d; }
-    .pill-crit { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; }
-    .pill-high { background: #fff7ed; border: 1px solid #fed7aa; color: #c2410c; }
-    .pill-med { background: #fefce8; border: 1px solid #fde68a; color: #a16207; }
-    .pill-low { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
-    .pill-urgent { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; }
-    .pill { display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 500; }
-    .pill-neutral { background: #f5f0e8; border: 1px solid #e0d5c3; color: #78716c; }
-    .pill-blue { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
+    .pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 9999px; font-size: 11px; font-weight: 500; line-height: 1.2; }
+    .pill-crit { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; }
+    .pill-high { background: #fff7ed; border: 1px solid #fdba74; color: #9a3412; }
+    .pill-med { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; }
+    .pill-low { background: #f0fdf4; border: 1px solid #86efac; color: #166534; }
+    .pill-urgent { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; }
+    .pill-neutral { background: #f5f0e8; border: 1px solid #ddd5c7; color: #6b5e50; }
+    .pill-blue { background: #eff6ff; border: 1px solid #93c5fd; color: #1e40af; }
     .pill-incident { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; }
-    .pill-pentest { background: #faf5ff; border: 1px solid #d8b4fe; color: #7c3aed; }
+    .pill-pentest { background: #faf5ff; border: 1px solid #c4b5fd; color: #6d28d9; }
     .pill-audit { background: #fdf2f8; border: 1px solid #f9a8d4; color: #be185d; }
-    .pill-aging { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; font-weight: 600; }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
-    .status-started { background: #2563eb; }
+    .pill-aging { background: #451a03; color: #fed7aa; border: 1px solid #92400e; font-weight: 600; }
+    .pill-notif { background: #fef3c7; border: 1px solid #fbbf24; color: #92400e; }
+
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; flex-shrink: 0; }
+    .status-started { background: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,0.2); }
     .status-unstarted { background: #a8a29e; }
-    .status-completed { background: #16a34a; }
+    .status-completed { background: #16a34a; box-shadow: 0 0 0 2px rgba(22,163,74,0.2); }
     .status-backlog { background: #d6d3d1; }
-    .progress-bar { height: 8px; border-radius: 4px; background: #f0ebe3; overflow: hidden; }
-    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+
+    .progress-bar { height: 8px; border-radius: 6px; background: linear-gradient(90deg, #ede8df, #e6dfd4); overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 6px; transition: width 0.6s ease; }
+
     .metric-ring { position: relative; width: 120px; height: 120px; }
     canvas { max-height: 100%; }
-    .drawer { position: fixed; right: -620px; top: 0; width: 620px; height: 100vh; transition: right 0.3s ease; z-index: 50; overflow-y: auto; }
+
+    .drawer { position: fixed; right: -640px; top: 0; width: 640px; height: 100vh; transition: right 0.3s cubic-bezier(.4,0,.2,1); z-index: 50; overflow-y: auto; background: linear-gradient(180deg, #fffefa, #faf7f2); border-left: 1px solid #d4cabb; box-shadow: -8px 0 30px rgba(60,50,30,0.12); }
     .drawer.open { right: 0; }
-    .drawer-overlay { position: fixed; inset: 0; background: rgba(60,50,40,0.3); z-index: 40; display: none; }
+    .drawer-overlay { position: fixed; inset: 0; background: rgba(44,36,25,0.35); backdrop-filter: blur(2px); z-index: 40; display: none; }
     .drawer-overlay.open { display: block; }
+
     .fade-in { animation: fadeIn 0.3s ease-in; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes pulse-border { 0%, 100% { border-color: #fca5a5; } 50% { border-color: #ef4444; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse-border { 0%,100% { border-color: #fca5a5; } 50% { border-color: #ef4444; } }
     .pulse-border { animation: pulse-border 2s ease-in-out infinite; }
-    .section-divider { height: 1px; background: linear-gradient(to right, transparent, #d4c9b8, transparent); margin: 24px 0; }
-    table th { font-size: 10px; letter-spacing: 0.05em; }
-    select { cursor: pointer; }
+    .section-divider { height: 1px; background: linear-gradient(to right, transparent, #d4c9b8, transparent); margin: 28px 0; }
+
+    table th { font-size: 10px; letter-spacing: 0.06em; }
+    select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237c7167' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; padding-right: 24px; }
+
     .aging-badge { display: inline-flex; align-items: center; gap: 4px; background: #7f1d1d; color: #fecaca; padding: 2px 8px; border-radius: 9999px; font-size: 10px; font-weight: 600; }
+
+    /* Notification panel */
+    .notif-panel { position: absolute; top: 100%; right: 0; width: 420px; max-height: 480px; overflow-y: auto; border-radius: 14px; box-shadow: 0 10px 40px rgba(60,50,30,0.18), 0 2px 8px rgba(60,50,30,0.08); z-index: 60; background: linear-gradient(180deg, #fffefa, #faf7f2); border: 1px solid #d4cabb; display: none; }
+    .notif-panel.open { display: block; }
+    .notif-item { padding: 10px 14px; border-bottom: 1px solid #f0ebe3; transition: background 0.15s; cursor: pointer; }
+    .notif-item:hover { background: rgba(180,160,120,0.06); }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-badge { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; border-radius: 9px; background: #dc2626; color: white; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 4px; border: 2px solid #2c2419; }
   </style>
 </head>
-<body class="min-h-screen" style="background: #f5f0e8; color: #44403c;">
+<body class="min-h-screen">
 
-  <div id="loading" class="fixed inset-0 flex items-center justify-center z-50" style="background:#f5f0e8">
-    <div class="text-center">
-      <div class="w-12 h-12 border-4 border-amber-700 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-      <p class="text-stone-500">Loading GRC data...</p>
-    </div>
+  <div id="loading" class="fixed inset-0 flex items-center justify-center z-50" style="background:linear-gradient(135deg,#faf8f5,#ede8df);">
+    <div class="text-center"><div class="w-12 h-12 border-4 border-amber-800 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div><p class="text-stone-400 text-sm">Loading GRC data...</p></div>
   </div>
 
   <!-- Header -->
-  <header class="border-b sticky top-0 z-30 shadow-sm" style="background:#faf6ef; border-color:#e0d5c3;">
-    <div class="max-w-[1440px] mx-auto px-6 py-4 flex items-center justify-between">
+  <header class="header-gradient sticky top-0 z-30 shadow-lg">
+    <div class="max-w-[1440px] mx-auto px-6 py-3.5 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background:#78350f;">
-          <svg class="w-5 h-5 text-amber-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-amber-600/20 border border-amber-500/30">
+          <svg class="w-5 h-5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
         </div>
         <div>
-          <h1 class="text-lg font-bold" style="color:#292524;">MD Benefits - GRC Trust Center</h1>
-          <p class="text-xs text-stone-400">Governance, Risk & Compliance Operations</p>
+          <h1 class="text-base font-bold text-amber-50 tracking-tight">MD Benefits</h1>
+          <p class="text-[10px] text-amber-300/60 uppercase tracking-widest">GRC Trust Center</p>
         </div>
       </div>
-      <div class="flex items-center gap-4">
-        <div class="flex gap-1 p-1 rounded-lg" style="background:#ede8df;">
-          <button onclick="showView('executive')" id="tab-executive" class="px-3 py-1.5 text-xs font-medium rounded-md text-white" style="background:#78350f;">Executive</button>
-          <button onclick="showView('action')" id="tab-action" class="px-3 py-1.5 text-xs font-medium rounded-md text-stone-500 hover:text-stone-800">Action Items</button>
-          <button onclick="showView('operations')" id="tab-operations" class="px-3 py-1.5 text-xs font-medium rounded-md text-stone-500 hover:text-stone-800">Operations</button>
-          <button onclick="showView('frameworks')" id="tab-frameworks" class="px-3 py-1.5 text-xs font-medium rounded-md text-stone-500 hover:text-stone-800">Frameworks</button>
+      <div class="flex items-center gap-5">
+        <div class="flex gap-0.5 p-0.5 rounded-lg bg-white/10 backdrop-blur">
+          <button onclick="showView('executive')" id="tab-executive" class="px-3.5 py-1.5 text-xs font-medium rounded-md bg-amber-600 text-white shadow-sm">Executive</button>
+          <button onclick="showView('action')" id="tab-action" class="px-3.5 py-1.5 text-xs font-medium rounded-md text-amber-200/70 hover:text-white hover:bg-white/10">Action Items</button>
+          <button onclick="showView('operations')" id="tab-operations" class="px-3.5 py-1.5 text-xs font-medium rounded-md text-amber-200/70 hover:text-white hover:bg-white/10">Operations</button>
+          <button onclick="showView('frameworks')" id="tab-frameworks" class="px-3.5 py-1.5 text-xs font-medium rounded-md text-amber-200/70 hover:text-white hover:bg-white/10">Frameworks</button>
         </div>
-        <div class="text-xs text-stone-400" id="last-updated"></div>
+        <!-- Notification Bell -->
+        <div class="relative">
+          <button onclick="toggleNotifications()" id="notifBtn" class="relative w-9 h-9 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 transition-colors">
+            <svg class="w-5 h-5 text-amber-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            <span id="notifBadge" class="notif-badge hidden">0</span>
+          </button>
+          <div id="notifPanel" class="notif-panel">
+            <div class="px-4 py-3 border-b" style="border-color:#e0d5c3;">
+              <p class="text-sm font-semibold" style="color:#292524;">Notifications</p>
+              <p class="text-[10px] text-stone-400" id="notifSubtitle">--</p>
+            </div>
+            <div id="notifList"></div>
+          </div>
+        </div>
+        <div class="text-[10px] text-amber-300/40" id="last-updated"></div>
       </div>
     </div>
   </header>
@@ -89,161 +132,95 @@
     <div id="view-executive">
       <div class="grid grid-cols-12 gap-4 mb-5">
         <div class="col-span-3 card p-5">
-          <p class="text-xs text-stone-400 uppercase tracking-wider mb-3">Overall Compliance</p>
+          <p class="text-[10px] text-stone-400 uppercase tracking-widest mb-3">Overall Compliance</p>
           <div class="flex items-center gap-4">
             <div class="metric-ring"><canvas id="healthRing"></canvas><div class="absolute inset-0 flex items-center justify-center"><span id="healthPct" class="text-2xl font-bold" style="color:#292524;">--</span></div></div>
-            <div class="text-xs text-stone-500 space-y-1.5">
-              <p><span class="font-semibold" style="color:#15803d;" id="closedCount">--</span> Closed</p>
-              <p><span class="font-semibold" style="color:#2563eb;" id="openCount">--</span> Open</p>
-              <p><span class="font-semibold" style="color:#b91c1c;" id="critCount">--</span> Critical</p>
+            <div class="text-xs space-y-1.5">
+              <p class="text-stone-400"><span class="font-semibold" style="color:#16a34a;" id="closedCount">--</span> Closed</p>
+              <p class="text-stone-400"><span class="font-semibold" style="color:#2563eb;" id="openCount">--</span> Open</p>
+              <p class="text-stone-400"><span class="font-semibold sev-crit" id="critCount">--</span> Critical</p>
             </div>
           </div>
         </div>
         <div class="col-span-9 grid grid-cols-5 gap-3">
-          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('POA&M')"><p class="text-xs text-stone-400 mb-1">Open POA&Ms</p><p class="text-2xl font-bold" style="color:#292524;" id="poamOpen">--</p><p class="text-xs mt-1 sev-crit font-medium" id="poamCrit">--</p></div>
-          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('Assessment')"><p class="text-xs text-stone-400 mb-1">Assessments</p><p class="text-2xl font-bold" style="color:#292524;" id="assessOpen">--</p><p class="text-xs mt-1 font-medium" style="color:#2563eb;" id="assessProgress">--</p></div>
-          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('External Request')"><p class="text-xs text-stone-400 mb-1">Ext. Requests</p><p class="text-2xl font-bold" style="color:#292524;" id="extOpen">--</p><p class="text-xs mt-1 font-medium sev-med" id="extUrgent">--</p></div>
-          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('ATO')"><p class="text-xs text-stone-400 mb-1">ATO Packages</p><p class="text-2xl font-bold" style="color:#292524;" id="atoOpen">--</p><p class="text-xs mt-1 font-medium" style="color:#7c3aed;" id="atoPending">--</p></div>
-          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('Evidence')"><p class="text-xs text-stone-400 mb-1">Evidence</p><p class="text-2xl font-bold" style="color:#292524;" id="evidOpen">--</p><p class="text-xs mt-1 font-medium sev-high" id="evidStale">--</p></div>
+          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('POA&M')"><p class="text-[10px] text-stone-400 uppercase tracking-wider mb-1">Open POA&Ms</p><p class="text-2xl font-bold" style="color:#292524;" id="poamOpen">--</p><p class="text-xs mt-1 sev-crit font-medium" id="poamCrit">--</p></div>
+          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('Assessment')"><p class="text-[10px] text-stone-400 uppercase tracking-wider mb-1">Assessments</p><p class="text-2xl font-bold" style="color:#292524;" id="assessOpen">--</p><p class="text-xs mt-1 font-medium" style="color:#2563eb;" id="assessProgress">--</p></div>
+          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('External Request')"><p class="text-[10px] text-stone-400 uppercase tracking-wider mb-1">Ext. Requests</p><p class="text-2xl font-bold" style="color:#292524;" id="extOpen">--</p><p class="text-xs mt-1 font-medium sev-med" id="extUrgent">--</p></div>
+          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('ATO')"><p class="text-[10px] text-stone-400 uppercase tracking-wider mb-1">ATO Packages</p><p class="text-2xl font-bold" style="color:#292524;" id="atoOpen">--</p><p class="text-xs mt-1 font-medium" style="color:#7c3aed;" id="atoPending">--</p></div>
+          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('Evidence')"><p class="text-[10px] text-stone-400 uppercase tracking-wider mb-1">Evidence</p><p class="text-2xl font-bold" style="color:#292524;" id="evidOpen">--</p><p class="text-xs mt-1 font-medium sev-high" id="evidStale">--</p></div>
         </div>
       </div>
 
       <!-- Action Items Alert Banner -->
-      <div id="actionBanner" class="card-danger rounded-xl p-4 mb-5 cursor-pointer card-hover" onclick="showView('action')">
+      <div id="actionBanner" class="card-alert rounded-xl p-4 mb-5 cursor-pointer card-hover" onclick="showView('action')">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:#991b1b;"><svg class="w-5 h-5 text-red-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg></div>
-            <div>
-              <p class="text-sm font-semibold" style="color:#991b1b;">Action Items Requiring Attention</p>
-              <p class="text-xs text-stone-500" id="actionBannerSub">--</p>
-            </div>
+            <div><p class="text-sm font-semibold" style="color:#991b1b;">Action Items Requiring Attention</p><p class="text-xs text-stone-500" id="actionBannerSub">--</p></div>
           </div>
-          <div class="flex items-center gap-3" id="actionBannerStats"></div>
+          <div class="flex items-center gap-2" id="actionBannerStats"></div>
         </div>
       </div>
 
       <div class="grid grid-cols-12 gap-4 mb-5">
         <div class="col-span-5 card p-5">
-          <p class="text-xs text-stone-400 uppercase tracking-wider mb-4">Findings by Severity</p>
+          <p class="text-[10px] text-stone-400 uppercase tracking-widest mb-4">Findings by Severity</p>
           <div id="severityBars" class="space-y-3"></div>
         </div>
         <div class="col-span-7 card p-5">
-          <p class="text-xs text-stone-400 uppercase tracking-wider mb-4">Compliance by Framework</p>
+          <p class="text-[10px] text-stone-400 uppercase tracking-widest mb-4">Compliance by Framework</p>
           <canvas id="frameworkChart" height="180"></canvas>
         </div>
       </div>
 
-      <!-- Leadership Metrics Row -->
+      <!-- Leadership Metrics -->
       <div class="grid grid-cols-4 gap-4 mb-5">
-        <!-- Risk Age Buckets -->
         <div class="card p-5">
-          <p class="text-xs text-stone-400 uppercase tracking-wider mb-3">Open Items by Age</p>
+          <p class="text-[10px] text-stone-400 uppercase tracking-widest mb-3">Open Items by Age</p>
           <div id="ageBuckets" class="space-y-2"></div>
-          <p class="text-[10px] text-stone-400 mt-3 italic">For risk acceptance decisions</p>
+          <p class="text-[10px] text-stone-400 mt-3 italic">Risk acceptance decisions</p>
         </div>
-        <!-- KEVs -->
         <div class="card p-5">
-          <div class="flex items-center gap-2 mb-3">
-            <div class="w-6 h-6 rounded flex items-center justify-center" style="background:#991b1b;"><svg class="w-3.5 h-3.5 text-red-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01"/></svg></div>
-            <p class="text-xs text-stone-400 uppercase tracking-wider">CISA KEVs</p>
-          </div>
-          <div id="kevSummary"></div>
-          <div id="kevList" class="mt-3 space-y-1.5"></div>
+          <div class="flex items-center gap-2 mb-3"><div class="w-6 h-6 rounded flex items-center justify-center" style="background:#991b1b;"><svg class="w-3.5 h-3.5 text-red-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01"/></svg></div><p class="text-[10px] text-stone-400 uppercase tracking-widest">CISA KEVs</p></div>
+          <div id="kevSummary"></div><div id="kevList" class="mt-3 space-y-1.5"></div>
         </div>
-        <!-- Certificate Expirations -->
         <div class="card p-5">
-          <div class="flex items-center gap-2 mb-3">
-            <div class="w-6 h-6 rounded flex items-center justify-center" style="background:#b45309;"><svg class="w-3.5 h-3.5 text-amber-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg></div>
-            <p class="text-xs text-stone-400 uppercase tracking-wider">Certificate Expirations</p>
-          </div>
-          <div id="certSummary"></div>
-          <div id="certList" class="mt-3 space-y-1.5"></div>
+          <div class="flex items-center gap-2 mb-3"><div class="w-6 h-6 rounded flex items-center justify-center" style="background:#b45309;"><svg class="w-3.5 h-3.5 text-amber-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg></div><p class="text-[10px] text-stone-400 uppercase tracking-widest">Cert Expirations</p></div>
+          <div id="certSummary"></div><div id="certList" class="mt-3 space-y-1.5"></div>
         </div>
-        <!-- Document Reviews -->
         <div class="card p-5">
-          <div class="flex items-center gap-2 mb-3">
-            <div class="w-6 h-6 rounded flex items-center justify-center" style="background:#4338ca;"><svg class="w-3.5 h-3.5 text-indigo-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
-            <p class="text-xs text-stone-400 uppercase tracking-wider">Document Reviews</p>
-          </div>
-          <div id="docSummary"></div>
-          <div id="docList" class="mt-3 space-y-1.5"></div>
+          <div class="flex items-center gap-2 mb-3"><div class="w-6 h-6 rounded flex items-center justify-center" style="background:#4338ca;"><svg class="w-3.5 h-3.5 text-indigo-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div><p class="text-[10px] text-stone-400 uppercase tracking-widest">Doc Reviews</p></div>
+          <div id="docSummary"></div><div id="docList" class="mt-3 space-y-1.5"></div>
         </div>
       </div>
 
-      <div class="grid grid-cols-6 gap-3 mb-5">
-        <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('POA&M')"><div class="flex items-center gap-2 mb-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#dbeafe;"><svg class="w-4 h-4" style="color:#2563eb;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div><span class="text-sm font-semibold" style="color:#292524;">POA&Ms</span></div><div id="catPOAM" class="text-xs text-stone-500 space-y-1"></div></div>
-        <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('Assessment')"><div class="flex items-center gap-2 mb-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#f3e8ff;"><svg class="w-4 h-4" style="color:#7c3aed;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><span class="text-sm font-semibold" style="color:#292524;">Assessments</span></div><div id="catAssessment" class="text-xs text-stone-500 space-y-1"></div></div>
-        <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('External Request')"><div class="flex items-center gap-2 mb-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#fce7f3;"><svg class="w-4 h-4" style="color:#be185d;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg></div><span class="text-sm font-semibold" style="color:#292524;">Ext. Requests</span></div><div id="catExternal" class="text-xs text-stone-500 space-y-1"></div></div>
-        <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('ATO')"><div class="flex items-center gap-2 mb-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#e0e7ff;"><svg class="w-4 h-4" style="color:#4338ca;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div><span class="text-sm font-semibold" style="color:#292524;">ATO Packages</span></div><div id="catATO" class="text-xs text-stone-500 space-y-1"></div></div>
-        <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('Evidence')"><div class="flex items-center gap-2 mb-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#cffafe;"><svg class="w-4 h-4" style="color:#0e7490;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg></div><span class="text-sm font-semibold" style="color:#292524;">Evidence</span></div><div id="catEvidence" class="text-xs text-stone-500 space-y-1"></div></div>
-        <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('Compliance')"><div class="flex items-center gap-2 mb-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#dcfce7;"><svg class="w-4 h-4" style="color:#15803d;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div><span class="text-sm font-semibold" style="color:#292524;">Controls</span></div><div id="catCompliance" class="text-xs text-stone-500 space-y-1"></div></div>
-      </div>
+      <!-- Category Cards -->
+      <div class="grid grid-cols-6 gap-3 mb-5" id="categoryCards"></div>
 
+      <!-- Critical Table -->
       <div class="card p-5">
         <div class="flex items-center justify-between mb-4">
           <p class="text-sm font-semibold" style="color:#292524;">Critical & High Priority Items</p>
           <div class="flex gap-2">
-            <select id="filterFramework" onchange="filterTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#faf6ef;border-color:#d4c9b8;color:#57534e;"><option value="">All Frameworks</option></select>
-            <select id="filterCategory" onchange="filterTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#faf6ef;border-color:#d4c9b8;color:#57534e;"><option value="">All Categories</option></select>
+            <select id="filterFramework" onchange="filterTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#faf7f2;border-color:#d4cabb;color:#57534e;"><option value="">All Frameworks</option></select>
+            <select id="filterCategory" onchange="filterTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#faf7f2;border-color:#d4cabb;color:#57534e;"><option value="">All Categories</option></select>
           </div>
         </div>
-        <table class="w-full text-xs"><thead><tr class="text-stone-400 uppercase tracking-wider" style="border-bottom:1px solid #e8e0d4;"><th class="text-left py-2 px-2">ID</th><th class="text-left py-2 px-2">Item</th><th class="text-left py-2 px-2">Severity</th><th class="text-left py-2 px-2">Framework</th><th class="text-left py-2 px-2">Status</th><th class="text-left py-2 px-2">Category</th></tr></thead><tbody id="criticalTable"></tbody></table>
+        <table class="w-full text-xs"><thead><tr class="text-stone-400 uppercase tracking-wider" style="border-bottom:2px solid #e6dfd4;"><th class="text-left py-2.5 px-2">ID</th><th class="text-left py-2.5 px-2">Item</th><th class="text-left py-2.5 px-2">Severity</th><th class="text-left py-2.5 px-2">Framework</th><th class="text-left py-2.5 px-2">Assignee</th><th class="text-left py-2.5 px-2">Status</th></tr></thead><tbody id="criticalTable"></tbody></table>
       </div>
     </div>
 
-    <!-- ═══ ACTION ITEMS & ACCOUNTABILITY VIEW ═══ -->
+    <!-- ═══ ACTION ITEMS VIEW ═══ -->
     <div id="view-action" class="hidden">
-      <!-- Incident Response Section -->
-      <div class="mb-6">
-        <div class="flex items-center gap-2 mb-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#991b1b;"><svg class="w-4 h-4 text-red-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg></div>
-          <h2 class="text-base font-bold" style="color:#292524;">Active Incidents & Response</h2>
-        </div>
-        <div id="incidentCards" class="grid grid-cols-1 gap-3 mb-2"></div>
-        <div id="noIncidents" class="hidden card-accent rounded-xl p-4 text-center text-sm text-stone-400">No active incidents</div>
-      </div>
-
+      <div class="mb-6"><div class="flex items-center gap-2 mb-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#991b1b;"><svg class="w-4 h-4 text-red-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg></div><h2 class="text-base font-bold" style="color:#292524;">Active Incidents & Response</h2></div><div id="incidentCards" class="grid grid-cols-1 gap-3 mb-2"></div><div id="noIncidents" class="hidden card rounded-xl p-4 text-center text-sm text-stone-400">No active incidents</div></div>
       <div class="section-divider"></div>
-
-      <!-- Aging & Accountability Findings -->
-      <div class="mb-6">
-        <div class="flex items-center gap-2 mb-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#7c2d12;"><svg class="w-4 h-4 text-orange-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
-          <h2 class="text-base font-bold" style="color:#292524;">Aging Findings & Accountability Gaps</h2>
-          <span class="pill pill-aging ml-2">Prevents repeat of OLA 2024 scenario</span>
-        </div>
-        <div id="agingCards" class="grid grid-cols-1 gap-3"></div>
-      </div>
-
+      <div class="mb-6"><div class="flex items-center gap-2 mb-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#7c2d12;"><svg class="w-4 h-4 text-orange-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><h2 class="text-base font-bold" style="color:#292524;">Aging Findings & Accountability Gaps</h2><span class="pill pill-aging ml-2">Prevents repeat of OLA 2024 scenario</span></div><div id="agingCards" class="grid grid-cols-1 gap-3"></div></div>
       <div class="section-divider"></div>
-
-      <!-- Pen Test Findings -->
-      <div class="mb-6">
-        <div class="flex items-center gap-2 mb-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#5b21b6;"><svg class="w-4 h-4 text-purple-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div>
-          <h2 class="text-base font-bold" style="color:#292524;">Penetration Test Findings</h2>
-        </div>
-        <div id="pentestCards" class="grid grid-cols-1 gap-3"></div>
-      </div>
-
+      <div class="mb-6"><div class="flex items-center gap-2 mb-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#5b21b6;"><svg class="w-4 h-4 text-purple-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div><h2 class="text-base font-bold" style="color:#292524;">Penetration Test Findings</h2></div><div id="pentestCards" class="grid grid-cols-1 gap-3"></div></div>
       <div class="section-divider"></div>
-
-      <!-- External Audit Findings -->
-      <div class="mb-6">
-        <div class="flex items-center gap-2 mb-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#9d174d;"><svg class="w-4 h-4 text-pink-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg></div>
-          <h2 class="text-base font-bold" style="color:#292524;">External Audit Findings</h2>
-        </div>
-        <div id="auditCards" class="grid grid-cols-1 gap-3"></div>
-      </div>
-
+      <div class="mb-6"><div class="flex items-center gap-2 mb-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#9d174d;"><svg class="w-4 h-4 text-pink-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg></div><h2 class="text-base font-bold" style="color:#292524;">External Audit Findings</h2></div><div id="auditCards" class="grid grid-cols-1 gap-3"></div></div>
       <div class="section-divider"></div>
-
-      <!-- Full Action Items Table -->
-      <div class="card p-5">
-        <p class="text-sm font-semibold mb-4" style="color:#292524;">All Action Items</p>
-        <table class="w-full text-xs"><thead><tr class="text-stone-400 uppercase tracking-wider" style="border-bottom:1px solid #e8e0d4;"><th class="text-left py-2 px-2">ID</th><th class="text-left py-2 px-2">Item</th><th class="text-left py-2 px-2">Source</th><th class="text-left py-2 px-2">Severity</th><th class="text-left py-2 px-2">Status</th><th class="text-left py-2 px-2">Framework</th></tr></thead><tbody id="actionTable"></tbody></table>
-      </div>
+      <div class="card p-5"><p class="text-sm font-semibold mb-4" style="color:#292524;">All Action Items</p><table class="w-full text-xs"><thead><tr class="text-stone-400 uppercase tracking-wider" style="border-bottom:2px solid #e6dfd4;"><th class="text-left py-2.5 px-2">ID</th><th class="text-left py-2.5 px-2">Item</th><th class="text-left py-2.5 px-2">Source</th><th class="text-left py-2.5 px-2">Severity</th><th class="text-left py-2.5 px-2">Assignee</th><th class="text-left py-2.5 px-2">Status</th></tr></thead><tbody id="actionTable"></tbody></table></div>
     </div>
 
     <!-- ═══ OPERATIONS VIEW ═══ -->
@@ -253,14 +230,8 @@
         <div class="card p-5"><p class="text-sm font-semibold mb-4" style="color:#292524;">All Items by Status</p><canvas id="statusChart" height="200"></canvas></div>
       </div>
       <div class="card p-5">
-        <div class="flex items-center justify-between mb-4">
-          <p class="text-sm font-semibold" style="color:#292524;">All GRC Items</p>
-          <div class="flex gap-2">
-            <select id="opsFilterProject" onchange="filterOpsTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#faf6ef;border-color:#d4c9b8;color:#57534e;"><option value="">All Projects</option></select>
-            <select id="opsFilterStatus" onchange="filterOpsTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#faf6ef;border-color:#d4c9b8;color:#57534e;"><option value="">All Statuses</option><option value="In Progress">In Progress</option><option value="Todo">Todo</option><option value="Backlog">Backlog</option><option value="Done">Done</option></select>
-          </div>
-        </div>
-        <table class="w-full text-xs"><thead><tr class="text-stone-400 uppercase tracking-wider" style="border-bottom:1px solid #e8e0d4;"><th class="text-left py-2 px-2">ID</th><th class="text-left py-2 px-2">Item</th><th class="text-left py-2 px-2">Project</th><th class="text-left py-2 px-2">Priority</th><th class="text-left py-2 px-2">Status</th><th class="text-left py-2 px-2">Labels</th></tr></thead><tbody id="opsTable"></tbody></table>
+        <div class="flex items-center justify-between mb-4"><p class="text-sm font-semibold" style="color:#292524;">All GRC Items</p><div class="flex gap-2"><select id="opsFilterProject" onchange="filterOpsTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#faf7f2;border-color:#d4cabb;color:#57534e;"><option value="">All Projects</option></select><select id="opsFilterStatus" onchange="filterOpsTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#faf7f2;border-color:#d4cabb;color:#57534e;"><option value="">All Statuses</option><option value="In Progress">In Progress</option><option value="Todo">Todo</option><option value="Backlog">Backlog</option><option value="Done">Done</option></select></div></div>
+        <table class="w-full text-xs"><thead><tr class="text-stone-400 uppercase tracking-wider" style="border-bottom:2px solid #e6dfd4;"><th class="text-left py-2.5 px-2">ID</th><th class="text-left py-2.5 px-2">Item</th><th class="text-left py-2.5 px-2">Project</th><th class="text-left py-2.5 px-2">Priority</th><th class="text-left py-2.5 px-2">Assignee</th><th class="text-left py-2.5 px-2">Status</th></tr></thead><tbody id="opsTable"></tbody></table>
       </div>
     </div>
 
@@ -269,13 +240,10 @@
   </main>
 
   <div id="drawerOverlay" class="drawer-overlay" onclick="closeDrawer()"></div>
-  <div id="drawer" class="drawer p-6 shadow-xl" style="background:#faf6ef; border-left:1px solid #d4c9b8;">
-    <div class="flex items-center justify-between mb-6"><h2 id="drawerTitle" class="text-lg font-bold" style="color:#292524;"></h2><button onclick="closeDrawer()" class="text-stone-400 hover:text-stone-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button></div>
-    <div id="drawerContent"></div>
-  </div>
+  <div id="drawer" class="drawer p-6"><div class="flex items-center justify-between mb-6"><h2 id="drawerTitle" class="text-lg font-bold" style="color:#292524;"></h2><button onclick="closeDrawer()" class="text-stone-400 hover:text-stone-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button></div><div id="drawerContent"></div></div>
 
-  <div id="detailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" style="background:rgba(60,50,40,0.4);" onclick="if(event.target===this)closeDetail()">
-    <div class="rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6 shadow-2xl" style="background:#fffdf9; border:1px solid #d4c9b8;">
+  <div id="detailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" style="background:rgba(44,36,25,0.4);backdrop-filter:blur(2px);" onclick="if(event.target===this)closeDetail()">
+    <div class="rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6" style="background:linear-gradient(180deg,#fffefa,#faf7f2);border:1px solid #d4cabb;box-shadow:0 20px 60px rgba(60,50,30,0.2);">
       <div class="flex items-center justify-between mb-4"><h3 id="detailTitle" class="text-base font-bold pr-4" style="color:#292524;"></h3><button onclick="closeDetail()" class="text-stone-400 hover:text-stone-700 flex-shrink-0"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button></div>
       <div id="detailBody" class="text-sm text-stone-600 whitespace-pre-wrap"></div>
     </div>
@@ -283,29 +251,64 @@
 
 <script>
 let DATA = null;
-const tabStyle = 'background:#78350f;';
-const tabInactive = 'background:transparent;';
 
 async function loadData() {
   const res = await fetch('/api/data');
   DATA = await res.json();
   document.getElementById('loading').style.display = 'none';
-  document.getElementById('last-updated').textContent = `Updated: ${new Date().toLocaleTimeString()}`;
+  document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
   renderExecutive();
+  renderNotifications();
 }
 
 function showView(view) {
   ['executive','action','operations','frameworks'].forEach(v => {
     document.getElementById(`view-${v}`).classList.toggle('hidden', v !== view);
     const t = document.getElementById(`tab-${v}`);
-    if (v === view) { t.style.cssText = tabStyle; t.classList.add('text-white'); t.classList.remove('text-stone-500'); }
-    else { t.style.cssText = tabInactive; t.classList.remove('text-white'); t.classList.add('text-stone-500'); }
+    if (v === view) { t.className = 'px-3.5 py-1.5 text-xs font-medium rounded-md bg-amber-600 text-white shadow-sm'; }
+    else { t.className = 'px-3.5 py-1.5 text-xs font-medium rounded-md text-amber-200/70 hover:text-white hover:bg-white/10'; }
   });
   if (view === 'action') renderActionItems();
   if (view === 'operations') renderOperations();
   if (view === 'frameworks') renderFrameworks();
 }
 
+// ─── NOTIFICATIONS ────────────────────────────────────────
+function renderNotifications() {
+  const n = DATA.notifications || [];
+  const badge = document.getElementById('notifBadge');
+  const critical = n.filter(x => x.severity === 'critical' || x.severity === 'high');
+  if (critical.length) { badge.textContent = critical.length; badge.classList.remove('hidden'); }
+  else { badge.classList.add('hidden'); }
+  document.getElementById('notifSubtitle').textContent = `${n.length} items need attention`;
+
+  const sevIcon = { critical: '🔴', high: '🟠', medium: '🟡', low: '🟢' };
+  const typeLabel = { overdue:'OVERDUE', due_imminent:'DUE IMMINENT', due_soon:'DUE SOON', upcoming:'UPCOMING', reminder:'REMINDER', unassigned:'NO OWNER' };
+  document.getElementById('notifList').innerHTML = n.slice(0, 20).map(x => `
+    <div class="notif-item" onclick="showDetail('${x.id}');toggleNotifications();">
+      <div class="flex items-start gap-2.5">
+        <span class="text-sm mt-0.5">${sevIcon[x.severity]||''}</span>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="pill pill-${x.severity==='critical'?'crit':x.severity} text-[9px] py-0">${typeLabel[x.type]||x.type}</span>
+            <span class="text-[10px] text-stone-400">${x.assignee}</span>
+          </div>
+          <p class="text-xs font-medium truncate" style="color:#292524;">${x.title}</p>
+          <p class="text-[10px] text-stone-400 mt-0.5">${x.message}</p>
+        </div>
+      </div>
+    </div>
+  `).join('') || '<div class="p-4 text-center text-stone-400 text-sm">All clear — no notifications</div>';
+}
+
+function toggleNotifications() {
+  document.getElementById('notifPanel').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#notifBtn') && !e.target.closest('#notifPanel')) document.getElementById('notifPanel').classList.remove('open');
+});
+
+// ─── EXECUTIVE VIEW ───────────────────────────────────────
 function renderExecutive() {
   const s = DATA.summary;
   const pct = s.total > 0 ? Math.round((s.closed / s.total) * 100) : 0;
@@ -313,7 +316,8 @@ function renderExecutive() {
   document.getElementById('closedCount').textContent = s.closed;
   document.getElementById('openCount').textContent = s.open;
   document.getElementById('critCount').textContent = s.critical;
-  new Chart(document.getElementById('healthRing'), { type:'doughnut', data:{datasets:[{data:[s.closed,s.open],backgroundColor:['#16a34a','#e8e0d4'],borderWidth:0}]}, options:{cutout:'78%',responsive:true,plugins:{legend:{display:false},tooltip:{enabled:false}}} });
+  new Chart(document.getElementById('healthRing'), { type:'doughnut', data:{datasets:[{data:[s.closed,s.open],backgroundColor:['#16a34a','#e6dfd4'],borderWidth:0}]}, options:{cutout:'78%',responsive:true,plugins:{legend:{display:false},tooltip:{enabled:false}}} });
+
   const poam=DATA.byCategory['POA&M']||{}, assess=DATA.byCategory['Assessment']||{}, ext=DATA.byCategory['External Request']||{}, ato=DATA.byCategory['ATO']||{}, evid=DATA.byCategory['Evidence']||{};
   document.getElementById('poamOpen').textContent=poam.open||0; document.getElementById('poamCrit').textContent=(poam.critical||0)+' critical';
   document.getElementById('assessOpen').textContent=assess.open||0; document.getElementById('assessProgress').textContent=(assess.inProgress||0)+' in progress';
@@ -322,98 +326,45 @@ function renderExecutive() {
   document.getElementById('evidOpen').textContent=evid.open||0; document.getElementById('evidStale').textContent=(evid.todo||0)+' need refresh';
 
   // Action banner
-  const ai = DATA.actionItems || [];
-  const activeAI = ai.filter(i => !['completed','canceled'].includes(i.statusType));
-  const incidents = activeAI.filter(i => i.source === 'Incident');
-  const aging = activeAI.filter(i => i.labels.includes('Aging Finding'));
-  document.getElementById('actionBannerSub').textContent = `${activeAI.length} items require tracking — ${incidents.length} active incidents, ${aging.length} aging findings`;
-  document.getElementById('actionBannerStats').innerHTML = `
-    ${incidents.length ? `<span class="pill pill-incident">${incidents.length} Incidents</span>` : ''}
-    ${aging.length ? `<span class="pill pill-aging">${aging.length} Aging</span>` : ''}
-    <span class="pill pill-pentest">${activeAI.filter(i=>i.source==='Pen Test').length} Pen Test</span>
-    <span class="pill pill-audit">${activeAI.filter(i=>i.source==='External Audit').length} Ext Audit</span>
-  `;
+  const ai = DATA.actionItems||[], activeAI = ai.filter(i=>!['completed','canceled'].includes(i.statusType));
+  const inc=activeAI.filter(i=>i.source==='Incident'), aging=activeAI.filter(i=>i.labels?.includes('Aging Finding'));
+  document.getElementById('actionBannerSub').textContent=`${activeAI.length} items — ${inc.length} incidents, ${aging.length} aging findings`;
+  document.getElementById('actionBannerStats').innerHTML=`${inc.length?`<span class="pill pill-incident">${inc.length} Incidents</span>`:''}${aging.length?`<span class="pill pill-aging">${aging.length} Aging</span>`:''}<span class="pill pill-pentest">${activeAI.filter(i=>i.source==='Pen Test').length} Pen Test</span><span class="pill pill-audit">${activeAI.filter(i=>i.source==='External Audit').length} Ext Audit</span>`;
 
-  const sevs=[{l:'Critical',c:s.critical,clr:'#b91c1c'},{l:'High',c:s.high,clr:'#c2410c'},{l:'Medium',c:s.medium,clr:'#a16207'},{l:'Low',c:s.low,clr:'#15803d'}];
-  document.getElementById('severityBars').innerHTML=sevs.map(sv=>`<div><div class="flex justify-between text-xs mb-1"><span class="font-medium" style="color:${sv.clr}">${sv.l}</span><span class="text-stone-400">${sv.c}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${s.open?Math.round(sv.c/s.open*100):0}%;background:${sv.clr}"></div></div></div>`).join('');
+  // Severity bars
+  const sevs=[{l:'Critical',c:s.critical,clr:'#b91c1c'},{l:'High',c:s.high,clr:'#c2410c'},{l:'Medium',c:s.medium,clr:'#a16207'},{l:'Low',c:s.low,clr:'#16a34a'}];
+  document.getElementById('severityBars').innerHTML=sevs.map(sv=>`<div><div class="flex justify-between text-xs mb-1"><span class="font-medium" style="color:${sv.clr}">${sv.l}</span><span class="text-stone-400 font-semibold">${sv.c}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${s.open?Math.round(sv.c/s.open*100):0}%;background:${sv.clr}"></div></div></div>`).join('');
+
+  // Framework chart
   new Chart(document.getElementById('frameworkChart'),{type:'bar',data:{labels:DATA.frameworks,datasets:[{label:'Open',data:DATA.frameworks.map(f=>DATA.byFramework[f]?.open||0),backgroundColor:'#2563eb',borderRadius:4},{label:'Closed',data:DATA.frameworks.map(f=>DATA.byFramework[f]?.closed||0),backgroundColor:'#16a34a',borderRadius:4},{label:'Critical',data:DATA.frameworks.map(f=>DATA.byFramework[f]?.critical||0),backgroundColor:'#b91c1c',borderRadius:4}]},options:{responsive:true,scales:{x:{grid:{display:false},ticks:{color:'#78716c',font:{size:10}}},y:{grid:{color:'#f0ebe3'},ticks:{color:'#78716c',font:{size:10}}}},plugins:{legend:{labels:{color:'#78716c',font:{size:10}}}}}});
-  ['POA&M','Assessment','External Request','ATO','Evidence','Compliance'].forEach((cat,i)=>{const c=DATA.byCategory[cat]||{};const ids=['catPOAM','catAssessment','catExternal','catATO','catEvidence','catCompliance'];document.getElementById(ids[i]).innerHTML=`<p><span class="font-semibold" style="color:#292524;">${c.inProgress||0}</span> In Progress</p><p><span class="font-semibold" style="color:#292524;">${c.todo||0}</span> Queued</p><p><span class="font-semibold" style="color:#15803d;">${c.closed||0}</span> Completed</p><p><span class="font-semibold sev-crit">${c.critical||0}</span> Critical</p>`;});
-  renderCriticalTable();
+
   renderLeadershipMetrics();
+
+  // Category cards
+  const catDefs=[{k:'POA&M',label:'POA&Ms',bg:'#dbeafe',ic:'#2563eb',svg:'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'},{k:'Assessment',label:'Assessments',bg:'#f3e8ff',ic:'#7c3aed',svg:'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'},{k:'External Request',label:'Ext. Requests',bg:'#fce7f3',ic:'#be185d',svg:'M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4'},{k:'ATO',label:'ATO Packages',bg:'#e0e7ff',ic:'#4338ca',svg:'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'},{k:'Evidence',label:'Evidence',bg:'#cffafe',ic:'#0e7490',svg:'M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4'},{k:'Compliance',label:'Controls',bg:'#dcfce7',ic:'#15803d',svg:'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'}];
+  document.getElementById('categoryCards').innerHTML=catDefs.map(d=>{const c=DATA.byCategory[d.k]||{};return`<div class="card p-4 card-hover cursor-pointer" onclick="drillDown('${d.k}')"><div class="flex items-center gap-2 mb-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:${d.bg};"><svg class="w-4 h-4" style="color:${d.ic};" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${d.svg}"/></svg></div><span class="text-sm font-semibold" style="color:#292524;">${d.label}</span></div><div class="text-xs text-stone-500 space-y-1"><p><span class="font-semibold" style="color:#292524;">${c.inProgress||0}</span> In Progress</p><p><span class="font-semibold" style="color:#292524;">${c.todo||0}</span> Queued</p><p><span class="font-semibold" style="color:#16a34a;">${c.closed||0}</span> Completed</p><p><span class="font-semibold sev-crit">${c.critical||0}</span> Critical</p></div></div>`;}).join('');
+
+  renderCriticalTable();
   const fw=document.getElementById('filterFramework');DATA.frameworks.forEach(f=>{const o=document.createElement('option');o.value=f;o.textContent=f;fw.appendChild(o);});
   const cs=document.getElementById('filterCategory');DATA.categories.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;cs.appendChild(o);});
 }
 
-function renderLeadershipMetrics() {
-  // Age buckets
-  const ab = DATA.ageBuckets;
-  const totalOpen = ab.under1Month + ab.months1to6 + ab.months6to12 + ab.over12;
-  const buckets = [
-    { label: '< 1 Month', count: ab.under1Month, color: '#16a34a' },
-    { label: '1-6 Months', count: ab.months1to6, color: '#ca8a04' },
-    { label: '6-12 Months', count: ab.months6to12, color: '#ea580c' },
-    { label: '> 12 Months', count: ab.over12, color: '#b91c1c' },
-  ];
-  document.getElementById('ageBuckets').innerHTML = buckets.map(b => `
-    <div>
-      <div class="flex justify-between text-xs mb-1">
-        <span class="font-medium" style="color:${b.color};">${b.label}</span>
-        <span class="font-semibold" style="color:#292524;">${b.count}</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${totalOpen?Math.round(b.count/totalOpen*100):0}%;background:${b.color};"></div></div>
-    </div>
-  `).join('');
+function renderLeadershipMetrics(){
+  const ab=DATA.ageBuckets,tot=ab.under1Month+ab.months1to6+ab.months6to12+ab.over12;
+  [{l:'< 1 Month',c:ab.under1Month,clr:'#16a34a'},{l:'1–6 Months',c:ab.months1to6,clr:'#ca8a04'},{l:'6–12 Months',c:ab.months6to12,clr:'#ea580c'},{l:'> 12 Months',c:ab.over12,clr:'#b91c1c'}].forEach(b=>{});
+  document.getElementById('ageBuckets').innerHTML=[{l:'< 1 Month',c:ab.under1Month,clr:'#16a34a'},{l:'1–6 Months',c:ab.months1to6,clr:'#ca8a04'},{l:'6–12 Months',c:ab.months6to12,clr:'#ea580c'},{l:'> 12 Months',c:ab.over12,clr:'#b91c1c'}].map(b=>`<div><div class="flex justify-between text-xs mb-1"><span class="font-medium" style="color:${b.clr}">${b.l}</span><span class="font-semibold" style="color:#292524;">${b.c}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${tot?Math.round(b.c/tot*100):0}%;background:${b.clr}"></div></div></div>`).join('');
 
-  // KEVs
-  const k = DATA.kevs;
-  document.getElementById('kevSummary').innerHTML = `
-    <div class="flex gap-3">
-      <div class="text-center"><p class="text-xl font-bold sev-crit">${k.open}</p><p class="text-[10px] text-stone-400">Open</p></div>
-      <div class="text-center"><p class="text-xl font-bold" style="color:#16a34a;">${k.resolved}</p><p class="text-[10px] text-stone-400">Resolved</p></div>
-      <div class="text-center"><p class="text-xl font-bold" style="color:${k.overdue?'#b91c1c':'#16a34a'};">${k.overdue}</p><p class="text-[10px] text-stone-400">Overdue</p></div>
-    </div>`;
-  document.getElementById('kevList').innerHTML = k.items.filter(i=>i.statusType!=='completed').map(i => {
-    const urgency = i.daysLeft <= 7 ? 'pill-crit' : i.daysLeft <= 14 ? 'pill-high' : 'pill-med';
-    return `<div class="flex items-center justify-between text-xs cursor-pointer hover:bg-amber-50/50 rounded p-1 -mx-1" onclick="showDetail('${i.id}')">
-      <span class="font-medium truncate max-w-[180px]" style="color:#292524;">${i.title.replace(/^KEV-\d+:\s*/,'').substring(0,40)}...</span>
-      <span class="pill ${urgency} text-[10px] flex-shrink-0">${i.daysLeft}d left</span>
-    </div>`;
-  }).join('');
+  const k=DATA.kevs;
+  document.getElementById('kevSummary').innerHTML=`<div class="flex gap-3"><div class="text-center"><p class="text-xl font-bold sev-crit">${k.open}</p><p class="text-[10px] text-stone-400">Open</p></div><div class="text-center"><p class="text-xl font-bold" style="color:#16a34a;">${k.resolved}</p><p class="text-[10px] text-stone-400">Resolved</p></div><div class="text-center"><p class="text-xl font-bold" style="color:${k.overdue?'#b91c1c':'#16a34a'};">${k.overdue}</p><p class="text-[10px] text-stone-400">Overdue</p></div></div>`;
+  document.getElementById('kevList').innerHTML=k.items.filter(i=>i.statusType!=='completed').map(i=>{const u=i.daysLeft<=7?'pill-crit':i.daysLeft<=14?'pill-high':'pill-med';return`<div class="flex items-center justify-between text-xs cursor-pointer rounded p-1.5 -mx-1 hover:bg-stone-100/50" onclick="showDetail('${i.id}')"><span class="font-medium truncate max-w-[180px]" style="color:#292524;">${i.title.replace(/^KEV-\d+:\s*/,'').substring(0,40)}...</span><span class="pill ${u} text-[10px]">${i.daysLeft}d</span></div>`;}).join('');
 
-  // Certs
-  const c = DATA.certs;
-  document.getElementById('certSummary').innerHTML = `
-    <div class="flex gap-3">
-      <div class="text-center"><p class="text-xl font-bold sev-crit">${c.critical}</p><p class="text-[10px] text-stone-400">&lt; 7 days</p></div>
-      <div class="text-center"><p class="text-xl font-bold sev-high">${c.warning}</p><p class="text-[10px] text-stone-400">7-30 days</p></div>
-      <div class="text-center"><p class="text-xl font-bold" style="color:#16a34a;">${c.ok}</p><p class="text-[10px] text-stone-400">&gt; 30 days</p></div>
-    </div>`;
-  document.getElementById('certList').innerHTML = c.items.map(i => {
-    const urgency = i.daysLeft <= 7 ? 'pill-crit' : i.daysLeft <= 30 ? 'pill-high' : i.daysLeft <= 60 ? 'pill-med' : 'pill-low';
-    const name = i.title.replace(/^CERT-\d+:\s*(SSL |Code Signing |Mutual TLS )?Certificate\s*(Expiring\s*-\s*)?/i, '').substring(0, 35);
-    return `<div class="flex items-center justify-between text-xs cursor-pointer hover:bg-amber-50/50 rounded p-1 -mx-1" onclick="showDetail('${i.id}')">
-      <span class="font-medium truncate max-w-[170px]" style="color:#292524;">${name}</span>
-      <span class="pill ${urgency} text-[10px] flex-shrink-0">${i.daysLeft}d</span>
-    </div>`;
-  }).join('');
+  const c=DATA.certs;
+  document.getElementById('certSummary').innerHTML=`<div class="flex gap-3"><div class="text-center"><p class="text-xl font-bold sev-crit">${c.critical}</p><p class="text-[10px] text-stone-400">&lt;7d</p></div><div class="text-center"><p class="text-xl font-bold sev-high">${c.warning}</p><p class="text-[10px] text-stone-400">7-30d</p></div><div class="text-center"><p class="text-xl font-bold" style="color:#16a34a;">${c.ok}</p><p class="text-[10px] text-stone-400">&gt;30d</p></div></div>`;
+  document.getElementById('certList').innerHTML=c.items.map(i=>{const u=i.daysLeft<=7?'pill-crit':i.daysLeft<=30?'pill-high':i.daysLeft<=60?'pill-med':'pill-low';const n=i.title.replace(/^CERT-\d+:\s*(SSL |Code Signing |Mutual TLS )?Certificate\s*(Expiring\s*-\s*)?/i,'').substring(0,35);return`<div class="flex items-center justify-between text-xs cursor-pointer rounded p-1.5 -mx-1 hover:bg-stone-100/50" onclick="showDetail('${i.id}')"><span class="font-medium truncate max-w-[170px]" style="color:#292524;">${n}</span><span class="pill ${u} text-[10px]">${i.daysLeft}d</span></div>`;}).join('');
 
-  // Doc Reviews
-  const d = DATA.docs;
-  document.getElementById('docSummary').innerHTML = `
-    <div class="flex gap-3">
-      <div class="text-center"><p class="text-xl font-bold sev-crit">${d.overdue}</p><p class="text-[10px] text-stone-400">Overdue</p></div>
-      <div class="text-center"><p class="text-xl font-bold sev-high">${d.dueSoon}</p><p class="text-[10px] text-stone-400">Due &lt;30d</p></div>
-      <div class="text-center"><p class="text-xl font-bold" style="color:#16a34a;">${d.completed}</p><p class="text-[10px] text-stone-400">Complete</p></div>
-    </div>`;
-  document.getElementById('docList').innerHTML = d.items.filter(i=>i.statusType!=='completed').map(i => {
-    const urgency = i.daysLeft < 0 ? 'pill-crit' : i.daysLeft <= 14 ? 'pill-high' : i.daysLeft <= 30 ? 'pill-med' : 'pill-low';
-    const label = i.daysLeft < 0 ? `${Math.abs(i.daysLeft)}d overdue` : `${i.daysLeft}d left`;
-    const name = i.title.replace(/^DOC-\d+:\s*/,'').substring(0,38);
-    return `<div class="flex items-center justify-between text-xs cursor-pointer hover:bg-amber-50/50 rounded p-1 -mx-1" onclick="showDetail('${i.id}')">
-      <span class="font-medium truncate max-w-[170px]" style="color:#292524;">${name}</span>
-      <span class="pill ${urgency} text-[10px] flex-shrink-0">${label}</span>
-    </div>`;
-  }).join('');
+  const d=DATA.docs;
+  document.getElementById('docSummary').innerHTML=`<div class="flex gap-3"><div class="text-center"><p class="text-xl font-bold sev-crit">${d.overdue}</p><p class="text-[10px] text-stone-400">Overdue</p></div><div class="text-center"><p class="text-xl font-bold sev-high">${d.dueSoon}</p><p class="text-[10px] text-stone-400">&lt;30d</p></div><div class="text-center"><p class="text-xl font-bold" style="color:#16a34a;">${d.completed}</p><p class="text-[10px] text-stone-400">Done</p></div></div>`;
+  document.getElementById('docList').innerHTML=d.items.filter(i=>i.statusType!=='completed').map(i=>{const u=i.daysLeft<0?'pill-crit':i.daysLeft<=14?'pill-high':i.daysLeft<=30?'pill-med':'pill-low';const lb=i.daysLeft<0?`${Math.abs(i.daysLeft)}d over`:`${i.daysLeft}d`;const n=i.title.replace(/^DOC-\d+:\s*/,'').substring(0,35);return`<div class="flex items-center justify-between text-xs cursor-pointer rounded p-1.5 -mx-1 hover:bg-stone-100/50" onclick="showDetail('${i.id}')"><span class="font-medium truncate max-w-[170px]" style="color:#292524;">${n}</span><span class="pill ${u} text-[10px]">${lb}</span></div>`;}).join('');
 }
 
 function renderCriticalTable(){updateTable('criticalTable',DATA.issues.filter(i=>(i.labels.includes('Critical')||i.labels.includes('High'))&&!['completed','canceled'].includes(i.statusType)));}
@@ -421,97 +372,51 @@ function filterTable(){let items=DATA.issues.filter(i=>(i.labels.includes('Criti
 
 function updateTable(id,items){
   const pm={1:['Urgent','pill-urgent'],2:['High','pill-high'],3:['Medium','pill-med'],4:['Low','pill-low']};
-  document.getElementById(id).innerHTML=items.map(i=>{const[p,pc]=pm[i.priority]||['--',''];const fw=i.labels.filter(l=>DATA.frameworks.includes(l)).join(', ')||'--';const cats=i.labels.filter(l=>DATA.categories.includes(l)).join(', ')||'--';return`<tr style="border-bottom:1px solid #f0ebe3;" class="hover:bg-amber-50/50 cursor-pointer" onclick="showDetail('${i.id}')"><td class="py-2.5 px-2 text-stone-400 font-mono">${i.id}</td><td class="py-2.5 px-2 font-medium max-w-xs truncate" style="color:#292524;">${i.title}</td><td class="py-2.5 px-2"><span class="pill ${pc}">${p}</span></td><td class="py-2.5 px-2 text-stone-500">${fw}</td><td class="py-2.5 px-2"><span class="status-dot status-${i.statusType}"></span>${i.status}</td><td class="py-2.5 px-2 text-stone-500">${cats}</td></tr>`;}).join('')||'<tr><td colspan="6" class="py-4 text-center text-stone-400">No items match</td></tr>';
+  document.getElementById(id).innerHTML=items.map(i=>{const[p,pc]=pm[i.priority]||['--',''];const fw=i.labels.filter(l=>DATA.frameworks.includes(l)).join(', ')||'--';return`<tr style="border-bottom:1px solid #f0ebe3;" class="hover:bg-amber-50/30 cursor-pointer" onclick="showDetail('${i.id}')"><td class="py-2.5 px-2 text-stone-400 font-mono text-[11px]">${i.id}</td><td class="py-2.5 px-2 font-medium max-w-xs truncate" style="color:#292524;">${i.title}</td><td class="py-2.5 px-2"><span class="pill ${pc}">${p}</span></td><td class="py-2.5 px-2 text-stone-500">${fw}</td><td class="py-2.5 px-2 text-stone-500">${i.assignee||'Unassigned'}</td><td class="py-2.5 px-2"><span class="status-dot status-${i.statusType}"></span>${i.status}</td></tr>`;}).join('')||'<tr><td colspan="6" class="py-4 text-center text-stone-400">No items match</td></tr>';
 }
 
-// ─── ACTION ITEMS VIEW ────────────────────────────────────
-function renderActionItems() {
-  const ai = DATA.actionItems || [];
-  const incidents = ai.filter(i => i.source === 'Incident');
-  const aging = ai.filter(i => i.labels.includes('Aging Finding'));
-  const pentest = ai.filter(i => i.source === 'Pen Test');
-  const audit = ai.filter(i => i.source === 'External Audit');
-
-  // Incidents
-  const ic = document.getElementById('incidentCards');
-  const ni = document.getElementById('noIncidents');
-  if (incidents.length) { ni.classList.add('hidden'); ic.innerHTML = incidents.map(i => actionCard(i, 'incident')).join(''); }
-  else { ni.classList.remove('hidden'); ic.innerHTML = ''; }
-
-  // Aging
-  document.getElementById('agingCards').innerHTML = aging.length ? aging.map(i => actionCard(i, 'aging')).join('') : '<div class="card-accent rounded-xl p-4 text-center text-sm text-stone-400">No aging findings — accountability workflows active</div>';
-
-  // Pen test
-  document.getElementById('pentestCards').innerHTML = pentest.length ? pentest.map(i => actionCard(i, 'pentest')).join('') : '<div class="card-accent rounded-xl p-4 text-center text-sm text-stone-400">No open pen test findings</div>';
-
-  // Audit
-  document.getElementById('auditCards').innerHTML = audit.length ? audit.map(i => actionCard(i, 'audit')).join('') : '<div class="card-accent rounded-xl p-4 text-center text-sm text-stone-400">No open external audit findings</div>';
-
-  // Table
+// ─── ACTION ITEMS ─────────────────────────────────────────
+function renderActionItems(){
+  const ai=DATA.actionItems||[],incidents=ai.filter(i=>i.source==='Incident'),aging=ai.filter(i=>i.labels?.includes('Aging Finding')),pentest=ai.filter(i=>i.source==='Pen Test'),audit=ai.filter(i=>i.source==='External Audit');
+  const ic=document.getElementById('incidentCards'),ni=document.getElementById('noIncidents');
+  if(incidents.length){ni.classList.add('hidden');ic.innerHTML=incidents.map(i=>actionCard(i,'incident')).join('');}else{ni.classList.remove('hidden');ic.innerHTML='';}
+  document.getElementById('agingCards').innerHTML=aging.length?aging.map(i=>actionCard(i,'aging')).join(''):'<div class="card rounded-xl p-4 text-center text-sm text-stone-400">No aging findings</div>';
+  document.getElementById('pentestCards').innerHTML=pentest.length?pentest.map(i=>actionCard(i,'pentest')).join(''):'<div class="card rounded-xl p-4 text-center text-sm text-stone-400">No open pen test findings</div>';
+  document.getElementById('auditCards').innerHTML=audit.length?audit.map(i=>actionCard(i,'audit')).join(''):'<div class="card rounded-xl p-4 text-center text-sm text-stone-400">No open audit findings</div>';
   const pm={1:['Urgent','pill-urgent'],2:['High','pill-high'],3:['Medium','pill-med'],4:['Low','pill-low']};
-  const srcPill = { 'Pen Test':'pill-pentest', 'External Audit':'pill-audit', 'Incident':'pill-incident', 'Aging Finding':'pill-aging' };
-  document.getElementById('actionTable').innerHTML = ai.map(i => {
-    const[p,pc]=pm[i.priority]||['--',''];const fw=i.labels.filter(l=>DATA.frameworks.includes(l)).join(', ')||'--';
-    return `<tr style="border-bottom:1px solid #f0ebe3;" class="hover:bg-amber-50/50 cursor-pointer" onclick="showDetail('${i.id}')"><td class="py-2.5 px-2 text-stone-400 font-mono">${i.id}</td><td class="py-2.5 px-2 font-medium max-w-sm truncate" style="color:#292524;">${i.title}</td><td class="py-2.5 px-2"><span class="pill ${srcPill[i.source]||'pill-neutral'}">${i.source}</span></td><td class="py-2.5 px-2"><span class="pill ${pc}">${p}</span></td><td class="py-2.5 px-2"><span class="status-dot status-${i.statusType}"></span>${i.status}</td><td class="py-2.5 px-2 text-stone-500">${fw}</td></tr>`;
-  }).join('');
+  const sp={'Pen Test':'pill-pentest','External Audit':'pill-audit','Incident':'pill-incident','Aging Finding':'pill-aging'};
+  document.getElementById('actionTable').innerHTML=ai.map(i=>{const[p,pc]=pm[i.priority]||['--',''];const fw=i.labels.filter(l=>DATA.frameworks.includes(l)).join(', ')||'--';return`<tr style="border-bottom:1px solid #f0ebe3;" class="hover:bg-amber-50/30 cursor-pointer" onclick="showDetail('${i.id}')"><td class="py-2.5 px-2 text-stone-400 font-mono text-[11px]">${i.id}</td><td class="py-2.5 px-2 font-medium max-w-sm truncate" style="color:#292524;">${i.title}</td><td class="py-2.5 px-2"><span class="pill ${sp[i.source]||'pill-neutral'}">${i.source}</span></td><td class="py-2.5 px-2"><span class="pill ${pc}">${p}</span></td><td class="py-2.5 px-2 text-stone-500">${i.assignee||'Unassigned'}</td><td class="py-2.5 px-2"><span class="status-dot status-${i.statusType}"></span>${i.status}</td></tr>`;}).join('');
 }
-
-function actionCard(item, type) {
-  const sevLabel = item.labels.find(l => ['Critical','High','Medium','Low'].includes(l)) || '';
-  const sevPill = sevLabel ? `pill-${sevLabel.toLowerCase()}` : 'pill-neutral';
-  const fws = item.labels.filter(l => DATA.frameworks.includes(l));
-  const borderClass = (type === 'incident' && item.statusType === 'started') ? 'pulse-border' : '';
-  const bgMap = { incident: 'card-danger', aging: 'card-danger', pentest: 'card', audit: 'card' };
-  return `
-    <div class="${bgMap[type]||'card'} rounded-xl p-4 card-hover cursor-pointer ${borderClass}" onclick="showDetail('${item.id}')">
-      <div class="flex items-start justify-between gap-3">
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2 mb-1">
-            <span class="text-xs text-stone-400 font-mono">${item.id}</span>
-            ${type==='aging'?'<span class="aging-badge">2+ YEARS OPEN</span>':''}
-            ${type==='incident'&&item.statusType==='started'?'<span class="pill pill-incident">ACTIVE</span>':''}
-          </div>
-          <p class="text-sm font-semibold mb-1" style="color:#292524;">${item.title}</p>
-          <div class="flex flex-wrap gap-1.5 mt-2">
-            ${sevLabel?`<span class="pill ${sevPill}">${sevLabel}</span>`:''}
-            ${fws.map(f=>`<span class="pill pill-neutral">${f}</span>`).join('')}
-            <span class="status-dot status-${item.statusType}" style="margin-left:4px;margin-top:5px;"></span><span class="text-xs text-stone-500">${item.status}</span>
-          </div>
-        </div>
-      </div>
-    </div>`;
-}
+function actionCard(item,type){const sv=item.labels?.find(l=>['Critical','High','Medium','Low'].includes(l))||'';const sc=sv?`pill-${sv.toLowerCase()}`:'pill-neutral';const fws=item.labels?.filter(l=>DATA.frameworks.includes(l))||[];const bc=(type==='incident'&&item.statusType==='started')?'pulse-border':'';const bg=type==='incident'||type==='aging'?'card-alert':'card';return`<div class="${bg} rounded-xl p-4 card-hover cursor-pointer ${bc}" onclick="showDetail('${item.id}')"><div class="flex items-start justify-between gap-3"><div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1"><span class="text-xs text-stone-400 font-mono">${item.id}</span>${type==='aging'?'<span class="aging-badge">2+ YEARS OPEN</span>':''}${type==='incident'&&item.statusType==='started'?'<span class="pill pill-incident">ACTIVE</span>':''}</div><p class="text-sm font-semibold mb-1.5" style="color:#292524;">${item.title}</p><div class="flex flex-wrap gap-1.5">${sv?`<span class="pill ${sc}">${sv}</span>`:''}${fws.map(f=>`<span class="pill pill-neutral">${f}</span>`).join('')}<span class="pill pill-neutral"><span class="status-dot status-${item.statusType}"></span>${item.status}</span></div></div></div></div>`;}
 
 // ─── OPERATIONS ───────────────────────────────────────────
 function renderOperations(){
-  const ps=DATA.poamByStatus;
-  new Chart(document.getElementById('poamStatusChart'),{type:'doughnut',data:{labels:['In Progress','Todo','Backlog','Done'],datasets:[{data:[ps.inProgress,ps.todo,ps.backlog,ps.done],backgroundColor:['#2563eb','#a8a29e','#d6d3d1','#16a34a'],borderWidth:0}]},options:{cutout:'60%',responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#78716c',font:{size:11},padding:15}}}}});
-  const sc={started:0,unstarted:0,backlog:0,completed:0};DATA.issues.forEach(i=>{if(sc[i.statusType]!==undefined)sc[i.statusType]++;});
-  new Chart(document.getElementById('statusChart'),{type:'doughnut',data:{labels:['In Progress','Todo','Backlog','Completed'],datasets:[{data:[sc.started,sc.unstarted,sc.backlog,sc.completed],backgroundColor:['#2563eb','#d97706','#d6d3d1','#16a34a'],borderWidth:0}]},options:{cutout:'60%',responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#78716c',font:{size:11},padding:15}}}}});
+  const ps=DATA.poamByStatus;new Chart(document.getElementById('poamStatusChart'),{type:'doughnut',data:{labels:['In Progress','Todo','Backlog','Done'],datasets:[{data:[ps.inProgress,ps.todo,ps.backlog,ps.done],backgroundColor:['#2563eb','#a8a29e','#d6d3d1','#16a34a'],borderWidth:0}]},options:{cutout:'60%',responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#78716c',font:{size:11},padding:15}}}}});
+  const sc={started:0,unstarted:0,backlog:0,completed:0};DATA.issues.forEach(i=>{if(sc[i.statusType]!==undefined)sc[i.statusType]++;});new Chart(document.getElementById('statusChart'),{type:'doughnut',data:{labels:['In Progress','Todo','Backlog','Completed'],datasets:[{data:[sc.started,sc.unstarted,sc.backlog,sc.completed],backgroundColor:['#2563eb','#d97706','#d6d3d1','#16a34a'],borderWidth:0}]},options:{cutout:'60%',responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#78716c',font:{size:11},padding:15}}}}});
   const ps2=document.getElementById('opsFilterProject');if(ps2.options.length<=1)Object.keys(DATA.byProject).forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;ps2.appendChild(o);});renderOpsTable(DATA.issues);
 }
 function filterOpsTable(){let items=DATA.issues;const p=document.getElementById('opsFilterProject').value,s=document.getElementById('opsFilterStatus').value;if(p)items=items.filter(i=>i.project===p);if(s)items=items.filter(i=>i.status===s);renderOpsTable(items);}
-function renderOpsTable(items){const pm={1:['Urgent','pill-urgent'],2:['High','pill-high'],3:['Medium','pill-med'],4:['Low','pill-low']};document.getElementById('opsTable').innerHTML=items.map(i=>{const[p,pc]=pm[i.priority]||['--',''];const labels=i.labels.filter(l=>!['Critical','High','Medium','Low'].includes(l)).slice(0,3);return`<tr style="border-bottom:1px solid #f0ebe3;" class="hover:bg-amber-50/50 cursor-pointer" onclick="showDetail('${i.id}')"><td class="py-2.5 px-2 text-stone-400 font-mono">${i.id}</td><td class="py-2.5 px-2 font-medium max-w-sm truncate" style="color:#292524;">${i.title}</td><td class="py-2.5 px-2 text-stone-500 text-[11px]">${i.project||'--'}</td><td class="py-2.5 px-2"><span class="pill ${pc}">${p}</span></td><td class="py-2.5 px-2"><span class="status-dot status-${i.statusType}"></span>${i.status}</td><td class="py-2.5 px-2">${labels.map(l=>`<span class="pill pill-neutral mr-1">${l}</span>`).join('')}</td></tr>`;}).join('');}
+function renderOpsTable(items){const pm={1:['Urgent','pill-urgent'],2:['High','pill-high'],3:['Medium','pill-med'],4:['Low','pill-low']};document.getElementById('opsTable').innerHTML=items.map(i=>{const[p,pc]=pm[i.priority]||['--',''];return`<tr style="border-bottom:1px solid #f0ebe3;" class="hover:bg-amber-50/30 cursor-pointer" onclick="showDetail('${i.id}')"><td class="py-2.5 px-2 text-stone-400 font-mono text-[11px]">${i.id}</td><td class="py-2.5 px-2 font-medium max-w-sm truncate" style="color:#292524;">${i.title}</td><td class="py-2.5 px-2 text-stone-500 text-[11px]">${i.project||'--'}</td><td class="py-2.5 px-2"><span class="pill ${pc}">${p}</span></td><td class="py-2.5 px-2 text-stone-500">${i.assignee||'Unassigned'}</td><td class="py-2.5 px-2"><span class="status-dot status-${i.statusType}"></span>${i.status}</td></tr>`;}).join('');}
 
 // ─── FRAMEWORKS ───────────────────────────────────────────
-function renderFrameworks(){const fc={'CMS ARC-AMPE':'#2563eb','IRS Pub 1075':'#b91c1c','NIST 800-53':'#7c3aed','SSA':'#0d9488','OLA':'#9333ea'};document.getElementById('frameworkCards').innerHTML=DATA.frameworks.map(fw=>{const f=DATA.byFramework[fw];const pct=f.total>0?Math.round((f.closed/f.total)*100):0;const items=DATA.issues.filter(i=>i.labels.includes(fw));const color=fc[fw]||'#78716c';return`<div class="card p-6 fade-in"><div class="flex items-center justify-between mb-4"><div class="flex items-center gap-3"><div class="w-3 h-3 rounded-full" style="background:${color}"></div><h3 class="text-base font-bold" style="color:#292524;">${fw}</h3></div><div class="flex items-center gap-4 text-xs"><span class="text-stone-400">${f.total} items</span><span style="color:#2563eb;" class="font-medium">${f.open} open</span><span style="color:#16a34a;" class="font-medium">${f.closed} closed</span><span class="sev-crit font-medium">${f.critical} critical</span></div></div><div class="progress-bar mb-4"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div><table class="w-full text-xs"><thead><tr class="text-stone-400 uppercase tracking-wider" style="border-bottom:1px solid #e8e0d4;"><th class="text-left py-2">ID</th><th class="text-left py-2">Item</th><th class="text-left py-2">Category</th><th class="text-left py-2">Status</th></tr></thead><tbody>${items.map(i=>{const cats=i.labels.filter(l=>DATA.categories.includes(l)).join(', ');return`<tr style="border-bottom:1px solid #f0ebe3;" class="hover:bg-amber-50/50 cursor-pointer" onclick="showDetail('${i.id}')"><td class="py-1.5 text-stone-400 font-mono">${i.id}</td><td class="py-1.5 font-medium max-w-md truncate" style="color:#292524;">${i.title}</td><td class="py-1.5 text-stone-500">${cats}</td><td class="py-1.5"><span class="status-dot status-${i.statusType}"></span>${i.status}</td></tr>`;}).join('')}</tbody></table></div>`;}).join('');}
+function renderFrameworks(){const fc={'CMS ARC-AMPE':'#2563eb','IRS Pub 1075':'#b91c1c','NIST 800-53':'#7c3aed','SSA':'#0d9488','OLA':'#9333ea'};document.getElementById('frameworkCards').innerHTML=DATA.frameworks.map(fw=>{const f=DATA.byFramework[fw];const pct=f.total>0?Math.round((f.closed/f.total)*100):0;const items=DATA.issues.filter(i=>i.labels.includes(fw));const color=fc[fw]||'#78716c';return`<div class="card p-6 fade-in"><div class="flex items-center justify-between mb-4"><div class="flex items-center gap-3"><div class="w-3 h-3 rounded-full" style="background:${color}"></div><h3 class="text-base font-bold" style="color:#292524;">${fw}</h3></div><div class="flex items-center gap-4 text-xs"><span class="text-stone-400">${f.total} items</span><span style="color:#2563eb;" class="font-medium">${f.open} open</span><span style="color:#16a34a;" class="font-medium">${f.closed} closed</span><span class="sev-crit font-medium">${f.critical} critical</span></div></div><div class="progress-bar mb-4"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div><table class="w-full text-xs"><thead><tr class="text-stone-400 uppercase tracking-wider" style="border-bottom:2px solid #e6dfd4;"><th class="text-left py-2">ID</th><th class="text-left py-2">Item</th><th class="text-left py-2">Category</th><th class="text-left py-2">Status</th></tr></thead><tbody>${items.map(i=>{const cats=i.labels.filter(l=>DATA.categories.includes(l)).join(', ');return`<tr style="border-bottom:1px solid #f0ebe3;" class="hover:bg-amber-50/30 cursor-pointer" onclick="showDetail('${i.id}')"><td class="py-1.5 text-stone-400 font-mono text-[11px]">${i.id}</td><td class="py-1.5 font-medium max-w-md truncate" style="color:#292524;">${i.title}</td><td class="py-1.5 text-stone-500">${cats}</td><td class="py-1.5"><span class="status-dot status-${i.statusType}"></span>${i.status}</td></tr>`;}).join('')}</tbody></table></div>`;}).join('');}
 
 // ─── DRAWER & DETAIL ──────────────────────────────────────
-function drillDown(category){const cat=DATA.byCategory[category];if(!cat)return;document.getElementById('drawerTitle').textContent=category;document.getElementById('drawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('open');let html=`<div class="grid grid-cols-4 gap-3 mb-6"><div class="rounded-lg p-3 text-center" style="background:#f0ebe3;"><p class="text-lg font-bold" style="color:#292524;">${cat.open}</p><p class="text-[10px] text-stone-400">Open</p></div><div class="rounded-lg p-3 text-center" style="background:#dbeafe;"><p class="text-lg font-bold" style="color:#2563eb;">${cat.inProgress}</p><p class="text-[10px] text-stone-400">In Progress</p></div><div class="rounded-lg p-3 text-center" style="background:#dcfce7;"><p class="text-lg font-bold" style="color:#16a34a;">${cat.closed}</p><p class="text-[10px] text-stone-400">Completed</p></div><div class="rounded-lg p-3 text-center" style="background:#fef2f2;"><p class="text-lg font-bold sev-crit">${cat.critical}</p><p class="text-[10px] text-stone-400">Critical</p></div></div><p class="text-xs text-stone-400 uppercase tracking-wider mb-3">All ${category} Items</p>`;
-html+=cat.issues.map(i=>{const sv=i.labels.find(l=>['Critical','High','Medium','Low'].includes(l))||'';const sc=sv?`pill-${sv.toLowerCase()}`:'pill-neutral';const fws=i.labels.filter(l=>DATA.frameworks.includes(l));return`<div class="rounded-lg p-3 mb-2 cursor-pointer transition-colors border" style="background:#faf6ef;border-color:#e0d5c3;" onmouseover="this.style.background='#f0ebe3'" onmouseout="this.style.background='#faf6ef'" onclick="showDetail('${i.id}')"><div class="flex items-start justify-between gap-2"><div class="flex-1 min-w-0"><p class="text-xs text-stone-400 mb-0.5 font-mono">${i.id}</p><p class="text-sm font-medium" style="color:#292524;">${i.title}</p></div><div class="flex items-center gap-2 flex-shrink-0">${sv?`<span class="pill ${sc} text-[10px]">${sv}</span>`:''}<span class="status-dot status-${i.statusType}"></span></div></div>${fws.length?`<div class="mt-1.5">${fws.map(f=>`<span class="pill pill-neutral text-[10px] mr-1">${f}</span>`).join('')}</div>`:''}</div>`;}).join('');
+function drillDown(category){const cat=DATA.byCategory[category];if(!cat)return;document.getElementById('drawerTitle').textContent=category;document.getElementById('drawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('open');let html=`<div class="grid grid-cols-4 gap-3 mb-6"><div class="rounded-lg p-3 text-center" style="background:#f0ebe3;"><p class="text-lg font-bold" style="color:#292524;">${cat.open}</p><p class="text-[10px] text-stone-400">Open</p></div><div class="rounded-lg p-3 text-center" style="background:#dbeafe;"><p class="text-lg font-bold" style="color:#2563eb;">${cat.inProgress}</p><p class="text-[10px] text-stone-400">In Progress</p></div><div class="rounded-lg p-3 text-center" style="background:#dcfce7;"><p class="text-lg font-bold" style="color:#16a34a;">${cat.closed}</p><p class="text-[10px] text-stone-400">Completed</p></div><div class="rounded-lg p-3 text-center" style="background:#fef2f2;"><p class="text-lg font-bold sev-crit">${cat.critical}</p><p class="text-[10px] text-stone-400">Critical</p></div></div><p class="text-[10px] text-stone-400 uppercase tracking-widest mb-3">All ${category} Items</p>`;
+html+=cat.issues.map(i=>{const sv=i.labels.find(l=>['Critical','High','Medium','Low'].includes(l))||'';const sc=sv?`pill-${sv.toLowerCase()}`:'pill-neutral';const fws=i.labels.filter(l=>DATA.frameworks.includes(l));return`<div class="rounded-lg p-3 mb-2 cursor-pointer transition-colors border" style="background:#faf7f2;border-color:#e0d5c3;" onmouseover="this.style.background='#f0ebe3'" onmouseout="this.style.background='#faf7f2'" onclick="showDetail('${i.id}')"><div class="flex items-start justify-between gap-2"><div class="flex-1 min-w-0"><p class="text-[11px] text-stone-400 mb-0.5 font-mono">${i.id}</p><p class="text-sm font-medium" style="color:#292524;">${i.title}</p></div><div class="flex items-center gap-2 flex-shrink-0">${sv?`<span class="pill ${sc} text-[10px]">${sv}</span>`:''}<span class="status-dot status-${i.statusType}"></span></div></div>${fws.length?`<div class="mt-1.5">${fws.map(f=>`<span class="pill pill-neutral text-[10px] mr-1">${f}</span>`).join('')}</div>`:''}</div>`;}).join('');
 document.getElementById('drawerContent').innerHTML=html;}
 function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('open');}
 
-function showDetail(id){const item=DATA.issues.concat(DATA.actionItems||[]).find(i=>i.id===id);if(!item)return;document.getElementById('detailTitle').textContent=`${item.id}: ${item.title}`;let desc=item.description||'No details.';
+function showDetail(id){const item=[...DATA.issues,...(DATA.actionItems||[]),...(DATA.kevs?.items||[]),...(DATA.certs?.items||[]),...(DATA.docs?.items||[])].find(i=>i.id===id);if(!item)return;document.getElementById('detailTitle').textContent=`${item.id}: ${item.title}`;let desc=item.description||'No details.';
 desc=desc.replace(/\*\*(.*?)\*\*/g,'<strong style="color:#292524;">$1</strong>');desc=desc.replace(/^### (.*$)/gm,'<h4 style="color:#292524;" class="font-semibold mt-3 mb-1">$1</h4>');desc=desc.replace(/^## (.*$)/gm,'<h3 style="color:#292524;" class="font-bold mt-4 mb-2 text-base">$1</h3>');
-desc=desc.replace(/- \[x\] (.*)/g,'<div class="flex items-center gap-2 ml-2"><span style="color:#16a34a;">&#10003;</span> <span style="color:#44403c;">$1</span></div>');desc=desc.replace(/- \[ \] (.*)/g,'<div class="flex items-center gap-2 ml-2"><span style="color:#d6d3d1;">&#9675;</span> <span class="text-stone-400">$1</span></div>');
-desc=desc.replace(/\|(.+)\|\n\|[-| ]+\|\n((?:\|.+\|\n?)*)/g,(m,h,b)=>{const ths=h.split('|').filter(Boolean).map(x=>`<th class="text-left py-1.5 px-2 text-stone-500 font-medium" style="background:#f5f0e8;">${x.trim()}</th>`).join('');const rows=b.trim().split('\n').map(row=>{const cells=row.split('|').filter(Boolean).map(c=>{let cell=c.trim();if(cell.includes('✅'))cell=`<span style="color:#16a34a;">${cell}</span>`;if(cell.includes('❌'))cell=`<span style="color:#b91c1c;">${cell}</span>`;if(cell.includes('⏳'))cell=`<span style="color:#a16207;">${cell}</span>`;if(cell.includes('⚠️'))cell=`<span style="color:#c2410c;">${cell}</span>`;return`<td class="py-1.5 px-2" style="color:#44403c;">${cell}</td>`;}).join('');return`<tr style="border-bottom:1px solid #f0ebe3;">${cells}</tr>`;}).join('');return`<table class="w-full text-xs my-2 rounded-lg overflow-hidden" style="border:1px solid #e8e0d4;"><thead><tr style="border-bottom:1px solid #e0d5c3;">${ths}</tr></thead><tbody>${rows}</tbody></table>`;});
+desc=desc.replace(/- \[x\] (.*)/g,'<div class="flex items-center gap-2 ml-2"><span style="color:#16a34a;">&#10003;</span><span style="color:#44403c;">$1</span></div>');desc=desc.replace(/- \[ \] (.*)/g,'<div class="flex items-center gap-2 ml-2"><span style="color:#d6d3d1;">&#9675;</span><span class="text-stone-400">$1</span></div>');
+desc=desc.replace(/\|(.+)\|\n\|[-| ]+\|\n((?:\|.+\|\n?)*)/g,(m,h,b)=>{const ths=h.split('|').filter(Boolean).map(x=>`<th class="text-left py-1.5 px-2 text-stone-500 font-medium" style="background:#f5f0e8;">${x.trim()}</th>`).join('');const rows=b.trim().split('\n').map(row=>{const cells=row.split('|').filter(Boolean).map(c=>{let cell=c.trim();if(cell.includes('✅'))cell=`<span style="color:#16a34a;">${cell}</span>`;if(cell.includes('❌'))cell=`<span style="color:#b91c1c;">${cell}</span>`;if(cell.includes('⏳'))cell=`<span style="color:#a16207;">${cell}</span>`;if(cell.includes('⚠️'))cell=`<span style="color:#c2410c;">${cell}</span>`;return`<td class="py-1.5 px-2" style="color:#44403c;">${cell}</td>`;}).join('');return`<tr style="border-bottom:1px solid #f0ebe3;">${cells}</tr>`;}).join('');return`<table class="w-full text-xs my-2 rounded-lg overflow-hidden" style="border:1px solid #e6dfd4;"><thead><tr style="border-bottom:1px solid #e0d5c3;">${ths}</tr></thead><tbody>${rows}</tbody></table>`;});
 desc=desc.replace(/\\n/g,'<br>');
-const sv=item.labels.find(l=>['Critical','High','Medium','Low'].includes(l));const fws=item.labels.filter(l=>DATA.frameworks.includes(l));const src=item.source;
-const bar=`<div class="flex flex-wrap gap-2 mb-4 pb-4" style="border-bottom:1px solid #e8e0d4;"><span class="pill pill-neutral"><span class="status-dot status-${item.statusType}"></span>${item.status}</span>${sv?`<span class="pill pill-${sv.toLowerCase()}">${sv}</span>`:''}${src?`<span class="pill pill-${src==='Pen Test'?'pentest':src==='External Audit'?'audit':src==='Incident'?'incident':'neutral'}">${src}</span>`:''}${fws.map(f=>`<span class="pill pill-neutral">${f}</span>`).join('')}${item.project?`<span class="pill pill-blue">${item.project}</span>`:''}</div>`;
+const sv=item.labels?.find(l=>['Critical','High','Medium','Low'].includes(l));const fws=(item.labels||[]).filter(l=>DATA.frameworks.includes(l));const src=item.source;
+const bar=`<div class="flex flex-wrap gap-2 mb-4 pb-4" style="border-bottom:1px solid #e6dfd4;"><span class="pill pill-neutral"><span class="status-dot status-${item.statusType}"></span>${item.status}</span>${sv?`<span class="pill pill-${sv.toLowerCase()}">${sv}</span>`:''}${src?`<span class="pill pill-${src==='Pen Test'?'pentest':src==='External Audit'?'audit':src==='Incident'?'incident':'neutral'}">${src}</span>`:''}${fws.map(f=>`<span class="pill pill-neutral">${f}</span>`).join('')}${item.project?`<span class="pill pill-blue">${item.project}</span>`:''}<span class="pill pill-neutral">${item.assignee||'Unassigned'}</span>${item.dueDate?`<span class="pill pill-notif">Due: ${item.dueDate}</span>`:''}</div>`;
 document.getElementById('detailBody').innerHTML=bar+desc;document.getElementById('detailModal').classList.remove('hidden');}
 function closeDetail(){document.getElementById('detailModal').classList.add('hidden');}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();closeDetail();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();closeDetail();document.getElementById('notifPanel').classList.remove('open');}});
 loadData();
 </script>
 </body>
