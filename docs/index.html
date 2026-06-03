@@ -168,31 +168,26 @@
         Ask AI
       </a>
       <div class="sidebar-divider"></div>
-      <div class="sidebar-section-label">Categories</div>
-
-      <a onclick="showCategory('POA&M')" id="tab-cat-poam" class="sidebar-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-        POA&Ms
-      </a>
-      <a onclick="showCategory('Assessment')" id="tab-cat-assessment" class="sidebar-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        Assessments
-      </a>
-      <a onclick="showCategory('Evidence')" id="tab-cat-evidence" class="sidebar-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
-        Evidence
-      </a>
-      <a onclick="showCategory('ATO')" id="tab-cat-ato" class="sidebar-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        ATO Packages
-      </a>
-      <a onclick="showCategory('External Request')" id="tab-cat-external-request" class="sidebar-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
-        External Requests
-      </a>
-      <a onclick="showCategory('Compliance')" id="tab-cat-compliance" class="sidebar-item">
+      <div class="sidebar-section-label">Frameworks</div>
+      <a onclick="showFramework('CMS ARC-AMPE')" id="tab-fw-cms" class="sidebar-item">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-        Controls
+        CMS ARC-AMPE
+      </a>
+      <a onclick="showFramework('IRS Pub 1075')" id="tab-fw-irs" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        IRS Pub 1075
+      </a>
+      <a onclick="showFramework('NIST 800-53')" id="tab-fw-nist" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        NIST 800-53
+      </a>
+      <a onclick="showFramework('SSA')" id="tab-fw-ssa" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        SSA
+      </a>
+      <a onclick="showFramework('OLA')" id="tab-fw-ola" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        OLA
       </a>
       <div class="sidebar-divider"></div>
       <div class="sidebar-section-label">Teams</div>
@@ -208,13 +203,9 @@
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         Tenant Support
       </a>
-      <a onclick="showTeamView('POA&amp;M Mgmt')" id="tab-team-poam-mgmt" class="sidebar-item">
+      <a onclick="showTeamView('POA&amp;M Management')" id="tab-team-poam-mgmt" class="sidebar-item">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        POA&amp;M Mgmt
-      </a>
-      <a onclick="showTeamView('IR')" id="tab-team-ir" class="sidebar-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        IR
+        POA&amp;M Management
       </a>
     </div>
   </nav>
@@ -386,6 +377,11 @@
     <!-- ═══ CATEGORY PAGE VIEW ═══ -->
     <div id="view-category" class="hidden">
       <div id="categoryPageContent"></div>
+    </div>
+
+    <!-- ═══ FRAMEWORK VIEW ═══ -->
+    <div id="view-framework" class="hidden">
+      <div id="frameworkPageContent"></div>
     </div>
   </main>
 
@@ -568,7 +564,7 @@ async function loadData() {
   renderNotifications();
 }
 
-const ALL_VIEWS = ['executive','action','operations','category','integrations','teamview'];
+const ALL_VIEWS = ['executive','action','operations','category','integrations','teamview','framework'];
 const CAT_IDS = ['poam','assessment','evidence','ato','external-request','compliance'];
 
 function showView(view) {
@@ -797,7 +793,7 @@ function renderFrameworkScorecards() {
     const accentColor = fc[fw] || '#64748b';
     const circumference = 2 * Math.PI * 22;
     const dashoffset = circumference - (compPct / 100) * circumference;
-    return `<div class="card p-4 card-hover cursor-pointer" onclick="showCategory('Compliance')" style="border-top:3px solid ${accentColor};background:${bgColor};border-color:${borderColor};">
+    return `<div class="card p-4 card-hover cursor-pointer" onclick="showFramework('${fw}')" style="border-top:3px solid ${accentColor};background:${bgColor};border-color:${borderColor};">
       <div class="flex items-center justify-between mb-3">
         <p class="text-xs font-bold" style="color:#1e293b;">${fw}</p>
         <svg width="50" height="50" viewBox="0 0 50 50">
@@ -932,6 +928,149 @@ function renderOpsTable(items){const pm={1:['Urgent','pill-urgent'],2:['High','p
 
 // ─── FRAMEWORKS ───────────────────────────────────────────
 function renderFrameworks(){const fc={'CMS ARC-AMPE':'#2563eb','IRS Pub 1075':'#b91c1c','NIST 800-53':'#7c3aed','SSA':'#0d9488','OLA':'#9333ea'};document.getElementById('frameworkCards').innerHTML=DATA.frameworks.map(fw=>{const f=DATA.byFramework[fw];const pct=f.total>0?Math.round((f.closed/f.total)*100):0;const items=DATA.issues.filter(i=>i.labels.includes(fw));const color=fc[fw]||'#78716c';return`<div class="card p-6 fade-in"><div class="flex items-center justify-between mb-4"><div class="flex items-center gap-3"><div class="w-3 h-3 rounded-full" style="background:${color}"></div><h3 class="text-base font-bold" style="color:#1e293b;">${fw}</h3></div><div class="flex items-center gap-4 text-xs"><span class="text-slate-700">${f.total} items</span><span style="color:#2563eb;" class="font-medium">${f.open} open</span><span style="color:#16a34a;" class="font-medium">${f.closed} closed</span><span class="sev-crit font-medium">${f.critical} critical</span></div></div><div class="progress-bar mb-4"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div><table class="w-full text-xs"><thead><tr class="text-slate-700 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;"><th class="text-left py-2">ID</th><th class="text-left py-2">Item</th><th class="text-left py-2">Category</th><th class="text-left py-2">Status</th></tr></thead><tbody>${items.map(i=>{const cats=i.labels.filter(l=>DATA.categories.includes(l)).join(', ');return`<tr style="border-bottom:1px solid #e2e8f0;" class="hover:bg-blue-50/40 cursor-pointer" onclick="showDetail('${i.id}')"><td class="py-1.5 text-slate-700 font-mono text-[11px]">${i.id}</td><td class="py-1.5 font-medium max-w-md truncate" style="color:#1e293b;">${i.title}</td><td class="py-1.5 text-slate-700">${cats}</td><td class="py-1.5"><span class="status-dot status-${i.statusType}"></span>${i.status}</td></tr>`;}).join('')}</tbody></table></div>`;}).join('');}
+
+// ─── FRAMEWORK VIEW ──────────────────────────────────────
+function showFramework(frameworkName) {
+  ALL_VIEWS.forEach(v => document.getElementById(`view-${v}`).classList.toggle('hidden', v !== 'framework'));
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  const fwTabMap = {'CMS ARC-AMPE':'tab-fw-cms','IRS Pub 1075':'tab-fw-irs','NIST 800-53':'tab-fw-nist','SSA':'tab-fw-ssa','OLA':'tab-fw-ola'};
+  const tab = document.getElementById(fwTabMap[frameworkName]);
+  if (tab) tab.classList.add('active');
+  renderFrameworkPage(frameworkName);
+}
+
+function renderFrameworkPage(frameworkName) {
+  const fc = {'CMS ARC-AMPE':'#2563eb','IRS Pub 1075':'#b91c1c','NIST 800-53':'#7c3aed','SSA':'#0d9488','OLA':'#9333ea'};
+  const color = fc[frameworkName] || '#64748b';
+  const pm = {1:['Urgent','pill-urgent'],2:['High','pill-high'],3:['Medium','pill-med'],4:['Low','pill-low']};
+
+  // Get ALL issues for this framework
+  const allFwIssues = DATA.issues.filter(i => i.labels.includes(frameworkName));
+  const openIssues = allFwIssues.filter(i => !['completed','canceled'].includes(i.statusType));
+  const closedIssues = allFwIssues.filter(i => i.statusType === 'completed');
+  const criticalIssues = openIssues.filter(i => i.labels.includes('Critical'));
+  const compPct = allFwIssues.length > 0 ? Math.round((closedIssues.length / allFwIssues.length) * 100) : 0;
+
+  // Sections: filter by category label AND framework
+  const sections = [
+    { key: 'Compliance', title: 'Controls & Compliance', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' },
+    { key: 'POA&M', title: 'POA&Ms', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
+    { key: 'Assessment', title: 'Assessments', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
+    { key: 'Evidence', title: 'Evidence', icon: 'M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4' },
+    { key: 'ATO', title: 'ATO / Authorization', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+    { key: 'External Request', title: 'External Requests', icon: 'M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4' },
+  ];
+
+  // Build section HTML
+  function buildSection(sec) {
+    const items = allFwIssues.filter(i => i.labels.includes(sec.key));
+    const sOpen = items.filter(i => !['completed','canceled'].includes(i.statusType)).length;
+    const sInProgress = items.filter(i => i.statusType === 'started').length;
+    const sDone = items.filter(i => i.statusType === 'completed').length;
+
+    if (items.length === 0) {
+      return `<div class="card p-5 mb-4" style="border-left:4px solid ${color};">
+        <div class="flex items-center gap-2 mb-2">
+          <svg class="w-4 h-4" style="color:${color};" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${sec.icon}"/></svg>
+          <p class="text-sm font-semibold" style="color:#1e293b;">${sec.title}</p>
+          <span class="pill pill-neutral ml-2">0</span>
+        </div>
+        <p class="text-xs" style="color:#64748b;">No ${sec.title.toLowerCase()} items for ${frameworkName}</p>
+      </div>`;
+    }
+
+    return `<div class="card p-5 mb-4" style="border-left:4px solid ${color};">
+      <div class="flex items-center gap-2 mb-3">
+        <svg class="w-4 h-4" style="color:${color};" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${sec.icon}"/></svg>
+        <p class="text-sm font-semibold" style="color:#1e293b;">${sec.title}</p>
+        <span class="pill pill-blue ml-2">${items.length}</span>
+      </div>
+      <div class="flex gap-4 mb-3 text-[11px]">
+        <span><strong style="color:#1e293b;">${sOpen}</strong> <span style="color:#64748b;">open</span></span>
+        <span><strong style="color:#2378C3;">${sInProgress}</strong> <span style="color:#64748b;">in progress</span></span>
+        <span><strong style="color:#719F2A;">${sDone}</strong> <span style="color:#64748b;">done</span></span>
+      </div>
+      <table class="w-full text-xs">
+        <thead><tr class="text-slate-700 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;">
+          <th class="text-left py-2 px-2">ID</th>
+          <th class="text-left py-2 px-2">Item</th>
+          <th class="text-left py-2 px-2">Severity</th>
+          <th class="text-left py-2 px-2">Assignee</th>
+          <th class="text-left py-2 px-2">Due Date</th>
+          <th class="text-left py-2 px-2">Status</th>
+        </tr></thead>
+        <tbody>${items.map(i => {
+          const [p,pc] = pm[i.priority] || ['--',''];
+          const due = i.dueDate ? new Date(i.dueDate).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '--';
+          return `<tr style="border-bottom:1px solid #e2e8f0;" class="hover:bg-blue-50/40 cursor-pointer" onclick="showDetail('${i.id}')">
+            <td class="py-2 px-2 font-mono text-[11px]" style="color:#334155;">${i.id}</td>
+            <td class="py-2 px-2 font-medium max-w-sm truncate" style="color:#1e293b;">${i.title}</td>
+            <td class="py-2 px-2"><span class="pill ${pc}">${p}</span></td>
+            <td class="py-2 px-2" style="color:#334155;">${i.assignee || 'Unassigned'}</td>
+            <td class="py-2 px-2 text-[11px]" style="color:#334155;">${due}</td>
+            <td class="py-2 px-2"><span class="status-dot status-${i.statusType}"></span>${i.status}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>`;
+  }
+
+  const circumference = 2 * Math.PI * 30;
+  const dashoffset = circumference - (compPct / 100) * circumference;
+  const gaugeColor = compPct >= 90 ? '#719F2A' : compPct >= 70 ? '#d97706' : '#dc2626';
+
+  let html = `
+    <!-- OSCAL Pipeline Banner -->
+    <div class="flex items-center gap-2 px-4 py-2.5 rounded-lg mb-5" style="background:#eff6ff;border:1px solid #bfdbfe;">
+      <svg class="w-4 h-4" style="color:#2563eb;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+      <p class="text-xs font-medium" style="color:#1e40af;">OSCAL Pipeline: <span style="color:#166534;">Connected</span> &mdash; automated controls testing feeds findings into this view</p>
+    </div>
+
+    <!-- Framework Header -->
+    <div class="card p-6 mb-5">
+      <div class="flex items-center gap-6">
+        <div class="flex flex-col items-center" style="min-width:100px;">
+          <svg width="70" height="70" viewBox="0 0 70 70">
+            <circle cx="35" cy="35" r="30" fill="none" stroke="#e2e8f0" stroke-width="5"/>
+            <circle cx="35" cy="35" r="30" fill="none" stroke="${gaugeColor}" stroke-width="5" stroke-linecap="round"
+              stroke-dasharray="${circumference}" stroke-dashoffset="${dashoffset}" transform="rotate(-90 35 35)"/>
+            <text x="35" y="39" text-anchor="middle" font-size="15" font-weight="700" fill="${gaugeColor}">${compPct}%</text>
+          </svg>
+          <p class="text-[10px] mt-1" style="color:#64748b;">compliant</p>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-3 h-3 rounded-full" style="background:${color};"></div>
+            <h2 class="text-lg font-bold" style="color:#1e293b;">${frameworkName}</h2>
+          </div>
+          <div class="grid grid-cols-4 gap-4 mt-3">
+            <div class="text-center">
+              <p class="text-2xl font-bold" style="color:#1e293b;">${allFwIssues.length}</p>
+              <p class="text-[10px]" style="color:#64748b;">Total Items</p>
+            </div>
+            <div class="text-center">
+              <p class="text-2xl font-bold" style="color:#2378C3;">${openIssues.length}</p>
+              <p class="text-[10px]" style="color:#64748b;">Open</p>
+            </div>
+            <div class="text-center">
+              <p class="text-2xl font-bold" style="color:#719F2A;">${closedIssues.length}</p>
+              <p class="text-[10px]" style="color:#64748b;">Closed</p>
+            </div>
+            <div class="text-center">
+              <p class="text-2xl font-bold sev-crit">${criticalIssues.length}</p>
+              <p class="text-[10px]" style="color:#64748b;">Critical Open</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sections -->
+    ${sections.map(s => buildSection(s)).join('')}
+  `;
+
+  document.getElementById('frameworkPageContent').innerHTML = html;
+}
 
 // ─── DETAIL MODAL ──────────────────────────────────────
 
