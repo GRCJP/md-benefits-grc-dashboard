@@ -5,8 +5,7 @@
 
 ## BEFORE THE MEETING (2 min setup)
 - Open dashboard: http://localhost:3000 (or GitHub Pages URL)
-- Open Linear in another tab (show briefly)
-- Have the Teams webhook ready if doing live notification demo
+- Open Linear in another tab (keep ready to show a live close)
 - Start on the Trust Center tab
 
 ---
@@ -14,144 +13,145 @@
 ## OPENING (1 minute)
 
 **Say:**
-"Today I want to walk you through how we can consolidate our GRC operations into a single platform that gives leadership real-time visibility into our compliance posture across CJAMS, CSMS, MORA, and the Shared Data Platform. Right now this information lives in spreadsheets, emails, and people's heads. What I'm going to show you eliminates that."
+"Today I want to show you how we can consolidate GRC operations into a single platform that gives leadership real-time visibility into compliance posture across CJAMS, CSMS, MORA, and the Shared Data Platform. Right now this information lives in spreadsheets, emails, and people's heads. What I'm going to show you eliminates that."
 
 ---
 
-## PART 1: THE TRUST CENTER (5 minutes)
+## PART 1: THE TRUST CENTER (4 minutes)
 
 ### Show the Executive Dashboard — Trust Center tab
-**You're on screen. Point to each section:**
 
 **Posture Banner (30 sec)**
-"At a glance — our overall compliance health, risk score, and the authorization status of every system. You can see CJAMS and MORA are fully authorized, CSMS is conditional, and the Shared Data Platform is still in review. This updates in real time."
+"At a glance — compliance health, risk score, and authorization status of every system. CJAMS and MORA are authorized, CSMS is conditional, Shared Data Platform is in review. These numbers are real — they're seeded from the latest assessment artifacts."
 
-**Vulnerability Management (45 sec)**
-"This breaks down our vulnerability posture across all sources — not just scan findings but pen tests, external audits, even bug bounty. We're at 78% SLA compliance for remediation. You can see remediation timelines by severity — critical findings average 12 days to close. The trend line shows we're improving — down 12% from last month."
+**KEY TALKING POINT — Living Compliance (30 sec)**
+"This is important — these numbers aren't static. We load the latest SAR and POA&M workbook, which creates all findings as tracked items with severity, control mapping, and due dates. That's the baseline. From that point forward, every time the team closes a finding, remediates a control, or collects evidence, the compliance percentage updates. It's a living number — not a report that's outdated the day after the assessment."
 
-**POA&M Health (45 sec)**
-"POA&Ms are the heart of remediation tracking. We have [X] open across all systems. The aging distribution is critical — anything over 6 months gets flagged automatically. We track risk acceptances separately with review dates so nothing expires without a decision. The milestone bar shows 65% of remediation plans are on track."
+**Vulnerability Management (30 sec)**
+"Vulnerability posture across all sources — scans, pen tests, external audits, bug bounty. SLA compliance at 78%, remediation times by severity, and the trend is improving. These metrics update as the team works through findings in Linear."
+
+**POA&M Health (30 sec)**
+"POA&Ms by system — CSMS has the most at 12. Aging distribution shows what's been open too long. Risk acceptances tracked with review dates. Closure rate and milestone tracking."
 
 **Evidence & ConMon (30 sec)**
-"Evidence freshness is tracked automatically. We know what's current, what's stale, and what's missing — broken down by control family. ConMon delivery is at 83%. We're at 34% automation and targeting 60% by Q4 through the OSCAL pipeline integration."
+"Evidence freshness, ConMon delivery at 83%, and automation progress. The OSCAL pipeline handles automated control testing — failures create findings automatically. Manual controls get flagged for review."
 
 **Assessment & Audit (30 sec)**
-"198 of 261 controls assessed, and our quarterly findings trend is going the right direction — from 18 findings in Q3 down to 8 this quarter."
+"198 of 261 controls assessed. Quarterly findings trend going the right direction. Pen test and bug bounty summaries."
 
 ---
 
-## PART 2: CLICK INTO A SYSTEM (3 minutes)
+## PART 2: SYSTEM DRILL-DOWN (2 minutes)
 
-### Click "Leadership Metrics" tab, then click the CSMS card (yellow)
+### Click "Leadership Metrics" tab, then click CSMS card (yellow)
 
 **Say:**
-"Let me show you what this looks like at the system level. CSMS is our Medicaid system under CMS ARC-AMPE — it's conditional right now and here's why."
+"CSMS is our Medicaid system under CMS ARC-AMPE — it's conditional right now. Let me show you why."
 
-**Walk through the CSMS detail page:**
-- "71% compliant — 5 active compliance gaps. The FTI encryption is critical, MFA enforcement is at 80%, and ConMon reports are 2 months behind."
-- "Two risk acceptances — both with expiration dates and named owners."
-- "Evidence completion is only 68% — 11 items missing. This is what's blocking the full ATO."
-- "And here are the recent findings — the pen test in May found 4 critical/high issues."
+- "71% compliant — 5 compliance gaps including FTI encryption and ConMon delays"
+- "Two risk acceptances with expiration dates and named owners"
+- "Evidence completion only 68% — 11 items missing. This is blocking the full ATO."
+- "Recent findings from the pen test and CMS assessment"
 
-**Then click back to the Shared Data Platform card (red):**
-"This is our biggest risk — 58% compliant, ConMon not yet established, 152 controls not assessed. But now we can see that clearly instead of discovering it during an audit."
+**Click Shared Data Platform (red):**
+"Our biggest risk — 58% compliant, ConMon not established, 152 controls not yet assessed. But we can see it clearly now instead of discovering it during an audit."
 
 ---
 
-## PART 3: FRAMEWORK ISOLATION (1.5 minutes)
+## PART 3: THE ACCOUNTABILITY STORY (2 minutes)
 
-### Click "CMS ARC-AMPE" in the sidebar
-
-**Say:**
-"When the CMS assessor comes in, we're not scrambling to pull everything together. This view shows ONLY CMS ARC-AMPE — controls, POA&Ms, assessments, evidence, ATO packages — all isolated to this framework. Same for IRS Pub 1075, NIST, SSA."
-
-"Notice the OSCAL pipeline banner — our automated compliance pipeline feeds findings directly into these framework views. Controls that can be tested automatically are, and everything else gets flagged for manual review."
-
----
-
-## PART 4: THE OLA STORY (1.5 minutes)
-
-### Click "Action Items" in the sidebar
+### Click "Priority Efforts" in the sidebar
 
 **Say:**
-"Let me tell you why this matters. We had an OLA audit finding that was shared with the ISSO team two years ago. It was sent in an email. Nobody tracked it. Nobody owned it. It sat open for over two years until it resurfaced during assessment prep."
+"Let me tell you why this matters. We had an OLA audit finding shared with the ISSO team two years ago. It was sent in an email. Nobody tracked it. Nobody owned it. It sat open for over two years until it resurfaced during assessment prep."
 
 **Point to the aging finding:**
-"In this system, that can't happen. Every finding has a named owner, a due date, and automated escalation. The action items view separates pen test findings, external audit findings, and active incidents — each with accountability."
+"In this system, that cannot happen. Every finding has a named owner, a due date, and automated escalation. Priority efforts are separated by source — pen test findings, external audit findings, active incidents. Each with accountability."
 
-**Point to the notification bell:**
-"And if something is approaching its deadline or overdue, the assignee gets notified through Microsoft Teams automatically."
+### Click "Intake Monitoring" in the sidebar
+
+**Say:**
+"We also track intake volume by agency — DHS has 14 open requests, 5 are over 30 days. MDH has 11. Every request has an SLA, an assignee, and a status. Leadership sees who's falling behind."
 
 ---
 
-## PART 5: DATA SECURITY (2 minutes)
+## PART 4: DATA SECURITY (2 minutes)
+
+### Click "Data Security" in the sidebar
 
 **Say:**
-"Now — the important question. We're tracking IRS 1075 FTI systems, CMS data, SSA PII. How do we protect the sensitive details?"
+"We're tracking IRS 1075 FTI systems, CMS data, SSA PII. How do we protect sensitive details?"
 
-**Explain the architecture:**
-"Linear is SOC 2 Type II certified and encrypts everything in transit and at rest. But it's not FedRAMP authorized, so we treat it as the workflow layer only."
+**Walk through the diagram:**
+"Three layers. Linear is the workflow layer — task titles, status, due dates. No hostnames, no IPs, no scan output. Microsoft Teams is the communication layer — sanitized automatically. SharePoint GCC High is the evidence vault — FedRAMP High authorized. That's where screenshots, scan results, and sensitive artifacts live."
 
-**The data classification approach:**
+### Click "Intake Filter" in the sidebar
 
-"We follow a strict data classification model:
+**Live demo:**
+"Let me show you. Here's a Wiz scan finding coming in with an IP address and hostname."
 
-**What goes INTO Linear** — sanitized workflow data:
-- Task titles: 'Collect AC-2 evidence for CSMS' — no hostnames, no IPs
-- Status, assignees, due dates, framework labels
-- Evidence reference IDs that point to the secure vault
-- Remediation milestones and progress
+- Click "Wiz Scan Finding" preset
+- Show the right panel — IP redacted, hostname redacted
+- Click "Email w/ PII (Blocked)" — show the SSN getting hard-blocked
+- Click "Clean Intake Form" — show it passing through clean
 
-**What stays OUT of Linear:**
-- Screenshots, scan output, actual evidence artifacts
-- Hostnames, IP addresses, architecture details
-- Any FTI, CMS data references, or PII
+"Every intake source — Wiz, Qualys, Teams messages, emails — goes through this filter before it touches Linear."
 
-**Where sensitive data lives:**
-- Evidence artifacts go into SharePoint GCC High — which you already have through your Microsoft E5 GCC license and is FedRAMP High authorized
-- Linear stores a reference: 'Evidence uploaded — EV-AC2-001, stored in SharePoint'
-- The dashboard links both: you see the workflow status from Linear and the vault reference for the actual artifact
+---
 
-**The Teams integration follows the same rules:**
-- When someone creates a task from a Teams conversation, the integration strips sensitive patterns before it hits Linear
-- Hostnames, IPs, SSNs get flagged and redirected to the secure system
-- The Linear task gets a sanitized version with a reference link
+## PART 5: WHY THIS TOOL (1 minute)
 
-This way, the team works in Linear for task management and workflow, but sensitive compliance artifacts never leave your FedRAMP-authorized boundary."
+### Click "Why Linear" in the sidebar
+
+**Don't read cards — just hit the key points:**
+"Linear gives us POA&M lifecycle management, framework-isolated compliance views, built-in automation with no add-ons, and AI-powered search. When something needs dev work, it pushes to Jira automatically. Security team works here, dev team works in Jira, one source of truth."
+
+---
+
+## PART 6: LIVE PROOF (1 minute)
+
+### Switch to Linear tab
+
+**Close a POA&M item in Linear** (mark one as Done)
+
+### Switch back to dashboard, refresh
+
+**Say:**
+"The number just changed. That's the point — this isn't a static report. Every time someone closes a finding, the compliance posture updates. Leadership always has the current picture."
 
 ---
 
 ## CLOSE (30 seconds)
 
-**Say:**
-"This gives leadership a trust center view they've never had. Every system, every framework, every finding — tracked with accountability. The OSCAL pipeline automates what it can. Teams integration keeps everyone connected. And the data classification model ensures we meet our Pub 1075 and CMS obligations for data handling."
-
-"I have 15 minutes for questions."
+"Every system, every framework, every finding — tracked with accountability. Assessment data sets the baseline, the team's daily work keeps it current. Nothing falls through the cracks. Questions?"
 
 ---
 
 ## DISCUSSION PREP — LIKELY QUESTIONS & ANSWERS
 
-### "What does this cost?"
-"Linear is $8/user/month for the standard plan. The dashboard is custom-built and runs on our infrastructure. SharePoint GCC is already part of the state's Microsoft licensing. Total incremental cost is primarily the Linear seats — roughly $100/month for a 12-person GRC team."
+### "How do the compliance numbers stay accurate?"
+"We seed the system from the latest assessment artifacts — the SAR, POA&M workbook, and control assessment results. That gives us the real baseline. From there, every remediation, every evidence collection, every closed finding updates the numbers in real time. When the next assessment runs, new findings come in and the cycle continues. The number is always anchored to real assessment data, not just ticket counts."
 
-### "Why not just use Jira?"
-"Jira could work for task tracking, but it doesn't give us this executive layer out of the box. Linear's API is cleaner for building the trust center dashboard, and the UI is faster for the analysts doing daily work. The same dashboard approach could sit on top of Jira if that's preferred — the architecture is the same."
+### "What does this cost?"
+"Linear is $8/user/month. The dashboard is custom-built on our infrastructure. SharePoint GCC is already part of the state's Microsoft licensing. Total: about $100/month for a 12-person team."
 
 ### "Is Linear FedRAMP authorized?"
-"No, and that's exactly why we designed the data classification model. Linear handles workflow — who's doing what, what's the status, when is it due. Sensitive artifacts stay in SharePoint GCC High which is FedRAMP High authorized. We never put hostnames, scan results, or PII into Linear."
+"No — and that's why we designed the data classification model. Linear handles workflow only. Sensitive artifacts stay in SharePoint GCC High which is FedRAMP High authorized. The sanitization layer enforces this automatically."
+
+### "Why not just use Jira?"
+"Linear is for GRC-specific workflows. When a finding needs dev work, it pushes to Jira automatically. Security team in Linear, dev team in Jira. The data classification architecture works with either tool — the compliance model is tool-agnostic."
 
 ### "How do we know people will actually use it?"
-"Three things: 1) The Teams integration means they don't have to leave the tools they already use — a message in Teams becomes a tracked task. 2) The notification system escalates automatically — overdue items alert assignees and their managers. 3) Leadership visibility creates accountability — when the CISO can see your name next to an overdue finding, people close their items."
+"Three things: Teams integration means they don't leave their tools. Automated escalation means overdue items surface to leadership. And visibility creates accountability — when the CISO sees your name next to an overdue finding, items get closed."
 
 ### "What about the OSCAL pipeline?"
-"The pipeline runs automated control assessments monthly. Anything that can be tested via API — like checking MFA enforcement, encryption settings, log forwarding — gets tested automatically. Failures create findings directly in Linear under the right framework. Manual controls get flagged for human review. Over time, we increase the automation percentage from 34% toward 60%+."
-
-### "Can we see the Teams integration work?"
-If you set up a webhook: "Let me show you — I'll trigger a notification right now." Run `node notify.js --teams <url>` live.
+"Monthly automated control assessments. Anything testable via API gets tested automatically. Failures create findings in Linear under the right framework. Manual controls get flagged for human review. We increase automation over time — targeting 60% by Q4."
 
 ### "How long to implement?"
-"The dashboard and Linear workspace can be production-ready in 2-3 weeks. The OSCAL pipeline integration is a parallel workstream — initial controls testing within 4-6 weeks, expanding automation over the following quarter. The Teams integration is same-day once we have the webhook configured."
+"Dashboard and Linear workspace: 2-3 weeks to production. OSCAL pipeline: 4-6 weeks for initial controls, expanding quarterly. Teams integration: same day."
 
 ### "Who maintains this?"
-"The dashboard pulls live from Linear — no manual data entry for the metrics. The GRC team works in Linear as their daily tool. The trust center is the reporting layer that builds itself. Maintenance is primarily keeping the Linear workspace organized and expanding OSCAL automation."
+"The dashboard builds itself from Linear data. The GRC team works in Linear as their daily tool. No separate data entry. Maintenance is keeping the workspace organized and expanding OSCAL automation."
+
+### "What if we already have assessment data in spreadsheets?"
+"We import it. The SAR findings, POA&M workbook, control assessment results — we load them as Linear issues with all the metadata. That becomes day one. From there, the team works them and the numbers stay current."
