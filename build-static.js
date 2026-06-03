@@ -11,13 +11,12 @@ const src = fs.readFileSync(path.join(__dirname, "public", "index.html"), "utf8"
 
 // The data processing logic (same as server.js but runs in browser)
 const CLIENT_DATA_LOGIC = `
-const LINEAR_API_KEY = localStorage.getItem("linear_api_key") || prompt("Enter Linear API Key:");\nif (LINEAR_API_KEY && !localStorage.getItem("linear_api_key")) localStorage.setItem("linear_api_key", LINEAR_API_KEY);
 const LINEAR_TEAM_ID = "d4d5bf63-fae7-4938-9531-b1fb80618a8a";
 
-async function fetchFromLinear() {
+async function fetchFromLinear(apiKey) {
   const r = await fetch("https://api.linear.app/graphql", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: LINEAR_API_KEY },
+    headers: { "Content-Type": "application/json", Authorization: apiKey },
     body: JSON.stringify({ query: \`{
       issues(first: 200) {
         nodes {
@@ -216,10 +215,10 @@ async function sendChat() {
 }
 `;
 
-// Replace the loadData function to use client-side fetch
+// Replace the loadData function to use static snapshot with API key fallback
 let output = src.replace(
   `async function loadData() {\n  const res = await fetch('/api/data');\n  DATA = await res.json();`,
-  `${CLIENT_DATA_LOGIC}\n${CLIENT_CHAT_LOGIC}\nasync function loadData() {\n  DATA = await fetchFromLinear();`
+  `${CLIENT_DATA_LOGIC}\n${CLIENT_CHAT_LOGIC}\nasync function loadData() {\n  try {\n    const snapshotRes = await fetch('data.json');\n    if (snapshotRes.ok) {\n      DATA = await snapshotRes.json();\n    } else {\n      throw new Error('No snapshot');\n    }\n  } catch(e) {\n    const LINEAR_API_KEY = localStorage.getItem("linear_api_key") || prompt("Enter Linear API Key:");\n    if (LINEAR_API_KEY && !localStorage.getItem("linear_api_key")) localStorage.setItem("linear_api_key", LINEAR_API_KEY);\n    DATA = await fetchFromLinear(LINEAR_API_KEY);\n  }`
 );
 
 // Replace the server-side sendChat with client-side version

@@ -386,14 +386,12 @@
 let DATA = null;
 
 
-const LINEAR_API_KEY = localStorage.getItem("linear_api_key") || prompt("Enter Linear API Key:");
-if (LINEAR_API_KEY && !localStorage.getItem("linear_api_key")) localStorage.setItem("linear_api_key", LINEAR_API_KEY);
 const LINEAR_TEAM_ID = "d4d5bf63-fae7-4938-9531-b1fb80618a8a";
 
-async function fetchFromLinear() {
+async function fetchFromLinear(apiKey) {
   const r = await fetch("https://api.linear.app/graphql", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: LINEAR_API_KEY },
+    headers: { "Content-Type": "application/json", Authorization: apiKey },
     body: JSON.stringify({ query: `{
       issues(first: 200) {
         nodes {
@@ -517,7 +515,18 @@ const ANTHROPIC_API_KEY = localStorage.getItem("anthropic_api_key") || prompt("E
 if (ANTHROPIC_API_KEY && !localStorage.getItem("anthropic_api_key")) localStorage.setItem("anthropic_api_key", ANTHROPIC_API_KEY);
 
 async function loadData() {
-  DATA = await fetchFromLinear();
+  try {
+    const snapshotRes = await fetch('data.json');
+    if (snapshotRes.ok) {
+      DATA = await snapshotRes.json();
+    } else {
+      throw new Error('No snapshot');
+    }
+  } catch(e) {
+    const LINEAR_API_KEY = localStorage.getItem("linear_api_key") || prompt("Enter Linear API Key:");
+    if (LINEAR_API_KEY && !localStorage.getItem("linear_api_key")) localStorage.setItem("linear_api_key", LINEAR_API_KEY);
+    DATA = await fetchFromLinear(LINEAR_API_KEY);
+  }
   document.getElementById('loading').style.display = 'none';
   document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
   renderExecutive();
