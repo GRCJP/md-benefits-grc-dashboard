@@ -227,6 +227,12 @@
         </div>
       </div>
 
+      <!-- Team Workload -->
+      <div class="card p-4 mb-5">
+        <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">Workload by Team</p>
+        <div id="teamWorkload" class="grid grid-cols-5 gap-3"></div>
+      </div>
+
       <!-- Leadership Metrics -->
       <div class="grid grid-cols-4 gap-4 mb-5">
         <div class="card p-5">
@@ -409,6 +415,13 @@ function renderCategoryPage(category) {
           </div>
         `).join('') : '<p class="text-xs" style="color:#334155;">No framework-specific items</p>'}
         ${urgentOpen > 0 ? `<div class="mt-3 p-2 rounded-lg" style="background:#fef2f2;border:1px solid #fca5a5;"><p class="text-xs font-semibold sev-crit">${urgentOpen} urgent item${urgentOpen>1?'s':''} requiring immediate attention</p></div>` : ''}
+        <p class="text-xs font-semibold uppercase tracking-wider mt-4 mb-2" style="color:#334155;">By Team</p>
+        ${(DATA.teamLabels||[]).map(t => {
+          const count = cat.issues.filter(i => i.labels.includes('Team: '+t)).length;
+          if (!count) return '';
+          const colors = {'ISSO':'#2563eb','Assessors':'#7c3aed','Tenant Support':'#0891b2','POA&M Mgmt':'#ea580c','IR':'#dc2626'};
+          return `<div class="flex justify-between items-center text-xs py-1.5" style="border-bottom:1px solid #e2e8f0;"><span style="color:#1e293b;" class="font-medium">${t}</span><span class="pill" style="background:${colors[t]||'#f1f5f9'};color:white;border:none;">${count}</span></div>`;
+        }).join('')}
       </div>
     </div>
 
@@ -510,6 +523,7 @@ function renderExecutive() {
   new Chart(document.getElementById('frameworkChart'),{type:'bar',data:{labels:DATA.frameworks,datasets:[{label:'Open',data:DATA.frameworks.map(f=>DATA.byFramework[f]?.open||0),backgroundColor:'#2378C3',borderRadius:3},{label:'Closed',data:DATA.frameworks.map(f=>DATA.byFramework[f]?.closed||0),backgroundColor:'#719F2A',borderRadius:3},{label:'Critical',data:DATA.frameworks.map(f=>DATA.byFramework[f]?.critical||0),backgroundColor:'#dc2626',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:true,scales:{x:{grid:{display:false},ticks:{color:'#334155',font:{size:9}}},y:{grid:{color:'#e2e8f0'},ticks:{color:'#334155',font:{size:9}}}},plugins:{legend:{labels:{color:'#334155',font:{size:9},boxWidth:12}}}}});
 
   renderLeadershipMetrics();
+  renderTeamWorkload();
 
   // Category cards
   const catDefs=[{k:'POA&M',label:'POA&Ms',bg:'#dbeafe',ic:'#2563eb',svg:'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'},{k:'Assessment',label:'Assessments',bg:'#f3e8ff',ic:'#7c3aed',svg:'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'},{k:'External Request',label:'Ext. Requests',bg:'#fce7f3',ic:'#be185d',svg:'M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4'},{k:'ATO',label:'ATO Packages',bg:'#e0e7ff',ic:'#4338ca',svg:'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'},{k:'Evidence',label:'Evidence',bg:'#cffafe',ic:'#0e7490',svg:'M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4'},{k:'Compliance',label:'Controls',bg:'#dcfce7',ic:'#15803d',svg:'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'}];
@@ -536,6 +550,27 @@ function renderLeadershipMetrics(){
   const d=DATA.docs;
   document.getElementById('docSummary').innerHTML=`<div class="flex gap-3"><div class="text-center"><p class="text-xl font-bold sev-crit">${d.overdue}</p><p class="text-[10px] text-slate-700">Overdue</p></div><div class="text-center"><p class="text-xl font-bold sev-high">${d.dueSoon}</p><p class="text-[10px] text-slate-700">&lt;30d</p></div><div class="text-center"><p class="text-xl font-bold" style="color:#16a34a;">${d.completed}</p><p class="text-[10px] text-slate-700">Done</p></div></div>`;
   document.getElementById('docList').innerHTML=d.items.filter(i=>i.statusType!=='completed').map(i=>{const u=i.daysLeft<0?'pill-crit':i.daysLeft<=14?'pill-high':i.daysLeft<=30?'pill-med':'pill-low';const lb=i.daysLeft<0?`${Math.abs(i.daysLeft)}d over`:`${i.daysLeft}d`;const n=i.title.replace(/^DOC-\d+:\s*/,'').substring(0,35);return`<div class="flex items-center justify-between text-xs cursor-pointer rounded p-1.5 -mx-1 hover:bg-slate-50" onclick="showDetail('${i.id}')"><span class="font-medium truncate max-w-[170px]" style="color:#1e293b;">${n}</span><span class="pill ${u} text-[10px]">${lb}</span></div>`;}).join('');
+}
+
+function renderTeamWorkload() {
+  const bt = DATA.byTeam || {};
+  const teams = DATA.teamLabels || [];
+  const colors = {'ISSO':'#2563eb','Assessors':'#7c3aed','Tenant Support':'#0891b2','POA&M Mgmt':'#ea580c','IR':'#dc2626'};
+  document.getElementById('teamWorkload').innerHTML = teams.map(t => {
+    const d = bt[t] || {};
+    const pct = d.total > 0 ? Math.round((d.closed / d.total) * 100) : 0;
+    return `<div class="rounded-lg p-3 border" style="border-color:#e2e8f0;border-left:3px solid ${colors[t]||'#64748b'};">
+      <p class="text-xs font-semibold mb-2" style="color:#1e293b;">${t}</p>
+      <div class="flex gap-3 text-[11px] mb-2">
+        <span><strong style="color:#1e293b;">${d.open||0}</strong> open</span>
+        <span><strong style="color:#2378C3;">${d.inProgress||0}</strong> active</span>
+        <span><strong style="color:#719F2A;">${d.closed||0}</strong> done</span>
+        ${d.critical?`<span><strong class="sev-crit">${d.critical}</strong> crit</span>`:''}
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${colors[t]||'#64748b'};"></div></div>
+      <p class="text-[10px] mt-1" style="color:#334155;">${pct}% complete</p>
+    </div>`;
+  }).join('');
 }
 
 function renderCriticalTable(){updateTable('criticalTable',DATA.issues.filter(i=>(i.labels.includes('Critical')||i.labels.includes('High'))&&!['completed','canceled'].includes(i.statusType)));}

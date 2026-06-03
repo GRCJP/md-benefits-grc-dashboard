@@ -52,6 +52,7 @@ async function fetchLinearData() {
   const frameworks = ["CMS ARC-AMPE", "IRS Pub 1075", "NIST 800-53", "SSA", "OLA"];
   const severities = ["Critical", "High", "Medium", "Low"];
   const categories = ["Assessment", "POA&M", "Evidence", "ATO", "External Request", "Compliance", "Incident Response", "Pen Test Finding", "External Audit", "Aging Finding"];
+  const teamLabels = ["Team: ISSO", "Team: Assessors", "Team: Tenant Support", "Team: POA&M Mgmt", "Team: IR"];
 
   const getLabels = (issue) => issue.labels.nodes.map((l) => l.name);
   const hasLabel = (issue, label) => getLabels(issue).includes(label);
@@ -317,11 +318,25 @@ async function fetchLinearData() {
     assignee: resolveAssignee(i),
   });
 
+  // ─── BY TEAM ─────────────────────────────────────────
+  const byTeam = {};
+  for (const tl of teamLabels) {
+    const ti = workIssues.filter(i => hasLabel(i, tl));
+    const shortName = tl.replace("Team: ", "");
+    byTeam[shortName] = {
+      total: ti.length, open: ti.filter(isOpen).length, closed: ti.filter(isDone).length,
+      critical: ti.filter(i => hasLabel(i, "Critical")).length,
+      inProgress: ti.filter(i => i.state.type === "started").length,
+    };
+  }
+
   return {
     summary,
     byFramework,
     byCategory,
     byProject,
+    byTeam,
+    teamLabels: teamLabels.map(t => t.replace("Team: ", "")),
     poamByStatus,
     actionItems,
     incidents,
