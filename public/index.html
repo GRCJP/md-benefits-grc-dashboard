@@ -195,10 +195,6 @@
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
         IRS Pub 1075
       </a>
-      <a onclick="showFramework('NIST 800-53')" id="tab-fw-nist" class="sidebar-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-        NIST 800-53
-      </a>
       <a onclick="showFramework('SSA')" id="tab-fw-ssa" class="sidebar-item">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
         SSA
@@ -629,7 +625,7 @@ function renderExecutive() {
   const actionCount = (DATA.actionItems||[]).filter(i => !['completed','canceled'].includes(i.statusType)).length;
 
   const systems = [
-    { name:'CaseTrack', ato:'Authorized', expires:'Dec 2026', framework:'NIST 800-53', atoColor:'#16a34a', dotColor:'#16a34a' },
+    { name:'CaseTrack', ato:'Authorized', expires:'Dec 2026', framework:'CMS ARC-AMPE, OLA', atoColor:'#16a34a', dotColor:'#16a34a' },
     { name:'HealthConnect', ato:'Conditional', expires:'Sep 2026', framework:'CMS ARC-AMPE', atoColor:'#d97706', dotColor:'#d97706' },
     { name:'RevenuePro', ato:'Authorized', expires:'Mar 2027', framework:'IRS Pub 1075', atoColor:'#16a34a', dotColor:'#16a34a' },
     { name:'MD DataHub', ato:'In Review', expires:'--', framework:'CMS ARC-AMPE, SSA', atoColor:'#dc2626', dotColor:'#dc2626' }
@@ -699,7 +695,6 @@ function renderExecutive() {
   const fwData = [
     {name:'CMS ARC-AMPE',comp:71,open:12,crit:3},
     {name:'IRS Pub 1075',comp:84,open:5,crit:0},
-    {name:'NIST 800-53',comp:87,open:8,crit:1},
     {name:'SSA',comp:62,open:4,crit:1},
     {name:'OLA',comp:58,open:6,crit:2}
   ];
@@ -1039,7 +1034,7 @@ function renderExecutive() {
 
   // ═══ LEADERSHIP: SECTION F — System Scorecards (2x2) ═══
   const scorecards = [
-    { name:'CaseTrack', fw:'NIST 800-53', ato:'Authorized', comp:87, poams:8, crit:1, evidence:92, health:'green' },
+    { name:'CaseTrack', fw:'CMS ARC-AMPE, OLA', ato:'Authorized', comp:87, poams:8, crit:1, evidence:92, health:'green' },
     { name:'HealthConnect', fw:'CMS ARC-AMPE', ato:'Conditional', comp:71, poams:12, crit:3, evidence:68, health:'yellow' },
     { name:'RevenuePro', fw:'IRS Pub 1075', ato:'Authorized', comp:84, poams:5, crit:0, evidence:88, health:'green' },
     { name:'MD DataHub', fw:'CMS ARC-AMPE, SSA', ato:'In Review', comp:58, poams:6, crit:2, evidence:52, health:'red' }
@@ -1400,33 +1395,66 @@ function renderPoamExec() {
   const d = DATA.docs || {};
   const overdueItems = (DATA.notifications||[]).filter(n => n.type === 'overdue');
 
+  const slaComp = 72;
+  const delayedPct = 25;
+  const onTrackPct = 65;
+  const atRiskPct = 10;
+
   document.getElementById('poamExecContent').innerHTML = `
     <div style="margin-bottom:20px;">
       <h2 style="font-size:20px;font-weight:700;color:#111827;margin-bottom:4px;">POA&M Management</h2>
       <p style="font-size:13px;color:#6b7280;">Remediation tracking, risk acceptance, and compliance operations</p>
     </div>
 
-    <!-- POA&M Overview Metrics -->
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;">
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;">
-        <p style="font-size:36px;font-weight:700;color:#2378C3;">${poam.open||0}</p>
-        <p style="font-size:13px;font-weight:600;color:#374151;">Total Open</p>
+    <!-- Row 1: Gauge tiles — the key executive metrics -->
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px;">
+      <!-- SLA Compliance gauge -->
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;text-align:center;">
+        ${svgDonut(slaComp, 90, slaComp >= 80 ? '#16a34a' : slaComp >= 60 ? '#d97706' : '#dc2626', 22)}
+        <p style="font-size:13px;font-weight:700;color:#111827;margin-top:6px;">SLA Compliance</p>
       </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;">
-        <p style="font-size:36px;font-weight:700;color:#dc2626;">${poam.critical||0}</p>
-        <p style="font-size:13px;font-weight:600;color:#374151;">Critical</p>
+      <!-- On Track gauge -->
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;text-align:center;">
+        ${svgDonut(onTrackPct, 90, '#16a34a', 22)}
+        <p style="font-size:13px;font-weight:700;color:#111827;margin-top:6px;">On Track</p>
       </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;">
-        <p style="font-size:36px;font-weight:700;color:${overdueItems.length>0?'#dc2626':'#16a34a'};">${overdueItems.length}</p>
-        <p style="font-size:13px;font-weight:600;color:#374151;">Overdue</p>
+      <!-- Delayed gauge -->
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;text-align:center;">
+        ${svgDonut(delayedPct, 90, '#d97706', 22)}
+        <p style="font-size:13px;font-weight:700;color:#111827;margin-top:6px;">Delayed</p>
       </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;">
-        <p style="font-size:36px;font-weight:700;color:#111827;">12</p>
-        <p style="font-size:13px;font-weight:600;color:#374151;">Closed / Month</p>
+      <!-- Open / Critical -->
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;text-align:center;">
+        <p style="font-size:36px;font-weight:700;color:#2378C3;line-height:1;">${poam.open||0}</p>
+        <p style="font-size:13px;font-weight:700;color:#111827;margin-top:6px;">Open</p>
+        <p style="font-size:13px;font-weight:600;color:#dc2626;margin-top:2px;">${poam.critical||0} critical</p>
       </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;">
-        <p style="font-size:36px;font-weight:700;color:#111827;">3</p>
-        <p style="font-size:13px;font-weight:600;color:#374151;">Risk Accepted</p>
+      <!-- Overdue -->
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;text-align:center;">
+        <p style="font-size:36px;font-weight:700;color:${overdueItems.length>0?'#dc2626':'#16a34a'};line-height:1;">${overdueItems.length}</p>
+        <p style="font-size:13px;font-weight:700;color:#111827;margin-top:6px;">Overdue</p>
+        <p style="font-size:13px;color:#6b7280;margin-top:2px;">avg 28d to close</p>
+      </div>
+      <!-- Risk Accepted -->
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;text-align:center;">
+        <p style="font-size:36px;font-weight:700;color:#d97706;line-height:1;">3</p>
+        <p style="font-size:13px;font-weight:700;color:#111827;margin-top:6px;">Risk Accepted</p>
+        <p style="font-size:13px;color:#6b7280;margin-top:2px;">next review Jul '26</p>
+      </div>
+    </div>
+
+    <!-- Remediation Milestones -->
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;margin-bottom:16px;">
+      <p style="font-size:15px;font-weight:700;color:#111827;margin-bottom:12px;">Remediation Milestones</p>
+      <div style="display:flex;height:28px;border-radius:14px;overflow:hidden;margin-bottom:10px;">
+        <div style="width:65%;background:#16a34a;display:flex;align-items:center;justify-content:center;"><span style="font-size:12px;font-weight:700;color:#fff;">65% On Track</span></div>
+        <div style="width:25%;background:#d97706;display:flex;align-items:center;justify-content:center;"><span style="font-size:12px;font-weight:700;color:#fff;">25% Delayed</span></div>
+        <div style="width:10%;background:#dc2626;display:flex;align-items:center;justify-content:center;"><span style="font-size:11px;font-weight:700;color:#fff;">10%</span></div>
+      </div>
+      <div style="display:flex;gap:20px;">
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#16a34a;"></div><span style="font-size:13px;color:#111827;font-weight:500;">On Track — 20 items</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#d97706;"></div><span style="font-size:13px;color:#111827;font-weight:500;">Delayed — 8 items</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#dc2626;"></div><span style="font-size:13px;color:#111827;font-weight:500;">At Risk — 3 items</span></div>
       </div>
     </div>
 
