@@ -2701,90 +2701,62 @@ function renderWhyLinear() {
         <svg class="w-5 h-5 text-purple-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
       </div>
       <div>
-        <h2 class="text-lg font-bold" style="color:#1e293b;">Linear vs Jira &mdash; Why Linear for GRC</h2>
-        <p class="text-xs" style="color:#374151;">Head-to-head comparison and rationale for government compliance workflows</p>
+        <h2 class="text-lg font-bold" style="color:#1e293b;">Why Linear for GRC</h2>
+        <p class="text-xs" style="color:#374151;">Purpose-built for compliance workflow management</p>
       </div>
     </div>
 
-    <!-- Section A: Head-to-Head Comparison -->
+    <!-- How Linear Solves GRC Challenges -->
     <div class="card p-6 mb-5">
-      <p class="text-sm font-semibold mb-4" style="color:#1e293b;">Head-to-Head Comparison</p>
-      <div style="overflow-x:auto;">
-        <table class="w-full text-xs">
-          <thead>
-            <tr style="border-bottom:2px solid #e2e8f0;">
-              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#374151;">Capability</th>
-              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#374151;"><span style="background:#5b21b6;color:#fff;padding:2px 8px;border-radius:6px;">Linear</span></th>
-              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#374151;">Jira Cloud</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${[
-              ['Speed &amp; UX','Sub-100ms UI, keyboard-first','Slow page loads, complex menus'],
-              ['API Quality','GraphQL, real-time, clean schema','REST, rate-limited, complex'],
-              ['Custom Dashboard','Full API access, easy integration','Requires plugins, marketplace'],
-              ['Teams Integration','Bidirectional via webhooks','Native plugin (basic)'],
-              ['Workflow Automation','Built-in automations, cycles','Requires Jira Automation add-on'],
-              ['AI Features','Native AI assistant, search','Atlassian Intelligence (beta)'],
-              ['FedRAMP Status','Not authorized (workflow only)','Not authorized (Cloud)'],
-              ['Data Residency','US/EU options','Atlassian Cloud regions'],
-              ['Cost (12 users)','~$96/mo (Standard)','~$84/mo (Standard)'],
-              ['Setup Time','Same day','1-2 weeks (admin overhead)'],
-              ['Mobile','Native iOS/Android','Native iOS/Android'],
-              ['Roadmap/Projects','Built-in initiatives, roadmaps','Requires Jira Portfolio/Advanced'],
-            ].map((r,i) => `<tr style="border-bottom:1px solid #f1f5f9;${i%2===1?'background:#f8fafc;':''}">
-              <td class="py-2.5 px-3 font-semibold" style="color:#1e293b;">${r[0]}</td>
-              <td class="py-2.5 px-3" style="color:#5b21b6;font-weight:500;">${r[1]}</td>
-              <td class="py-2.5 px-3" style="color:#1e293b;">${r[2]}</td>
-            </tr>`).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>
+      <p class="text-sm font-semibold mb-5" style="color:#1e293b;">How It Works for GRC Teams</p>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
 
-    <!-- Section B: Why Linear for GRC Specifically -->
-    <div class="card p-6 mb-5">
-      <p class="text-sm font-semibold mb-5" style="color:#1e293b;">Why Linear Wins for GRC</p>
-      <div class="grid grid-cols-1 gap-4" style="max-width:900px;">
-
-        <div class="card-hover" style="background:#f5f3ff;border:1px solid #c4b5fd;border-radius:10px;padding:18px;border-left:4px solid #7c3aed;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <span style="background:#7c3aed;color:#fff;font-size:10px;font-weight:700;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;">1</span>
-            <span style="font-size:13px;font-weight:700;color:#5b21b6;">Speed matters for GRC teams</span>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px;">
+          <div style="width:40px;height:40px;border-radius:10px;background:#2378C3;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+            <svg style="width:20px;height:20px;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
           </div>
-          <p style="font-size:12px;color:#1e293b;line-height:1.6;">GRC analysts touch 50+ items daily. Linear's sub-100ms UI means less time navigating, more time closing findings. Jira's page loads add up to hours lost per week.</p>
+          <p style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:6px;">POA&M Lifecycle Management</p>
+          <p style="font-size:13px;color:#374151;line-height:1.6;">Every finding gets a named owner, a due date, and automated escalation. No more spreadsheets. No more email threads. Status updates flow to the Trust Center in real time.</p>
         </div>
 
-        <div class="card-hover" style="background:#eff6ff;border:1px solid #93c5fd;border-radius:10px;padding:18px;border-left:4px solid #2563eb;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <span style="background:#2563eb;color:#fff;font-size:10px;font-weight:700;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;">2</span>
-            <span style="font-size:13px;font-weight:700;color:#1e40af;">API-first = Trust Center possible</span>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px;">
+          <div style="width:40px;height:40px;border-radius:10px;background:#7c3aed;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+            <svg style="width:20px;height:20px;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
           </div>
-          <p style="font-size:12px;color:#1e293b;line-height:1.6;">The dashboard you're looking at exists because Linear's GraphQL API returns everything we need in a single call. Building this on Jira's REST API would take 3x longer and require pagination workarounds.</p>
+          <p style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:6px;">Framework-Isolated Compliance</p>
+          <p style="font-size:13px;color:#374151;line-height:1.6;">CMS ARC-AMPE, IRS Pub 1075, NIST, SSA — each framework has its own workspace. When the assessor arrives, everything is organized and ready. No cross-contamination between frameworks.</p>
         </div>
 
-        <div class="card-hover" style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:18px;border-left:4px solid #16a34a;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <span style="background:#16a34a;color:#fff;font-size:10px;font-weight:700;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;">3</span>
-            <span style="font-size:13px;font-weight:700;color:#15803d;">The data classification model works with both</span>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px;">
+          <div style="width:40px;height:40px;border-radius:10px;background:#dc2626;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+            <svg style="width:20px;height:20px;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           </div>
-          <p style="font-size:12px;color:#1e293b;line-height:1.6;">This architecture isn't Linear-specific. If the client prefers Jira, the same workflow-only / evidence-vault separation applies. Linear is recommended but not required.</p>
+          <p style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:6px;">Nothing Falls Through the Cracks</p>
+          <p style="font-size:13px;color:#374151;line-height:1.6;">Automated notifications at 30, 60, 90 days. Overdue items escalate to leadership. The OLA finding that sat open for 2 years? That can't happen here. Every item is visible, tracked, and owned.</p>
         </div>
 
-        <div class="card-hover" style="background:#fff7ed;border:1px solid #fdba74;border-radius:10px;padding:18px;border-left:4px solid #ea580c;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <span style="background:#ea580c;color:#fff;font-size:10px;font-weight:700;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;">4</span>
-            <span style="font-size:13px;font-weight:700;color:#c2410c;">Real-time sync</span>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px;">
+          <div style="width:40px;height:40px;border-radius:10px;background:#d97706;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+            <svg style="width:20px;height:20px;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           </div>
-          <p style="font-size:12px;color:#1e293b;line-height:1.6;">When an analyst closes a POA&amp;M in Linear, the Trust Center updates immediately. Jira webhooks have latency. Linear's subscriptions are real-time.</p>
+          <p style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:6px;">Built-In Automation</p>
+          <p style="font-size:13px;color:#374151;line-height:1.6;">Automations from day one — no add-ons, no plugins. When a Wiz scan finds a vulnerability, a POA&M is created automatically. When evidence is collected, the dashboard updates. When a cert is expiring, the right team gets notified.</p>
         </div>
 
-        <div class="card-hover" style="background:#fdf2f8;border:1px solid #f9a8d4;border-radius:10px;padding:18px;border-left:4px solid #db2777;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <span style="background:#db2777;color:#fff;font-size:10px;font-weight:700;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;">5</span>
-            <span style="font-size:13px;font-weight:700;color:#be185d;">AI assistant built in</span>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px;">
+          <div style="width:40px;height:40px;border-radius:10px;background:#0d9488;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+            <svg style="width:20px;height:20px;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
           </div>
-          <p style="font-size:12px;color:#1e293b;line-height:1.6;">Linear's AI can answer "What POA&amp;Ms are overdue for CSMS?" directly in the tool. Jira's Atlassian Intelligence is still catching up.</p>
+          <p style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:6px;">AI-Powered Compliance Assistant</p>
+          <p style="font-size:13px;color:#374151;line-height:1.6;">Ask "What POA&Ms are overdue for CSMS?" and get an instant answer. The AI assistant understands your compliance data and can surface insights across frameworks, teams, and systems.</p>
+        </div>
+
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px;">
+          <div style="width:40px;height:40px;border-radius:10px;background:#16a34a;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+            <svg style="width:20px;height:20px;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+          </div>
+          <p style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:6px;">Data Sanitization Built In</p>
+          <p style="font-size:13px;color:#374151;line-height:1.6;">Every intake — from Wiz scans, Qualys reports, Teams messages, emails — passes through a sanitization filter. Hostnames, IPs, and PII are automatically redacted before entering the system. Sensitive evidence stays in SharePoint GCC.</p>
         </div>
       </div>
     </div>
