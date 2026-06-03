@@ -88,11 +88,12 @@ app.get("/api/data", async (_req, res) => {
   }
 });
 
-async function gql(query) {
+async function gql(query, variables) {
+  const body = variables ? { query, variables } : { query };
   const r = await fetch("https://api.linear.app/graphql", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: API_KEY },
-    body: JSON.stringify({ query }),
+    body: JSON.stringify(body),
   });
   const json = await r.json();
   if (json.errors) throw new Error(json.errors[0].message);
@@ -422,6 +423,103 @@ async function fetchLinearData() {
     issues: workIssues.map(mapIssue),
   };
 }
+
+// ─── SANITIZATION ENGINE ─────────────────────────────────
+const SANITIZE_RULES = [
+  // BLOCK — reject entirely
+  { pattern: /\b\d{3}-\d{2}-\d{4}\b/g, action: 'block', label: 'SSN detected', replacement: null },
+  { pattern: /\b\d{9}\b/g, action: 'block', label: 'Possible SSN (9 digits)', replacement: null },
+
+  // REDACT — replace with placeholder
+  { pattern: /\b(?:\d{1,3}\.){3}\d{1,3}\/\d{1,2}\b/g, action: 'redact', label: 'CIDR range', replacement: '[CIDR-REDACTED]' },
+  { pattern: /\b(?:\d{1,3}\.){3}\d{1,3}\b/g, action: 'redact', label: 'IP address', replacement: '[IP-REDACTED]' },
+  { pattern: /\b[\w.-]+\.(?:state\.md\.us|maryland\.gov|md\.gov)\b/gi, action: 'redact', label: 'State hostname', replacement: '[HOST-REDACTED]' },
+  { pattern: /\b[\w.-]+\.(?:internal|local|corp|lan)\b/gi, action: 'redact', label: 'Internal hostname', replacement: '[HOST-REDACTED]' },
+  { pattern: /\\\\[\w.-]+\\[\w$.-]+(?:\\[\w.-]+)*/g, action: 'redact', label: 'UNC path', replacement: '[PATH-REDACTED]' },
+  { pattern: /\b[A-Za-z]:\\(?:[\w.-]+\\)+[\w.-]+/g, action: 'redact', label: 'File path', replacement: '[PATH-REDACTED]' },
+  { pattern: /CVE-\d{4}-\d{4,}\s*(?:exploit|payload|shell|injection|overflow|bypass)/gi, action: 'redact', label: 'Exploit detail', replacement: '[EXPLOIT-DETAIL-REDACTED — see pen test report]' },
+
+  // WARN — allow but flag
+  { pattern: /\b(?:password|passwd|secret|token|api.?key)\s*[:=]\s*\S+/gi, action: 'warn', label: 'Possible credential', replacement: null },
+];
+
+function sanitizeText(text) {
+  if (!text) return { sanitized: '', actions: [], blocked: false };
+  let sanitized = text;
+  const actions = [];
+  let blocked = false;
+
+  for (const rule of SANITIZE_RULES) {
+    // Reset regex lastIndex since we reuse them
+    const regex = new RegExp(rule.pattern.source, rule.pattern.flags);
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+      actions.push({ rule: rule.label, match: match[0], action: rule.action });
+      if (rule.action === 'block') {
+        blocked = true;
+      }
+    }
+    if (rule.replacement) {
+      const replaceRegex = new RegExp(rule.pattern.source, rule.pattern.flags);
+      sanitized = sanitized.replace(replaceRegex, rule.replacement);
+    }
+  }
+
+  return { sanitized, actions, blocked };
+}
+
+// ─── CREATE ISSUE ENDPOINT (with sanitization) ──────────
+app.post("/api/create-issue", async (req, res) => {
+  try {
+    const { title, description, teamId, priority } = req.body;
+    if (!title) return res.status(400).json({ error: "Title is required" });
+
+    const titleResult = sanitizeText(title);
+    const descResult = sanitizeText(description || '');
+    const allActions = [...titleResult.actions, ...descResult.actions];
+    const blocked = titleResult.blocked || descResult.blocked;
+
+    if (blocked) {
+      return res.status(400).json({
+        error: "Issue blocked — sensitive data detected",
+        blocked: true,
+        actions: allActions,
+      });
+    }
+
+    const sanitizedTitle = titleResult.sanitized;
+    const sanitizedDesc = descResult.sanitized + "\n\n---\n🔒 Created via GRC Trust Center (sanitized)";
+
+    const input = {
+      teamId: teamId || TEAM_ID,
+      title: sanitizedTitle,
+      description: sanitizedDesc,
+      priority: priority || 3,
+    };
+
+    const createResult = await gql(
+      `mutation($input: IssueCreateInput!) { issueCreate(input: $input) { issue { id identifier title url } success } }`,
+      { input }
+    );
+
+    if (!createResult.issueCreate.success) {
+      return res.status(500).json({ error: "Linear issue creation failed" });
+    }
+
+    res.json({
+      success: true,
+      issue: createResult.issueCreate.issue,
+      sanitizationReport: {
+        actions: allActions,
+        hadRedactions: allActions.some(a => a.action === 'redact'),
+        hadWarnings: allActions.some(a => a.action === 'warn'),
+      },
+    });
+  } catch (err) {
+    console.error("Create issue error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`\n  MD Benefits GRC Trust Center running at http://localhost:${PORT}\n`);

@@ -159,6 +159,10 @@
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
         Data Security
       </a>
+      <a onclick="showView('sanitdemo')" id="tab-sanitdemo" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+        Sanitization Demo
+      </a>
       <a onclick="showView('whylinear')" id="tab-whylinear" class="sidebar-item">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         Why Linear
@@ -309,6 +313,11 @@
       <div id="integrationsContent"></div>
     </div>
 
+    <!-- ═══ SANITIZATION DEMO VIEW ═══ -->
+    <div id="view-sanitdemo" class="hidden">
+      <div id="sanitDemoContent"></div>
+    </div>
+
     <!-- ═══ TEAM VIEW ═══ -->
     <div id="view-teamview" class="hidden">
       <div id="teamViewContent"></div>
@@ -379,7 +388,7 @@ async function loadData() {
   renderNotifications();
 }
 
-const ALL_VIEWS = ['executive','action','datasecurity','whylinear','category','integrations','teamview','framework','system'];
+const ALL_VIEWS = ['executive','action','datasecurity','sanitdemo','whylinear','category','integrations','teamview','framework','system'];
 const CAT_IDS = ['poam','assessment','evidence','ato','external-request','compliance'];
 
 function showView(view) {
@@ -394,6 +403,7 @@ function showView(view) {
   if (view === 'datasecurity') renderDataSecurity();
   if (view === 'whylinear') renderWhyLinear();
   if (view === 'integrations') renderIntegrations();
+  if (view === 'sanitdemo') renderSanitDemo();
 }
 
 function drillDown(category) { showCategory(category); }
@@ -2856,6 +2866,284 @@ function renderWhyLinear() {
     </div>
   `;
   document.getElementById('whyLinearContent').innerHTML = html;
+}
+
+// ─── SANITIZATION DEMO ─────────────────────────────────
+const SANITIZE_RULES = [
+  { pattern: /\b\d{3}-\d{2}-\d{4}\b/g, action: 'block', label: 'SSN detected', replacement: null },
+  { pattern: /\b\d{9}\b/g, action: 'block', label: 'Possible SSN (9 digits)', replacement: null },
+  { pattern: /\b(?:\d{1,3}\.){3}\d{1,3}\/\d{1,2}\b/g, action: 'redact', label: 'CIDR range', replacement: '[CIDR-REDACTED]' },
+  { pattern: /\b(?:\d{1,3}\.){3}\d{1,3}\b/g, action: 'redact', label: 'IP address', replacement: '[IP-REDACTED]' },
+  { pattern: /\b[\w.-]+\.(?:state\.md\.us|maryland\.gov|md\.gov)\b/gi, action: 'redact', label: 'State hostname', replacement: '[HOST-REDACTED]' },
+  { pattern: /\b[\w.-]+\.(?:internal|local|corp|lan)\b/gi, action: 'redact', label: 'Internal hostname', replacement: '[HOST-REDACTED]' },
+  { pattern: /\\\\[\w.-]+\\[\w$.-]+(?:\\[\w.-]+)*/g, action: 'redact', label: 'UNC path', replacement: '[PATH-REDACTED]' },
+  { pattern: /\b[A-Za-z]:\\(?:[\w.-]+\\)+[\w.-]+/g, action: 'redact', label: 'File path', replacement: '[PATH-REDACTED]' },
+  { pattern: /CVE-\d{4}-\d{4,}\s*(?:exploit|payload|shell|injection|overflow|bypass)/gi, action: 'redact', label: 'Exploit detail', replacement: '[EXPLOIT-DETAIL-REDACTED — see pen test report]' },
+  { pattern: /\b(?:password|passwd|secret|token|api.?key)\s*[:=]\s*\S+/gi, action: 'warn', label: 'Possible credential', replacement: null },
+];
+
+function sanitizeText(text) {
+  if (!text) return { sanitized: '', actions: [], blocked: false };
+  let sanitized = text;
+  const actions = [];
+  let blocked = false;
+  for (const rule of SANITIZE_RULES) {
+    const regex = new RegExp(rule.pattern.source, rule.pattern.flags);
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+      actions.push({ rule: rule.label, match: match[0], action: rule.action });
+      if (rule.action === 'block') blocked = true;
+    }
+    if (rule.replacement) {
+      const replaceRegex = new RegExp(rule.pattern.source, rule.pattern.flags);
+      sanitized = sanitized.replace(replaceRegex, rule.replacement);
+    }
+  }
+  return { sanitized, actions, blocked };
+}
+
+const SANIT_PRESETS = {
+  ip: { title: 'Patch required for web server', description: 'The web server at 192.168.1.100 needs the latest security patches applied.\nSee vulnerability scan for details.' },
+  hostname: { title: 'Certificate renewal on portal.state.md.us', description: 'The TLS certificate on portal.state.md.us expires in 3 days.\nAlso affects api.maryland.gov reverse proxy.' },
+  ssn: { title: 'Data exposure incident — PII found in logs', description: 'Application logs contained SSN: 123-45-6789\nImmediate remediation required.\nContact security team.' },
+  clean: { title: 'Update NIST 800-53 control mapping documentation', description: 'The AC-2 control mapping needs to be updated to reflect the new account management procedures.\nSee evidence repository for current artifacts.' },
+  full: { title: 'Vulnerability found on medicaid-db01.state.md.us — needs patching', description: 'Critical SQL injection on 10.0.1.50 (medicaid-db01.state.md.us)\nCVE-2026-1234 exploit allows remote code execution\nAffected server at \\\\fileserv01\\fti-data\\reports\nContact Tom Chen for FTI access (SSN records at risk)\nSee Qualys scan #4521 for details' },
+};
+
+function sanitPreview() {
+  const title = document.getElementById('sanitTitle').value;
+  const desc = document.getElementById('sanitDesc').value;
+  const titleResult = sanitizeText(title);
+  const descResult = sanitizeText(desc);
+  const allActions = [...titleResult.actions, ...descResult.actions];
+  const blocked = titleResult.blocked || descResult.blocked;
+  const hasRedact = allActions.some(a => a.action === 'redact');
+  const hasWarn = allActions.some(a => a.action === 'warn');
+
+  const previewEl = document.getElementById('sanitPreviewPanel');
+  let bgColor = '#f0fdf4'; let borderColor = '#86efac';
+  if (blocked) { bgColor = '#fef2f2'; borderColor = '#fca5a5'; }
+  else if (hasRedact || hasWarn) { bgColor = '#fffbeb'; borderColor = '#fcd34d'; }
+  previewEl.style.background = bgColor;
+  previewEl.style.borderColor = borderColor;
+
+  // Sanitized output
+  let outputHtml = '';
+  if (blocked) {
+    outputHtml = `<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:12px;margin-bottom:12px;">
+      <p style="font-size:13px;font-weight:600;color:#991b1b;">Issue will not be created</p>
+      <p style="font-size:12px;color:#b91c1c;margin-top:4px;">Blocked content detected. Remove sensitive data before submitting.</p>
+    </div>`;
+  } else {
+    outputHtml = `<div style="margin-bottom:12px;">
+      <p style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#374151;font-weight:600;margin-bottom:6px;">Sanitized Title</p>
+      <p style="font-size:13px;color:#1e293b;background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:8px 10px;">${escHtml(titleResult.sanitized)}</p>
+    </div>
+    <div style="margin-bottom:12px;">
+      <p style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#374151;font-weight:600;margin-bottom:6px;">Sanitized Description</p>
+      <pre style="font-size:12px;color:#1e293b;background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:8px 10px;white-space:pre-wrap;font-family:inherit;margin:0;">${escHtml(descResult.sanitized)}</pre>
+    </div>`;
+  }
+
+  // Findings list
+  let findingsHtml = '';
+  if (allActions.length === 0) {
+    findingsHtml = `<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;">
+      <span style="font-size:16px;">&#x2705;</span>
+      <span style="font-size:13px;color:#166534;font-weight:500;">Clean — no sensitive data detected. Safe to create in Linear.</span>
+    </div>`;
+  } else {
+    findingsHtml = '<div style="display:flex;flex-direction:column;gap:6px;">';
+    for (const a of allActions) {
+      let badge = '', color = '';
+      if (a.action === 'block') { badge = '<span style="background:#fef2f2;border:1px solid #fca5a5;color:#991b1b;font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;">&#x1F534; BLOCKED</span>'; color = '#991b1b'; }
+      else if (a.action === 'redact') { badge = '<span style="background:#fff7ed;border:1px solid #fdba74;color:#9a3412;font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;">&#x1F7E0; REDACTED</span>'; color = '#9a3412'; }
+      else { badge = '<span style="background:#fffbeb;border:1px solid #fcd34d;color:#92400e;font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;">&#x1F7E1; WARNING</span>'; color = '#92400e'; }
+      const matchText = a.match.length > 40 ? a.match.substring(0, 40) + '...' : a.match;
+      findingsHtml += `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;">
+        ${badge}
+        <span style="font-size:12px;color:${color};font-weight:500;">${escHtml(a.rule)}</span>
+        <code style="font-size:11px;color:#64748b;background:#f1f5f9;padding:1px 6px;border-radius:3px;">${escHtml(matchText)}</code>
+      </div>`;
+    }
+    findingsHtml += '</div>';
+  }
+
+  document.getElementById('sanitPreviewOutput').innerHTML = outputHtml;
+  document.getElementById('sanitFindings').innerHTML = findingsHtml;
+
+  // Update create button state
+  const btn = document.getElementById('sanitCreateBtn');
+  if (blocked) { btn.disabled = true; btn.style.background = '#94a3b8'; btn.style.cursor = 'not-allowed'; }
+  else { btn.disabled = false; btn.style.background = '#2378C3'; btn.style.cursor = 'pointer'; }
+}
+
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function sanitLoadPreset(key) {
+  const p = SANIT_PRESETS[key];
+  if (!p) return;
+  document.getElementById('sanitTitle').value = p.title;
+  document.getElementById('sanitDesc').value = p.description;
+  sanitPreview();
+}
+
+async function sanitCreateIssue() {
+  const btn = document.getElementById('sanitCreateBtn');
+  const statusEl = document.getElementById('sanitStatus');
+  const title = document.getElementById('sanitTitle').value.trim();
+  const desc = document.getElementById('sanitDesc').value.trim();
+  const teamId = document.getElementById('sanitTeam').value;
+  const priority = parseInt(document.getElementById('sanitPriority').value);
+
+  if (!title) { statusEl.innerHTML = '<p style="color:#b91c1c;font-size:13px;">Title is required.</p>'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Creating...';
+  statusEl.innerHTML = '<p style="color:#374151;font-size:13px;">Submitting to sanitization endpoint...</p>';
+
+  try {
+    const res = await fetch('/api/create-issue', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, description: desc, teamId, priority }),
+    });
+    const data = await res.json();
+    if (data.blocked) {
+      statusEl.innerHTML = `<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:12px;">
+        <p style="font-size:13px;font-weight:600;color:#991b1b;">Blocked by server-side sanitization</p>
+        <p style="font-size:12px;color:#b91c1c;margin-top:4px;">${escHtml(data.error)}</p>
+        <div style="margin-top:8px;">${data.actions.map(a => '<span style="font-size:11px;color:#991b1b;">- ' + escHtml(a.rule) + ': ' + escHtml(a.match) + '</span>').join('<br>')}</div>
+      </div>`;
+    } else if (data.error) {
+      statusEl.innerHTML = `<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:12px;">
+        <p style="font-size:13px;font-weight:600;color:#991b1b;">Error</p>
+        <p style="font-size:12px;color:#b91c1c;margin-top:4px;">${escHtml(data.error)}</p>
+      </div>`;
+    } else {
+      let reportHtml = '';
+      if (data.sanitizationReport.hadRedactions) {
+        reportHtml = '<p style="font-size:11px;color:#9a3412;margin-top:6px;">Some content was redacted before creation.</p>';
+      }
+      if (data.sanitizationReport.hadWarnings) {
+        reportHtml += '<p style="font-size:11px;color:#92400e;margin-top:2px;">Warnings were flagged — review the issue in Linear.</p>';
+      }
+      statusEl.innerHTML = `<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px;">
+        <p style="font-size:13px;font-weight:600;color:#166534;">Issue created successfully</p>
+        <p style="font-size:12px;color:#15803d;margin-top:4px;"><strong>${escHtml(data.issue.identifier)}</strong> — ${escHtml(data.issue.title)}</p>
+        <a href="${escHtml(data.issue.url)}" target="_blank" style="font-size:11px;color:#2378C3;text-decoration:underline;margin-top:4px;display:inline-block;">Open in Linear</a>
+        ${reportHtml}
+      </div>`;
+    }
+  } catch (err) {
+    statusEl.innerHTML = `<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:12px;">
+      <p style="font-size:13px;font-weight:600;color:#991b1b;">Connection error</p>
+      <p style="font-size:12px;color:#b91c1c;margin-top:4px;">${escHtml(err.message)}</p>
+    </div>`;
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Create Issue';
+  btn.style.background = '#2378C3';
+  btn.style.cursor = 'pointer';
+}
+
+function renderSanitDemo() {
+  const teamOptions = [
+    { id: 'd4d5bf63-fae7-4938-9531-b1fb80618a8a', name: 'ISSO' },
+    { id: 'assessors', name: 'Assessors' },
+    { id: 'tenant-support', name: 'Tenant Support' },
+    { id: 'poam-mgmt', name: 'POA&M Management' },
+  ];
+  const html = `
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#0d2137,#2378C3);">
+        <svg class="w-5 h-5 text-blue-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+      </div>
+      <div>
+        <h2 class="text-lg font-bold" style="color:#1e293b;">Data Sanitization Demo</h2>
+        <p class="text-xs" style="color:#374151;">Interactive demonstration of the data sanitization middleware</p>
+      </div>
+    </div>
+
+    <div class="card p-4 mb-5" style="background:#eff6ff;border-color:#93c5fd;">
+      <p style="font-size:12px;color:#1e40af;line-height:1.6;">This demonstrates the data sanitization layer. All issues created through the Trust Center or Microsoft Teams integration pass through this filter before reaching Linear. Sensitive patterns (SSNs, IP addresses, hostnames, file paths, exploit details) are detected, redacted, or blocked automatically.</p>
+    </div>
+
+    <div style="display:flex;gap:20px;align-items:flex-start;">
+      <!-- Left Panel: Form (60%) -->
+      <div style="flex:0 0 58%;">
+        <div class="card p-5">
+          <p class="text-sm font-semibold mb-4" style="color:#1e293b;">Create Test Issue</p>
+
+          <div style="margin-bottom:14px;">
+            <label style="font-size:11px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Title</label>
+            <input id="sanitTitle" type="text" oninput="sanitPreview()" value="Vulnerability found on medicaid-db01.state.md.us — needs patching" style="width:100%;border:1px solid #d1d9e0;border-radius:8px;padding:9px 12px;font-size:13px;color:#1e293b;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#2378C3';this.style.boxShadow='0 0 0 2px rgba(35,120,195,0.15)'" onblur="this.style.borderColor='#d1d9e0';this.style.boxShadow='none'">
+          </div>
+
+          <div style="margin-bottom:14px;">
+            <label style="font-size:11px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Description</label>
+            <textarea id="sanitDesc" rows="6" oninput="sanitPreview()" style="width:100%;border:1px solid #d1d9e0;border-radius:8px;padding:9px 12px;font-size:13px;color:#1e293b;outline:none;resize:vertical;font-family:inherit;box-sizing:border-box;" onfocus="this.style.borderColor='#2378C3';this.style.boxShadow='0 0 0 2px rgba(35,120,195,0.15)'" onblur="this.style.borderColor='#d1d9e0';this.style.boxShadow='none'">Critical SQL injection on 10.0.1.50 (medicaid-db01.state.md.us)
+CVE-2026-1234 exploit allows remote code execution
+Affected server at \\\\fileserv01\\fti-data\\reports
+Contact Tom Chen for FTI access (SSN records at risk)
+See Qualys scan #4521 for details</textarea>
+          </div>
+
+          <div style="display:flex;gap:12px;margin-bottom:14px;">
+            <div style="flex:1;">
+              <label style="font-size:11px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Team</label>
+              <select id="sanitTeam" style="width:100%;border:1px solid #d1d9e0;border-radius:8px;padding:9px 12px;font-size:13px;color:#1e293b;outline:none;background:#fff;box-sizing:border-box;">
+                ${teamOptions.map(t => '<option value="' + t.id + '">' + t.name + '</option>').join('')}
+              </select>
+            </div>
+            <div style="flex:1;">
+              <label style="font-size:11px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Priority</label>
+              <select id="sanitPriority" style="width:100%;border:1px solid #d1d9e0;border-radius:8px;padding:9px 12px;font-size:13px;color:#1e293b;outline:none;background:#fff;box-sizing:border-box;">
+                <option value="1">Urgent</option>
+                <option value="2">High</option>
+                <option value="3" selected>Medium</option>
+                <option value="4">Low</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="sanitCreateBtn" onclick="sanitCreateIssue()" style="width:100%;background:#2378C3;color:#fff;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;transition:background 0.15s;" onmouseover="if(!this.disabled)this.style.background='#1a5f9e'" onmouseout="if(!this.disabled)this.style.background='#2378C3'">
+            Create Issue
+          </button>
+
+          <div id="sanitStatus" style="margin-top:12px;"></div>
+
+          <!-- Quick test buttons -->
+          <div style="margin-top:16px;padding-top:14px;border-top:1px solid #e2e8f0;">
+            <p style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#374151;font-weight:600;margin-bottom:8px;">Quick Tests</p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+              <button onclick="sanitLoadPreset('ip')" style="background:#eff6ff;border:1px solid #93c5fd;color:#1e40af;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#eff6ff'">Test: IP Address</button>
+              <button onclick="sanitLoadPreset('hostname')" style="background:#eff6ff;border:1px solid #93c5fd;color:#1e40af;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#eff6ff'">Test: Hostname</button>
+              <button onclick="sanitLoadPreset('ssn')" style="background:#fef2f2;border:1px solid #fca5a5;color:#991b1b;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fef2f2'">Test: SSN (Blocked)</button>
+              <button onclick="sanitLoadPreset('clean')" style="background:#f0fdf4;border:1px solid #86efac;color:#166534;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">Test: Clean Input</button>
+              <button onclick="sanitLoadPreset('full')" style="background:#fff7ed;border:1px solid #fdba74;color:#9a3412;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#ffedd5'" onmouseout="this.style.background='#fff7ed'">Test: Full Violation</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Preview (40%) -->
+      <div style="flex:1;min-width:0;">
+        <div id="sanitPreviewPanel" class="card p-5" style="border:2px solid #fcd34d;background:#fffbeb;transition:all 0.3s;">
+          <p class="text-sm font-semibold mb-4" style="color:#1e293b;">Sanitization Preview</p>
+          <div id="sanitPreviewOutput"></div>
+          <div style="margin-top:12px;">
+            <p style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#374151;font-weight:600;margin-bottom:8px;">Findings</p>
+            <div id="sanitFindings"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('sanitDemoContent').innerHTML = html;
+  // Run initial preview
+  setTimeout(sanitPreview, 50);
 }
 
 loadData();
