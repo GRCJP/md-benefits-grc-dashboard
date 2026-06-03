@@ -155,6 +155,10 @@
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
         Priority Efforts
       </a>
+      <a onclick="showView('poamexec')" id="tab-poamexec" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        POA&M Management
+      </a>
       <a onclick="showView('executive');setTimeout(()=>{switchExecTab('intake');document.querySelectorAll('.sidebar-item').forEach(el=>el.classList.remove('active'));document.getElementById('tab-intake').classList.add('active');},0)" id="tab-intake" class="sidebar-item">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
         Intake Monitoring
@@ -297,6 +301,8 @@
     </div>
 
     <!-- ═══ ACTION ITEMS VIEW ═══ -->
+    <div id="view-poamexec" class="hidden"><div id="poamExecContent"></div></div>
+
     <div id="view-action" class="hidden">
       <div class="mb-6"><div class="flex items-center gap-2 mb-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#991b1b;"><svg class="w-4 h-4 text-red-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg></div><h2 class="text-base font-bold" style="color:#1e293b;">Active Incidents & Response</h2></div><div id="incidentCards" class="grid grid-cols-1 gap-3 mb-2"></div><div id="noIncidents" class="hidden card rounded-xl p-4 text-center text-sm text-slate-900">No active incidents</div></div>
       <div class="section-divider"></div>
@@ -539,7 +545,7 @@ async function loadData() {
   renderNotifications();
 }
 
-const ALL_VIEWS = ['executive','action','datasecurity','sanitdemo','whylinear','category','integrations','teamview','framework','system'];
+const ALL_VIEWS = ['executive','poamexec','action','datasecurity','sanitdemo','whylinear','category','integrations','teamview','framework','system'];
 const CAT_IDS = ['poam','assessment','evidence','ato','external-request','compliance'];
 
 function showView(view) {
@@ -551,6 +557,7 @@ function showView(view) {
   const tab = document.getElementById(`tab-${view}`);
   if (tab) tab.classList.add('active');
   if (view === 'action') renderActionItems();
+  if (view === 'poamexec') renderPoamExec();
   if (view === 'datasecurity') renderDataSecurity();
   if (view === 'whylinear') renderWhyLinear();
   if (view === 'integrations') renderIntegrations();
@@ -1525,6 +1532,231 @@ function renderIntakeMonitoring() {
 }
 
 // ─── ACTION ITEMS ─────────────────────────────────────────
+function renderPoamExec() {
+  const poam = DATA.byCategory['POA&M'] || {};
+  const k = DATA.kevs || {};
+  const c = DATA.certs || {};
+  const d = DATA.docs || {};
+  const overdueItems = (DATA.notifications||[]).filter(n => n.type === 'overdue');
+
+  document.getElementById('poamExecContent').innerHTML = `
+    <div style="margin-bottom:20px;">
+      <h2 style="font-size:20px;font-weight:700;color:#111827;margin-bottom:4px;">POA&M Management</h2>
+      <p style="font-size:13px;color:#6b7280;">Remediation tracking, risk acceptance, and compliance operations</p>
+    </div>
+
+    <!-- POA&M Overview Metrics -->
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;">
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;">
+        <p style="font-size:36px;font-weight:700;color:#2378C3;">${poam.open||0}</p>
+        <p style="font-size:13px;font-weight:600;color:#374151;">Total Open</p>
+      </div>
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;">
+        <p style="font-size:36px;font-weight:700;color:#dc2626;">${poam.critical||0}</p>
+        <p style="font-size:13px;font-weight:600;color:#374151;">Critical</p>
+      </div>
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;">
+        <p style="font-size:36px;font-weight:700;color:${overdueItems.length>0?'#dc2626':'#16a34a'};">${overdueItems.length}</p>
+        <p style="font-size:13px;font-weight:600;color:#374151;">Overdue</p>
+      </div>
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;">
+        <p style="font-size:36px;font-weight:700;color:#111827;">12</p>
+        <p style="font-size:13px;font-weight:600;color:#374151;">Closed / Month</p>
+      </div>
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;">
+        <p style="font-size:36px;font-weight:700;color:#111827;">3</p>
+        <p style="font-size:13px;font-weight:600;color:#374151;">Risk Accepted</p>
+      </div>
+    </div>
+
+    <!-- Two columns: Aging + By System -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+      <!-- POA&M Aging — Risk Acceptance -->
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+          <svg style="width:18px;height:18px;color:#d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span style="font-size:15px;font-weight:700;color:#111827;">POA&M Aging — Risk Acceptance Review</span>
+        </div>
+        ${[
+          {label:'Less than 1 month',count:14,color:'#16a34a',bg:'#f0fdf4',pct:45},
+          {label:'1 – 6 months',count:9,color:'#d97706',bg:'#fffbeb',pct:29},
+          {label:'6 months – 1 year',count:5,color:'#ea580c',bg:'#fff7ed',pct:16},
+          {label:'Over 1 year',count:3,color:'#dc2626',bg:'#fef2f2',pct:10},
+        ].map(tier => `
+          <div style="margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <span style="font-size:14px;font-weight:600;color:#111827;">${tier.label}</span>
+              <span style="font-size:20px;font-weight:700;color:${tier.color};">${tier.count}</span>
+            </div>
+            <div style="height:16px;background:#f3f4f6;border-radius:8px;overflow:hidden;">
+              <div style="height:100%;width:${tier.pct}%;background:${tier.color};border-radius:8px;"></div>
+            </div>
+          </div>
+        `).join('')}
+        <p style="font-size:12px;color:#6b7280;margin-top:12px;font-style:italic;">Items over 6 months require formal risk acceptance review</p>
+      </div>
+
+      <!-- By System -->
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+          <svg style="width:18px;height:18px;color:#2378C3;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          <span style="font-size:15px;font-weight:700;color:#111827;">POA&Ms by System</span>
+        </div>
+        ${[
+          {name:'CaseTrack',count:8,color:'#2563eb',pct:26},
+          {name:'HealthConnect',count:12,color:'#7c3aed',pct:39},
+          {name:'RevenuePro',count:5,color:'#0d9488',pct:16},
+          {name:'DataHub',count:6,color:'#ea580c',pct:19},
+        ].map(sys => `
+          <div style="margin-bottom:12px;cursor:pointer;" onclick="showSystem('${sys.name === 'DataHub' ? 'MD DataHub' : sys.name}')">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <span style="font-size:14px;font-weight:600;color:#111827;">${sys.name}</span>
+              <span style="font-size:20px;font-weight:700;color:${sys.color};">${sys.count}</span>
+            </div>
+            <div style="height:16px;background:#f3f4f6;border-radius:8px;overflow:hidden;">
+              <div style="height:100%;width:${sys.pct}%;background:${sys.color};border-radius:8px;"></div>
+            </div>
+          </div>
+        `).join('')}
+        <p style="font-size:12px;color:#6b7280;margin-top:12px;font-style:italic;">Click a system to view details</p>
+      </div>
+    </div>
+
+    <!-- Three columns: KEVs, Certs, Doc Reviews -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px;">
+
+      <!-- CISA KEVs -->
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+          <div style="width:28px;height:28px;border-radius:6px;background:#991b1b;display:flex;align-items:center;justify-content:center;">
+            <svg style="width:14px;height:14px;color:#fca5a5;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01"/></svg>
+          </div>
+          <span style="font-size:15px;font-weight:700;color:#111827;">CISA KEVs</span>
+        </div>
+        <div style="display:flex;gap:16px;margin-bottom:14px;">
+          <div style="text-align:center;flex:1;"><p style="font-size:28px;font-weight:700;color:#dc2626;">${k.open||0}</p><p style="font-size:11px;color:#6b7280;">Open</p></div>
+          <div style="text-align:center;flex:1;"><p style="font-size:28px;font-weight:700;color:#16a34a;">${k.resolved||0}</p><p style="font-size:11px;color:#6b7280;">Resolved</p></div>
+          <div style="text-align:center;flex:1;"><p style="font-size:28px;font-weight:700;color:${k.overdue>0?'#dc2626':'#16a34a'};">${k.overdue||0}</p><p style="font-size:11px;color:#6b7280;">Overdue</p></div>
+        </div>
+        ${(k.items||[]).filter(i=>i.statusType!=='completed').map(i => {
+          const u = i.daysLeft <= 7 ? '#dc2626' : i.daysLeft <= 14 ? '#ea580c' : '#d97706';
+          const bg = i.daysLeft <= 7 ? '#fef2f2' : i.daysLeft <= 14 ? '#fff7ed' : '#fffbeb';
+          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid #f3f4f6;cursor:pointer;" onclick="showDetail('${i.id}')">
+            <span style="font-size:13px;font-weight:500;color:#111827;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px;">${i.title.replace(/^KEV-\d+:\s*/,'').substring(0,35)}</span>
+            <span style="font-size:12px;font-weight:700;color:${u};background:${bg};padding:2px 10px;border-radius:20px;white-space:nowrap;">${i.daysLeft}d</span>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <!-- Certificate Expirations -->
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+          <div style="width:28px;height:28px;border-radius:6px;background:#b45309;display:flex;align-items:center;justify-content:center;">
+            <svg style="width:14px;height:14px;color:#fbbf24;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+          </div>
+          <span style="font-size:15px;font-weight:700;color:#111827;">Certificate Expirations</span>
+        </div>
+        <div style="display:flex;gap:16px;margin-bottom:14px;">
+          <div style="text-align:center;flex:1;"><p style="font-size:28px;font-weight:700;color:#dc2626;">${c.critical||0}</p><p style="font-size:11px;color:#6b7280;">&lt; 7 days</p></div>
+          <div style="text-align:center;flex:1;"><p style="font-size:28px;font-weight:700;color:#d97706;">${c.warning||0}</p><p style="font-size:11px;color:#6b7280;">7–30 days</p></div>
+          <div style="text-align:center;flex:1;"><p style="font-size:28px;font-weight:700;color:#16a34a;">${c.ok||0}</p><p style="font-size:11px;color:#6b7280;">&gt; 30 days</p></div>
+        </div>
+        ${(c.items||[]).map(i => {
+          const u = i.daysLeft <= 7 ? '#dc2626' : i.daysLeft <= 30 ? '#d97706' : '#16a34a';
+          const bg = i.daysLeft <= 7 ? '#fef2f2' : i.daysLeft <= 30 ? '#fffbeb' : '#f0fdf4';
+          const name = i.title.replace(/^CERT-\d+:\s*(SSL |Code Signing |Mutual TLS )?Certificate\s*(Expiring\s*-\s*)?/i, '').substring(0, 30);
+          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid #f3f4f6;cursor:pointer;" onclick="showDetail('${i.id}')">
+            <span style="font-size:13px;font-weight:500;color:#111827;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px;">${name}</span>
+            <span style="font-size:12px;font-weight:700;color:${u};background:${bg};padding:2px 10px;border-radius:20px;white-space:nowrap;">${i.daysLeft}d</span>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <!-- Document Review Dates -->
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+          <div style="width:28px;height:28px;border-radius:6px;background:#4338ca;display:flex;align-items:center;justify-content:center;">
+            <svg style="width:14px;height:14px;color:#a5b4fc;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <span style="font-size:15px;font-weight:700;color:#111827;">Document Review Dates</span>
+        </div>
+        <div style="display:flex;gap:16px;margin-bottom:14px;">
+          <div style="text-align:center;flex:1;"><p style="font-size:28px;font-weight:700;color:#dc2626;">${d.overdue||0}</p><p style="font-size:11px;color:#6b7280;">Overdue</p></div>
+          <div style="text-align:center;flex:1;"><p style="font-size:28px;font-weight:700;color:#d97706;">${d.dueSoon||0}</p><p style="font-size:11px;color:#6b7280;">Due &lt;30d</p></div>
+          <div style="text-align:center;flex:1;"><p style="font-size:28px;font-weight:700;color:#16a34a;">${d.completed||0}</p><p style="font-size:11px;color:#6b7280;">Complete</p></div>
+        </div>
+        ${(d.items||[]).filter(i=>i.statusType!=='completed').map(i => {
+          const u = i.daysLeft < 0 ? '#dc2626' : i.daysLeft <= 14 ? '#ea580c' : i.daysLeft <= 30 ? '#d97706' : '#16a34a';
+          const bg = i.daysLeft < 0 ? '#fef2f2' : i.daysLeft <= 14 ? '#fff7ed' : i.daysLeft <= 30 ? '#fffbeb' : '#f0fdf4';
+          const label = i.daysLeft < 0 ? Math.abs(i.daysLeft)+'d over' : i.daysLeft+'d';
+          const name = i.title.replace(/^DOC-\d+:\s*/, '').substring(0, 30);
+          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid #f3f4f6;cursor:pointer;" onclick="showDetail('${i.id}')">
+            <span style="font-size:13px;font-weight:500;color:#111827;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px;">${name}</span>
+            <span style="font-size:12px;font-weight:700;color:${u};background:${bg};padding:2px 10px;border-radius:20px;white-space:nowrap;">${label}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- Finding Sources -->
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <svg style="width:18px;height:18px;color:#2378C3;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        <span style="font-size:15px;font-weight:700;color:#111827;">Finding Sources</span>
+      </div>
+      <div style="display:flex;height:24px;border-radius:12px;overflow:hidden;margin-bottom:12px;">
+        <div style="width:62%;background:#2378C3;"></div>
+        <div style="width:18%;background:#7c3aed;"></div>
+        <div style="width:12%;background:#be185d;"></div>
+        <div style="width:5%;background:#ea580c;"></div>
+        <div style="width:3%;background:#0d9488;"></div>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        ${[
+          {name:'Vulnerability Scans',pct:62,color:'#2378C3'},
+          {name:'Pen Tests',pct:18,color:'#7c3aed'},
+          {name:'External Audits',pct:12,color:'#be185d'},
+          {name:'Bug Bounty',pct:5,color:'#ea580c'},
+          {name:'Internal Audit',pct:3,color:'#0d9488'},
+        ].map(s => `<div style="display:flex;align-items:center;gap:6px;">
+          <div style="width:12px;height:12px;border-radius:3px;background:${s.color};"></div>
+          <span style="font-size:13px;color:#374151;font-weight:500;">${s.name} ${s.pct}%</span>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- Risk Acceptances Detail -->
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <svg style="width:18px;height:18px;color:#d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+        <span style="font-size:15px;font-weight:700;color:#111827;">Active Risk Acceptances</span>
+      </div>
+      <table style="width:100%;font-size:13px;border-collapse:collapse;">
+        <thead><tr style="border-bottom:2px solid #e5e7eb;">
+          <th style="text-align:left;padding:10px 12px;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#6b7280;">ID</th>
+          <th style="text-align:left;padding:10px 12px;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#6b7280;">Description</th>
+          <th style="text-align:center;padding:10px 12px;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#6b7280;">Risk Level</th>
+          <th style="text-align:center;padding:10px 12px;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#6b7280;">Review Date</th>
+          <th style="text-align:left;padding:10px 12px;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#6b7280;">Owner</th>
+        </tr></thead>
+        <tbody>
+          ${[
+            {id:'RA-001',desc:'Legacy batch processing without MFA',risk:'Medium',review:'Sep 2026',owner:'Sarah Chen',color:'#d97706'},
+            {id:'RA-002',desc:'Shared service account for batch jobs',risk:'Medium',review:'Oct 2026',owner:'Maria Gonzalez',color:'#d97706'},
+            {id:'RA-003',desc:'Legacy mainframe SSA without MFA',risk:'High',review:'Aug 2026',owner:'Priya Sharma',color:'#dc2626'},
+          ].map((r,i) => `<tr style="border-bottom:1px solid #f3f4f6;${i%2===1?'background:#f9fafb;':''}">
+            <td style="padding:10px 12px;font-weight:600;color:#111827;">${r.id}</td>
+            <td style="padding:10px 12px;color:#374151;">${r.desc}</td>
+            <td style="padding:10px 12px;text-align:center;"><span style="font-weight:700;color:${r.color};">${r.risk}</span></td>
+            <td style="padding:10px 12px;text-align:center;color:#374151;">${r.review}</td>
+            <td style="padding:10px 12px;color:#374151;">${r.owner}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
 function renderActionItems(){
   const ai=DATA.actionItems||[],incidents=ai.filter(i=>i.source==='Incident'),aging=ai.filter(i=>i.labels?.includes('Aging Finding')),pentest=ai.filter(i=>i.source==='Pen Test'),audit=ai.filter(i=>i.source==='External Audit');
   const ic=document.getElementById('incidentCards'),ni=document.getElementById('noIncidents');
