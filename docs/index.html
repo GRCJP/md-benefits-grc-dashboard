@@ -54,7 +54,7 @@
     .progress-bar { height: 6px; border-radius: 4px; background: #e2e8f0; overflow: hidden; }
     .progress-fill { height: 100%; border-radius: 6px; transition: width 0.6s ease; }
 
-    .metric-ring { position: relative; width: 130px; height: 130px; }
+    .metric-ring { position: relative; width: 100px; height: 100px; }
     canvas { max-height: 100%; }
 
 
@@ -83,12 +83,12 @@
     .sidebar { position: fixed; left: 0; top: 0; width: 220px; height: 100vh; background: linear-gradient(180deg, #0d2137 0%, #1a3a5c 100%); z-index: 35; display: flex; flex-direction: column; overflow-y: auto; }
     .sidebar-logo { padding: 16px 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
     .sidebar-nav { padding: 12px 0; flex: 1; }
-    .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 9px 18px; margin: 2px 8px; border-radius: 8px; font-size: 13px; font-weight: 500; color: rgba(191,219,254,0.7); cursor: pointer; transition: all 0.15s; text-decoration: none; }
-    .sidebar-item:hover { color: #ffffff; background: rgba(255,255,255,0.08); }
-    .sidebar-item.active { color: #1e293b; background: #ffffff; font-weight: 600; }
+    .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 9px 18px; margin: 2px 8px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #e2e8f0; cursor: pointer; transition: all 0.15s; text-decoration: none; }
+    .sidebar-item:hover { color: #ffffff; background: rgba(255,255,255,0.12); }
+    .sidebar-item.active { color: #0d2137; background: #ffffff; font-weight: 600; }
     .sidebar-item svg { width: 18px; height: 18px; flex-shrink: 0; }
-    .sidebar-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 8px 18px; }
-    .sidebar-section-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(147,197,253,0.4); padding: 8px 18px 4px; }
+    .sidebar-divider { height: 1px; background: rgba(255,255,255,0.12); margin: 8px 18px; }
+    .sidebar-section-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: #93c5fd; padding: 8px 18px 4px; font-weight: 600; }
 
     .main-with-sidebar { margin-left: 220px; min-width: 0; overflow-x: hidden; box-sizing: border-box; }
     .header-with-sidebar { margin-left: 220px; }
@@ -233,58 +233,58 @@
     </div>
   </header>
 
-  <main class="px-6 py-5 main-with-sidebar">
+  <main class="px-5 py-4 main-with-sidebar">
 
     <!-- ═══ EXECUTIVE VIEW ═══ -->
     <div id="view-executive">
 
       <!-- ROW 1: Trust Center Health Score Banner -->
-      <div class="card p-6 mb-5">
-        <div class="flex items-center gap-8">
+      <div class="card p-4 mb-3">
+        <div class="flex items-center gap-6">
           <!-- Large Compliance Gauge -->
-          <div class="flex flex-col items-center" style="min-width:160px;">
-            <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-2">Compliance Health</p>
-            <div class="relative" style="width:130px;height:130px;">
+          <div class="flex flex-col items-center" style="min-width:130px;">
+            <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-1">Compliance Health</p>
+            <div class="relative" style="width:100px;height:100px;">
               <canvas id="healthRing"></canvas>
               <div class="absolute inset-0 flex flex-col items-center justify-center">
                 <span id="healthPct" class="text-3xl font-bold" style="color:#1e293b;">--</span>
-                <span class="text-[10px]" style="color:#64748b;">compliant</span>
+                <span class="text-[10px]" style="color:#475569;">compliant</span>
               </div>
             </div>
           </div>
           <!-- Key Risk Indicators -->
-          <div class="flex-1 grid grid-cols-4 gap-4">
-            <div class="card p-4 text-center card-hover" style="border-left:4px solid #2378C3;">
-              <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-2">Risk Score</p>
-              <p class="text-3xl font-bold" id="riskScore" style="color:#1e293b;">--</p>
-              <p class="text-[10px] mt-1" id="riskLabel" style="color:#64748b;">--</p>
+          <div class="flex-1 grid grid-cols-4 gap-3">
+            <div class="card p-3 text-center card-hover" style="border-left:4px solid #2378C3;">
+              <p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">Risk Score</p>
+              <p class="text-2xl font-bold" id="riskScore" style="color:#1e293b;">--</p>
+              <p class="text-[10px]" id="riskLabel" style="color:#475569;">--</p>
             </div>
-            <div class="card p-4 text-center card-hover" style="border-left:4px solid #d97706;">
-              <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-2">Open Findings</p>
-              <p class="text-3xl font-bold" id="openCount" style="color:#1e293b;">--</p>
-              <p class="text-[10px] mt-1" style="color:#64748b;"><span id="critCount" class="font-semibold sev-crit">--</span> critical</p>
+            <div class="card p-3 text-center card-hover" style="border-left:4px solid #d97706;">
+              <p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">Open Findings</p>
+              <p class="text-2xl font-bold" id="openCount" style="color:#1e293b;">--</p>
+              <p class="text-[10px]" style="color:#475569;"><span id="critCount" class="font-semibold sev-crit">--</span> critical</p>
             </div>
-            <div class="card p-4 text-center card-hover" style="border-left:4px solid #dc2626;">
-              <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-2">Overdue Items</p>
-              <p class="text-3xl font-bold sev-crit" id="overdueCount">--</p>
-              <p class="text-[10px] mt-1" style="color:#64748b;">require action</p>
+            <div class="card p-3 text-center card-hover" style="border-left:4px solid #dc2626;">
+              <p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">Overdue Items</p>
+              <p class="text-2xl font-bold sev-crit" id="overdueCount">--</p>
+              <p class="text-[10px]" style="color:#475569;">require action</p>
             </div>
-            <div class="card p-4 text-center card-hover" style="border-left:4px solid #719F2A;">
-              <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-2">Mean Time to Remediate</p>
-              <p class="text-3xl font-bold" id="mttrValue" style="color:#1e293b;">--</p>
-              <p class="text-[10px] mt-1" style="color:#64748b;">avg days to close</p>
+            <div class="card p-3 text-center card-hover" style="border-left:4px solid #719F2A;">
+              <p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">Avg Remediation</p>
+              <p class="text-2xl font-bold" id="mttrValue" style="color:#1e293b;">--</p>
+              <p class="text-[10px]" style="color:#475569;">days to close</p>
             </div>
           </div>
         </div>
       </div>
 
       <!-- ROW 2: Framework Compliance Scorecards -->
-      <div class="grid grid-cols-5 gap-4 mb-5" id="frameworkCards"></div>
+      <div class="grid grid-cols-5 gap-3 mb-3" id="frameworkCards"></div>
 
       <!-- ROW 3: Risk Heatmap + Key Metrics -->
-      <div class="grid grid-cols-12 gap-4 mb-5">
+      <div class="grid grid-cols-12 gap-3 mb-3">
         <!-- Risk Heatmap (60%) -->
-        <div class="col-span-7 card p-5">
+        <div class="col-span-7 card p-4">
           <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-4">Risk Heatmap &mdash; Severity vs Category</p>
           <div id="riskHeatmap"></div>
         </div>
@@ -815,25 +815,28 @@ function renderFrameworkScorecards() {
 function renderRiskHeatmap() {
   const sevs = ['Critical','High','Medium','Low'];
   const cats = ['POA&M','Assessment','ATO','Evidence','External Request','Compliance'];
-  const sevColors = {'Critical':'#dc2626','High':'#ea580c','Medium':'#d97706','Low':'#719F2A'};
-  const bgColors = {'Critical':'#fef2f2','High':'#fff7ed','Medium':'#fffbeb','Low':'#f0fdf4'};
+  const sevColors = {'Critical':'#dc2626','High':'#ea580c','Medium':'#d97706','Low':'#16a34a'};
+  // Solid bold backgrounds for non-zero cells
+  const bgSolid = {'Critical':'#dc2626','High':'#ea580c','Medium':'#d97706','Low':'#16a34a'};
+  const bgLight = {'Critical':'#fecaca','High':'#fed7aa','Medium':'#fde68a','Low':'#bbf7d0'};
 
-  let html = '<table class="w-full text-xs" style="border-collapse:separate;border-spacing:3px;">';
-  html += '<thead><tr><th class="text-left py-2 px-2" style="color:#64748b;width:80px;"></th>';
-  cats.forEach(c => { html += `<th class="text-center py-2 px-1" style="color:#334155;font-size:9px;font-weight:600;">${c}</th>`; });
+  let html = '<table class="w-full text-xs" style="border-collapse:separate;border-spacing:4px;">';
+  html += '<thead><tr><th class="text-left py-2 px-2" style="color:#1e293b;width:80px;"></th>';
+  cats.forEach(c => { html += `<th class="text-center py-2 px-1" style="color:#1e293b;font-size:10px;font-weight:600;">${c}</th>`; });
   html += '</tr></thead><tbody>';
 
   sevs.forEach(sev => {
-    html += `<tr><td class="py-1 px-2 font-semibold" style="color:${sevColors[sev]};font-size:10px;">${sev}</td>`;
+    html += `<tr><td class="py-2 px-2 font-bold" style="color:${sevColors[sev]};font-size:11px;">${sev}</td>`;
     cats.forEach(cat => {
       const catData = DATA.byCategory[cat] || {};
       const issues = catData.issues || [];
       const count = issues.filter(i => i.labels.includes(sev) && !['completed','canceled'].includes(i.statusType)).length;
-      const bg = count > 0 ? bgColors[sev] : '#f8fafc';
-      const textColor = count > 0 ? sevColors[sev] : '#cbd5e1';
-      const border = count > 0 ? `border:1px solid ${sevColors[sev]}30;` : 'border:1px solid #e2e8f0;';
-      html += `<td class="text-center py-2 px-1 rounded cursor-pointer hover:opacity-80" style="background:${bg};${border}" onclick="drillDown('${cat}')">
-        <span class="font-bold" style="color:${textColor};font-size:${count>0?'14px':'11px'};">${count}</span>
+      let bg, textColor, border;
+      if (count > 2) { bg = bgSolid[sev]; textColor = '#ffffff'; border = 'none'; }
+      else if (count > 0) { bg = bgLight[sev]; textColor = sevColors[sev]; border = `2px solid ${sevColors[sev]}`; }
+      else { bg = '#f1f5f9'; textColor = '#94a3b8'; border = '1px solid #e2e8f0'; }
+      html += `<td class="text-center rounded-lg cursor-pointer hover:opacity-80" style="background:${bg};border:${border};padding:10px 4px;" onclick="drillDown('${cat}')">
+        <span class="font-bold" style="color:${textColor};font-size:${count>0?'16px':'12px'};">${count}</span>
       </td>`;
     });
     html += '</tr>';
@@ -975,7 +978,7 @@ function renderFrameworkPage(frameworkName) {
           <p class="text-sm font-semibold" style="color:#1e293b;">${sec.title}</p>
           <span class="pill pill-neutral ml-2">0</span>
         </div>
-        <p class="text-xs" style="color:#64748b;">No ${sec.title.toLowerCase()} items for ${frameworkName}</p>
+        <p class="text-xs" style="color:#475569;">No ${sec.title.toLowerCase()} items for ${frameworkName}</p>
       </div>`;
     }
 
@@ -986,9 +989,9 @@ function renderFrameworkPage(frameworkName) {
         <span class="pill pill-blue ml-2">${items.length}</span>
       </div>
       <div class="flex gap-4 mb-3 text-[11px]">
-        <span><strong style="color:#1e293b;">${sOpen}</strong> <span style="color:#64748b;">open</span></span>
-        <span><strong style="color:#2378C3;">${sInProgress}</strong> <span style="color:#64748b;">in progress</span></span>
-        <span><strong style="color:#719F2A;">${sDone}</strong> <span style="color:#64748b;">done</span></span>
+        <span><strong style="color:#1e293b;">${sOpen}</strong> <span style="color:#475569;">open</span></span>
+        <span><strong style="color:#2378C3;">${sInProgress}</strong> <span style="color:#475569;">in progress</span></span>
+        <span><strong style="color:#719F2A;">${sDone}</strong> <span style="color:#475569;">done</span></span>
       </div>
       <table class="w-full text-xs">
         <thead><tr class="text-slate-700 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;">
@@ -1036,7 +1039,7 @@ function renderFrameworkPage(frameworkName) {
               stroke-dasharray="${circumference}" stroke-dashoffset="${dashoffset}" transform="rotate(-90 35 35)"/>
             <text x="35" y="39" text-anchor="middle" font-size="15" font-weight="700" fill="${gaugeColor}">${compPct}%</text>
           </svg>
-          <p class="text-[10px] mt-1" style="color:#64748b;">compliant</p>
+          <p class="text-[10px] mt-1" style="color:#475569;">compliant</p>
         </div>
         <div class="flex-1">
           <div class="flex items-center gap-3 mb-2">
@@ -1046,19 +1049,19 @@ function renderFrameworkPage(frameworkName) {
           <div class="grid grid-cols-4 gap-4 mt-3">
             <div class="text-center">
               <p class="text-2xl font-bold" style="color:#1e293b;">${allFwIssues.length}</p>
-              <p class="text-[10px]" style="color:#64748b;">Total Items</p>
+              <p class="text-[10px]" style="color:#475569;">Total Items</p>
             </div>
             <div class="text-center">
               <p class="text-2xl font-bold" style="color:#2378C3;">${openIssues.length}</p>
-              <p class="text-[10px]" style="color:#64748b;">Open</p>
+              <p class="text-[10px]" style="color:#475569;">Open</p>
             </div>
             <div class="text-center">
               <p class="text-2xl font-bold" style="color:#719F2A;">${closedIssues.length}</p>
-              <p class="text-[10px]" style="color:#64748b;">Closed</p>
+              <p class="text-[10px]" style="color:#475569;">Closed</p>
             </div>
             <div class="text-center">
               <p class="text-2xl font-bold sev-crit">${criticalIssues.length}</p>
-              <p class="text-[10px]" style="color:#64748b;">Critical Open</p>
+              <p class="text-[10px]" style="color:#475569;">Critical Open</p>
             </div>
           </div>
         </div>
@@ -1422,7 +1425,7 @@ function renderIntegrations() {
                   <span class="text-[9px] px-1.5 py-0.5 rounded" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;">KEV</span>
                   <span class="text-[9px] px-1.5 py-0.5 rounded" style="background:#ede9fe;color:#6d28d9;border:1px solid #ddd6fe;">POA&M</span>
                 </div>
-                <p class="text-[10px] mt-2" style="color:#64748b;">Team: POA&M Management &middot; Assignee: Mike Torres</p>
+                <p class="text-[10px] mt-2" style="color:#475569;">Team: POA&M Management &middot; Assignee: Mike Torres</p>
               </div>
             </div>
           </div>
@@ -1458,7 +1461,7 @@ function renderIntegrations() {
                   <span class="text-[9px] px-1.5 py-0.5 rounded" style="background:#dbeafe;color:#1d4ed8;border:1px solid #93c5fd;">Compliance</span>
                   <span class="text-[9px] px-1.5 py-0.5 rounded" style="background:#e0f2fe;color:#0369a1;border:1px solid #7dd3fc;">Evidence</span>
                 </div>
-                <p class="text-[10px] mt-2" style="color:#64748b;">Team: ISSO &middot; Assignee: Rachel Adams</p>
+                <p class="text-[10px] mt-2" style="color:#475569;">Team: ISSO &middot; Assignee: Rachel Adams</p>
               </div>
             </div>
           </div>
@@ -1494,7 +1497,7 @@ function renderIntegrations() {
                   <span class="text-[9px] px-1.5 py-0.5 rounded" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;">Assessment</span>
                   <span class="text-[9px] px-1.5 py-0.5 rounded" style="background:#fce7f3;color:#9d174d;border:1px solid #f9a8d4;">MARS-E</span>
                 </div>
-                <p class="text-[10px] mt-2" style="color:#64748b;">Team: Assessors &middot; Assignee: Priya Sharma</p>
+                <p class="text-[10px] mt-2" style="color:#475569;">Team: Assessors &middot; Assignee: Priya Sharma</p>
               </div>
             </div>
           </div>
@@ -1601,7 +1604,7 @@ function renderIntegrations() {
           <div class="rounded-lg p-3 mx-auto" style="background:#e8ebfa;border:2px solid #6264A7;width:140px;">
             <svg class="w-6 h-6 mx-auto mb-1" viewBox="0 0 24 24" fill="#6264A7"><path d="M20.625 7.875h-3.75V5.25A2.625 2.625 0 0014.25 2.625h-4.5A2.625 2.625 0 007.125 5.25v2.625h-3.75A1.875 1.875 0 001.5 9.75v9.375A2.625 2.625 0 004.125 21.75h15.75a2.625 2.625 0 002.625-2.625V9.75a1.875 1.875 0 00-1.875-1.875z"/></svg>
             <p class="text-xs font-bold" style="color:#6264A7;">Teams Channel</p>
-            <p class="text-[10px]" style="color:#64748b;">User reports issue</p>
+            <p class="text-[10px]" style="color:#475569;">User reports issue</p>
           </div>
         </div>
         <!-- Arrow 1 -->
@@ -1614,7 +1617,7 @@ function renderIntegrations() {
           <div class="rounded-lg p-3 mx-auto" style="background:#f5f3ff;border:2px solid #5E6AD2;width:140px;">
             <svg class="w-6 h-6 mx-auto mb-1" viewBox="0 0 24 24" fill="#5E6AD2"><path d="M3 7.5L12 2l9 5.5v9L12 22l-9-5.5v-9zm9 9.5a5 5 0 100-10 5 5 0 000 10z"/></svg>
             <p class="text-xs font-bold" style="color:#5E6AD2;">Linear API</p>
-            <p class="text-[10px]" style="color:#64748b;">Issue created &amp; routed</p>
+            <p class="text-[10px]" style="color:#475569;">Issue created &amp; routed</p>
           </div>
         </div>
         <!-- Arrow 2 -->
@@ -1627,7 +1630,7 @@ function renderIntegrations() {
           <div class="rounded-lg p-3 mx-auto" style="background:#eff6ff;border:2px solid #2378C3;width:140px;">
             <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="#2378C3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
             <p class="text-xs font-bold" style="color:#2378C3;">Dashboard</p>
-            <p class="text-[10px]" style="color:#64748b;">Status updated live</p>
+            <p class="text-[10px]" style="color:#475569;">Status updated live</p>
           </div>
         </div>
         <!-- Arrow 3 -->
@@ -1640,11 +1643,11 @@ function renderIntegrations() {
           <div class="rounded-lg p-3 mx-auto" style="background:#e8ebfa;border:2px solid #6264A7;width:140px;">
             <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="#6264A7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
             <p class="text-xs font-bold" style="color:#6264A7;">Teams Alert</p>
-            <p class="text-[10px]" style="color:#64748b;">Notification sent back</p>
+            <p class="text-[10px]" style="color:#475569;">Notification sent back</p>
           </div>
         </div>
       </div>
-      <p class="text-[11px] text-center mt-2" style="color:#64748b;">Messages in Teams channels are parsed and routed to the correct Linear team. Updates flow back as Teams notifications.</p>
+      <p class="text-[11px] text-center mt-2" style="color:#475569;">Messages in Teams channels are parsed and routed to the correct Linear team. Updates flow back as Teams notifications.</p>
     </div>
 
     <!-- Google Chat Preview -->
