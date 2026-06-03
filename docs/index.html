@@ -2900,7 +2900,7 @@ function renderDataSecurity() {
               ['Framework &amp; control ID','Public','Linear','"CMS ARC-AMPE, AC-2"','#15803d','#f0fdf4','#86efac'],
               ['Evidence reference ID','Internal','Linear','"EV-AC2-HealthConnect-001"','#1e40af','#eff6ff','#bfdbfe'],
               ['Remediation status','Internal','Linear','"In Progress &mdash; 80% complete"','#1e40af','#eff6ff','#bfdbfe'],
-              ['Vulnerability scan output','Sensitive','SharePoint GCC','Raw Qualys/Wiz/Tenable reports','#c2410c','#fff7ed','#fdba74'],
+              ['Vulnerability scan output','Sensitive','SharePoint GCC','Raw Wiz/Tenable/Nessus reports','#c2410c','#fff7ed','#fdba74'],
               ['Screenshots','Sensitive','SharePoint GCC','System configuration evidence','#c2410c','#fff7ed','#fdba74'],
               ['Hostnames &amp; IP addresses','Sensitive','SharePoint GCC','Never in Linear','#c2410c','#fff7ed','#fdba74'],
               ['Architecture diagrams','Sensitive','SharePoint GCC','Network topology, data flows','#c2410c','#fff7ed','#fdba74'],
@@ -3079,7 +3079,7 @@ function renderWhyLinear() {
             <svg style="width:20px;height:20px;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
           </div>
           <p style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:6px;">Data Sanitization Built In</p>
-          <p style="font-size:13px;color:#374151;line-height:1.6;">Every intake — from Wiz scans, Qualys reports, Teams messages, emails — passes through a sanitization filter. Hostnames, IPs, and PII are automatically redacted before entering the system. Sensitive evidence stays in SharePoint GCC.</p>
+          <p style="font-size:13px;color:#374151;line-height:1.6;">Every intake — from Wiz scans, Nessus reports, Teams messages, emails — passes through a sanitization filter. Hostnames, IPs, and PII are automatically redacted before entering the system. Sensitive evidence stays in SharePoint GCC.</p>
         </div>
       </div>
     </div>
@@ -3177,7 +3177,7 @@ function sanitizeText(text) {
 
 const SANIT_PRESETS = {
   wiz: { title: 'Wiz Alert: S3 bucket public access on HealthConnect staging', description: 'Wiz Cloud Security Finding\nResource: s3://csms-staging-exports\nAccount: 442891234567 (HealthConnect-Staging)\nIP: 10.128.4.22 (NAT Gateway)\nFinding: S3 bucket has public-read ACL enabled\nRisk: Data exposure of Medicaid eligibility exports\nRecommendation: Remove public ACL, enable Block Public Access\nAffected host: csms-app01.state.md.us' },
-  qualys: { title: 'Qualys: Critical vuln on RevenuePro database server', description: 'Qualys Vulnerability Scan Results — RevenuePro Environment\nHost: 10.0.1.50 (mora-db01.state.md.us)\nOS: Oracle Linux 8.6\nQID: 376234 — Oracle DB Unpatched (CVE-2026-1234)\nCVSS: 9.1 Critical\nExploit available: CVE-2026-1234 exploit allows remote code execution via crafted SQL\nFTI data at risk — database contains IRS 1075 protected information\nRemediation: Apply Oracle CPU patch Q2-2026\nScan date: 2026-06-01' },
+  nessus: { title: 'Nessus: Critical vuln on RevenuePro database server', description: 'Tenable Nessus Scan Results — RevenuePro Environment\nHost: 10.0.1.50 (mora-db01.state.md.us)\nOS: Oracle Linux 8.6\nPlugin: 376234 — Oracle DB Unpatched (CVE-2026-1234)\nCVSS: 9.1 Critical\nExploit available: CVE-2026-1234 exploit allows remote code execution via crafted SQL\nFTI data at risk — database contains IRS 1075 protected information\nRemediation: Apply Oracle CPU patch Q2-2026\nScan date: 2026-06-01' },
   teams: { title: 'From Teams: Maria flagged access review gap', description: 'Forwarded from Microsoft Teams — MDH Security Channel\nMaria Gonzalez: "We just realized the quarterly access review for csms-admin.state.md.us was never completed. The shared service account (svc-csms-batch) on 10.0.2.15 still has elevated privileges. Can someone from the ISSO team pick this up? Password is stored in the admin vault at \\\\fileserv01\\admin-creds\\csms."' },
   ssn: { title: 'Email intake: DHS data incident report', description: 'Forwarded from DHS Security Officer\nSubject: Potential data exposure in Benefits Portal\nAffected user SSN: 123-45-6789\nThe benefits portal at benefits.state.md.us exposed PII in the URL parameters.\nUser reported seeing another applicant\'s information.\nServer: 10.0.5.100 (benefits-web03.state.md.us)\nImmediate investigation needed.' },
   clean: { title: 'Intake form: Evidence request for AC-2 quarterly review', description: 'Submitted via GRC Intake Form\nRequestor: Lisa Park (Compliance Analyst)\nFramework: CMS ARC-AMPE\nControl: AC-2 Account Management\nSystem: HealthConnect\nRequest: Need quarterly access review evidence for Q2 2026\nDue date: June 30, 2026\nNotes: Template has been distributed to system owners. Waiting on 3 of 5 responses.' },
@@ -3323,10 +3323,10 @@ async function sanitCreateIssue() {
 
 function renderSanitDemo() {
   const teamOptions = [
-    { id: 'd4d5bf63-fae7-4938-9531-b1fb80618a8a', name: 'ISSO' },
-    { id: 'assessors', name: 'Assessors' },
-    { id: 'tenant-support', name: 'Tenant Support' },
-    { id: 'poam-mgmt', name: 'POA&M Management' },
+    { id: 'b658dbac-cef5-4add-b579-0a5bde068d44', name: 'ISSO' },
+    { id: '7869f372-7eb1-4079-82f5-727e73019110', name: 'Assessors' },
+    { id: '3c4d2bf0-64c0-496e-9f92-4eb0160d4653', name: 'Tenant Support' },
+    { id: '3c16b790-9b1e-425f-a644-a9a6fde365ec', name: 'POA&M Management' },
   ];
   const html = `
     <div class="flex items-center gap-3 mb-4">
@@ -3340,7 +3340,7 @@ function renderSanitDemo() {
     </div>
 
     <div class="card p-4 mb-5" style="background:#eff6ff;border-color:#93c5fd;">
-      <p style="font-size:12px;color:#1e40af;line-height:1.6;">Findings arrive from multiple sources — Wiz scans, Qualys reports, email requests, Teams messages, intake forms. Before anything enters Linear, the sanitization layer scans for sensitive patterns (hostnames, IPs, SSNs, exploit details, file paths) and redacts or blocks them. The raw data stays in SharePoint GCC. Linear gets the sanitized workflow item.</p>
+      <p style="font-size:12px;color:#1e40af;line-height:1.6;">Findings arrive from multiple sources — Wiz scans, Nessus reports, email requests, Teams messages, intake forms. Before anything enters Linear, the sanitization layer scans for sensitive patterns (hostnames, IPs, SSNs, exploit details, file paths) and redacts or blocks them. The raw data stays in SharePoint GCC. Linear gets the sanitized workflow item.</p>
     </div>
 
     <div style="display:flex;gap:20px;align-items:flex-start;">
@@ -3352,7 +3352,7 @@ function renderSanitDemo() {
             <label style="font-size:11px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Source</label>
             <select id="sanitSource" style="width:100%;border:1px solid #d1d9e0;border-radius:8px;padding:9px 12px;font-size:13px;color:#1e293b;outline:none;background:#fff;box-sizing:border-box;margin-bottom:10px;">
               <option value="wiz">Wiz Cloud Scan</option>
-              <option value="qualys">Qualys Vulnerability Scan</option>
+              <option value="nessus">Tenable Nessus Scan</option>
               <option value="teams">Microsoft Teams Message</option>
               <option value="email">Email Request</option>
               <option value="form">Intake Form Submission</option>
@@ -3405,7 +3405,7 @@ Affected host: csms-app01.state.md.us</textarea>
             <p style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#374151;font-weight:600;margin-bottom:8px;">Simulate Intake Source</p>
             <div style="display:flex;flex-wrap:wrap;gap:6px;">
               <button onclick="sanitLoadPreset('wiz')" style="background:#eff6ff;border:1px solid #93c5fd;color:#1e40af;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#eff6ff'">Wiz Scan Finding</button>
-              <button onclick="sanitLoadPreset('qualys')" style="background:#eff6ff;border:1px solid #93c5fd;color:#1e40af;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#eff6ff'">Qualys Vuln Report</button>
+              <button onclick="sanitLoadPreset('nessus')" style="background:#eff6ff;border:1px solid #93c5fd;color:#1e40af;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#eff6ff'">Nessus Scan Finding</button>
               <button onclick="sanitLoadPreset('teams')" style="background:#f3e8ff;border:1px solid #c4b5fd;color:#6d28d9;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#ede9fe'" onmouseout="this.style.background='#f3e8ff'">Teams Message</button>
               <button onclick="sanitLoadPreset('ssn')" style="background:#fef2f2;border:1px solid #fca5a5;color:#991b1b;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fef2f2'">Email w/ PII (Blocked)</button>
               <button onclick="sanitLoadPreset('clean')" style="background:#f0fdf4;border:1px solid #86efac;color:#166534;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">Clean Intake Form</button>
