@@ -2526,12 +2526,12 @@ function renderDataSecurity() {
               ['CMS/Medicaid PII','Restricted (HIPAA)','SharePoint GCC','Beneficiary data references','#b91c1c','#fef2f2','#fca5a5'],
               ['SSA disability records','Restricted (SSA)','SharePoint GCC','SSN, determination data','#b91c1c','#fef2f2','#fca5a5'],
               ['Pen test details','Sensitive','SharePoint GCC','Exploitation details, attack paths','#c2410c','#fff7ed','#fdba74'],
-            ].map((r,i) => \`<tr style="border-bottom:1px solid #f1f5f9;\${i%2===1?'background:#f8fafc;':''}">
-              <td class="py-2.5 px-3 font-medium" style="color:#1e293b;">\${r[0]}</td>
-              <td class="py-2.5 px-3"><span style="background:\${r[5]};border:1px solid \${r[6]};color:\${r[4]};padding:2px 10px;border-radius:99px;font-size:10px;font-weight:600;">\${r[1]}</span></td>
-              <td class="py-2.5 px-3" style="color:#475569;">\${r[2]}</td>
-              <td class="py-2.5 px-3" style="color:#64748b;font-style:italic;">\${r[3]}</td>
-            </tr>\`).join('')}
+            ].map((r,i) => `<tr style="border-bottom:1px solid #f1f5f9;${i%2===1?'background:#f8fafc;':''}">
+              <td class="py-2.5 px-3 font-medium" style="color:#1e293b;">${r[0]}</td>
+              <td class="py-2.5 px-3"><span style="background:${r[5]};border:1px solid ${r[6]};color:${r[4]};padding:2px 10px;border-radius:99px;font-size:10px;font-weight:600;">${r[1]}</span></td>
+              <td class="py-2.5 px-3" style="color:#475569;">${r[2]}</td>
+              <td class="py-2.5 px-3" style="color:#64748b;font-style:italic;">${r[3]}</td>
+            </tr>`).join('')}
           </tbody>
         </table>
       </div>
@@ -2608,11 +2608,11 @@ function renderDataSecurity() {
               ['SSA PII breach notification within 1 hour','SSA EIEP','Incident tracked in Linear (sanitized). Details in SharePoint. Notification via Teams.'],
               ['Audit trail for all access','NIST AU-2','Linear audit log for workflow. SharePoint audit log for evidence access.'],
               ['Data disposal procedures','IRS Pub 1075 &sect;9','Linear tasks track disposal workflow. Actual disposal in SharePoint/on-prem.'],
-            ].map((r,i) => \`<tr style="border-bottom:1px solid #f1f5f9;\${i%2===1?'background:#f8fafc;':''}">
-              <td class="py-2.5 px-3 font-medium" style="color:#1e293b;">\${r[0]}</td>
-              <td class="py-2.5 px-3"><span class="pill pill-blue">\${r[1]}</span></td>
-              <td class="py-2.5 px-3" style="color:#475569;">\${r[2]}</td>
-            </tr>\`).join('')}
+            ].map((r,i) => `<tr style="border-bottom:1px solid #f1f5f9;${i%2===1?'background:#f8fafc;':''}">
+              <td class="py-2.5 px-3 font-medium" style="color:#1e293b;">${r[0]}</td>
+              <td class="py-2.5 px-3"><span class="pill pill-blue">${r[1]}</span></td>
+              <td class="py-2.5 px-3" style="color:#475569;">${r[2]}</td>
+            </tr>`).join('')}
           </tbody>
         </table>
       </div>
@@ -2636,7 +2636,7 @@ function renderDataSecurity() {
 
 // ═══ WHY LINEAR VIEW ═══
 function renderWhyLinear() {
-  const html = \`
+  const html = `
     <div class="flex items-center gap-3 mb-6">
       <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);">
         <svg class="w-5 h-5 text-purple-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -2661,7 +2661,7 @@ function renderWhyLinear() {
             </tr>
           </thead>
           <tbody>
-            \${[
+            ${[
               ['Speed &amp; UX','Sub-100ms UI, keyboard-first','Slow page loads, complex menus','Slower, self-hosted overhead'],
               ['API Quality','GraphQL, real-time, clean schema','REST, rate-limited, complex','REST, same limitations'],
               ['Custom Dashboard','Full API access, easy integration','Requires plugins, marketplace','Same + server management'],
@@ -2674,12 +2674,12 @@ function renderWhyLinear() {
               ['Setup Time','Same day','1-2 weeks (admin overhead)','2-4 weeks (infrastructure)'],
               ['Mobile','Native iOS/Android','Native iOS/Android','Web only'],
               ['Roadmap/Projects','Built-in initiatives, roadmaps','Requires Jira Portfolio/Advanced','Same'],
-            ].map((r,i) => \`<tr style="border-bottom:1px solid #f1f5f9;\${i%2===1?'background:#f8fafc;':''}">
-              <td class="py-2.5 px-3 font-semibold" style="color:#1e293b;">\${r[0]}</td>
-              <td class="py-2.5 px-3" style="color:#5b21b6;font-weight:500;">\${r[1]}</td>
-              <td class="py-2.5 px-3" style="color:#475569;">\${r[2]}</td>
-              <td class="py-2.5 px-3" style="color:#475569;">\${r[3]}</td>
-            </tr>\`).join('')}
+            ].map((r,i) => `<tr style="border-bottom:1px solid #f1f5f9;${i%2===1?'background:#f8fafc;':''}">
+              <td class="py-2.5 px-3 font-semibold" style="color:#1e293b;">${r[0]}</td>
+              <td class="py-2.5 px-3" style="color:#5b21b6;font-weight:500;">${r[1]}</td>
+              <td class="py-2.5 px-3" style="color:#475569;">${r[2]}</td>
+              <td class="py-2.5 px-3" style="color:#475569;">${r[3]}</td>
+            </tr>`).join('')}
           </tbody>
         </table>
       </div>
@@ -2756,7 +2756,7 @@ function renderWhyLinear() {
         </div>
       </div>
     </div>
-  \`;
+  `;
   document.getElementById('whyLinearContent').innerHTML = html;
 }
 
