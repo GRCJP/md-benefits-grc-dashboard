@@ -155,10 +155,6 @@
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
         Action Items
       </a>
-      <a onclick="showView('operations')" id="tab-operations" class="sidebar-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-        Operations
-      </a>
       <a onclick="showView('datasecurity')" id="tab-datasecurity" class="sidebar-item">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
         Data Security
@@ -297,17 +293,6 @@
       <div class="card p-5"><p class="text-sm font-semibold mb-4" style="color:#1e293b;">All Action Items</p><table class="w-full text-xs"><thead><tr class="text-slate-900 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;"><th class="text-left py-2.5 px-2">ID</th><th class="text-left py-2.5 px-2">Item</th><th class="text-left py-2.5 px-2">Source</th><th class="text-left py-2.5 px-2">Severity</th><th class="text-left py-2.5 px-2">Assignee</th><th class="text-left py-2.5 px-2">Status</th></tr></thead><tbody id="actionTable"></tbody></table></div>
     </div>
 
-    <!-- ═══ OPERATIONS VIEW ═══ -->
-    <div id="view-operations" class="hidden">
-      <div class="grid grid-cols-2 gap-4 mb-6">
-        <div class="card p-5"><p class="text-sm font-semibold mb-4" style="color:#1e293b;">POA&M Status</p><canvas id="poamStatusChart" height="200"></canvas></div>
-        <div class="card p-5"><p class="text-sm font-semibold mb-4" style="color:#1e293b;">All Items by Status</p><canvas id="statusChart" height="200"></canvas></div>
-      </div>
-      <div class="card p-5">
-        <div class="flex items-center justify-between mb-4"><p class="text-sm font-semibold" style="color:#1e293b;">All GRC Items</p><div class="flex gap-2"><select id="opsFilterProject" onchange="filterOpsTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#f8fafc;border-color:#cbd5e1;color:#1e293b;"><option value="">All Projects</option></select><select id="opsFilterStatus" onchange="filterOpsTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#f8fafc;border-color:#cbd5e1;color:#1e293b;"><option value="">All Statuses</option><option value="In Progress">In Progress</option><option value="Todo">Todo</option><option value="Backlog">Backlog</option><option value="Done">Done</option></select></div></div>
-        <table class="w-full text-xs"><thead><tr class="text-slate-900 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;"><th class="text-left py-2.5 px-2">ID</th><th class="text-left py-2.5 px-2">Item</th><th class="text-left py-2.5 px-2">Project</th><th class="text-left py-2.5 px-2">Priority</th><th class="text-left py-2.5 px-2">Assignee</th><th class="text-left py-2.5 px-2">Status</th></tr></thead><tbody id="opsTable"></tbody></table>
-      </div>
-    </div>
 
     <!-- ═══ DATA SECURITY VIEW ═══ -->
     <div id="view-datasecurity" class="hidden">
@@ -524,7 +509,7 @@ async function loadData() {
   renderNotifications();
 }
 
-const ALL_VIEWS = ['executive','action','operations','datasecurity','whylinear','category','integrations','teamview','framework','system'];
+const ALL_VIEWS = ['executive','action','datasecurity','whylinear','category','integrations','teamview','framework','system'];
 const CAT_IDS = ['poam','assessment','evidence','ato','external-request','compliance'];
 
 function showView(view) {
@@ -536,7 +521,6 @@ function showView(view) {
   const tab = document.getElementById(`tab-${view}`);
   if (tab) tab.classList.add('active');
   if (view === 'action') renderActionItems();
-  if (view === 'operations') renderOperations();
   if (view === 'datasecurity') renderDataSecurity();
   if (view === 'whylinear') renderWhyLinear();
   if (view === 'integrations') renderIntegrations();
@@ -865,19 +849,19 @@ function renderExecutive() {
       </div>
       <!-- Numbers below -->
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;text-align:center;">
-        <div>
+        <div style="cursor:pointer;padding:8px;border-radius:8px;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
           <p style="font-size:24px;font-weight:700;color:#dc2626;">${critCount}</p>
           <p style="font-size:12px;color:#6b7280;">Critical</p>
         </div>
-        <div>
+        <div style="cursor:pointer;padding:8px;border-radius:8px;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
           <p style="font-size:24px;font-weight:700;color:#ea580c;">${highCount}</p>
           <p style="font-size:12px;color:#6b7280;">High</p>
         </div>
-        <div>
+        <div style="cursor:pointer;padding:8px;border-radius:8px;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
           <p style="font-size:24px;font-weight:700;color:#d97706;">${medCount}</p>
           <p style="font-size:12px;color:#6b7280;">Medium</p>
         </div>
-        <div>
+        <div style="cursor:pointer;padding:8px;border-radius:8px;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
           <p style="font-size:24px;font-weight:700;color:#16a34a;">${lowCount}</p>
           <p style="font-size:12px;color:#6b7280;">Low</p>
         </div>
@@ -886,20 +870,20 @@ function renderExecutive() {
 
     <!-- POA&M Summary — 4 metric tiles -->
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px;">
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;">
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
         <p style="font-size:13px;font-weight:600;color:#374151;margin-bottom:8px;">Open POA&Ms</p>
         <p style="font-size:36px;font-weight:700;color:#2378C3;line-height:1;">${s.open}</p>
       </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;">
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
         <p style="font-size:13px;font-weight:600;color:#374151;margin-bottom:8px;">Overdue</p>
         <p style="font-size:36px;font-weight:700;color:${overdueItems.length > 0 ? '#dc2626' : '#16a34a'};line-height:1;">${overdueItems.length}</p>
       </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;">
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
         <p style="font-size:13px;font-weight:600;color:#374151;margin-bottom:8px;">Closure Rate</p>
         <p style="font-size:36px;font-weight:700;color:#111827;line-height:1;">12</p>
         <p style="font-size:12px;color:#6b7280;margin-top:2px;">per month</p>
       </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;">
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
         <p style="font-size:13px;font-weight:600;color:#374151;margin-bottom:8px;">Risk Acceptances</p>
         <p style="font-size:36px;font-weight:700;color:#111827;line-height:1;">3</p>
         <p style="font-size:12px;color:#6b7280;margin-top:2px;">active</p>
@@ -930,7 +914,7 @@ function renderExecutive() {
 
   // ═══ TRUST CENTER: Action Items Banner ═══
   document.getElementById('assessmentAudit').innerHTML = `
-    <div style="background:#fff;border:1px solid #e5e7eb;border-left:4px solid #d97706;border-radius:12px;padding:16px 20px;margin-bottom:16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.08)'" onmouseout="this.style.boxShadow='none'" onclick="showView('action')">
+    <div style="background:#fff;border:1px solid #e5e7eb;border-left:4px solid #d97706;border-radius:12px;padding:16px 20px;margin-bottom:16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''" onclick="showView('action')">
       <svg style="width:24px;height:24px;color:#d97706;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
       <div style="flex:1;">
         <span style="font-size:15px;font-weight:700;color:#111827;">${actionCount} Action Items Require Attention</span>
@@ -949,17 +933,17 @@ function renderExecutive() {
 
   document.getElementById('evidenceConmon').innerHTML = `
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px;">
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;text-align:center;">
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('Evidence')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
         <p style="font-size:13px;font-weight:600;color:#374151;margin-bottom:12px;">Evidence Freshness</p>
         ${svgDonut(evFreshPct, 100, evFreshPct >= 80 ? '#16a34a' : evFreshPct >= 60 ? '#d97706' : '#dc2626', 22)}
         <p style="font-size:12px;color:#6b7280;margin-top:6px;">${d.completed||0} current / ${evTotal} total</p>
       </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;text-align:center;">
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('Evidence')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
         <p style="font-size:13px;font-weight:600;color:#374151;margin-bottom:12px;">ConMon Delivery</p>
         ${svgDonut(conmonPct, 100, conmonPct >= 80 ? '#16a34a' : '#d97706', 22)}
         <p style="font-size:12px;color:#6b7280;margin-top:6px;">10 of 12 months on time</p>
       </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;text-align:center;">
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
         <p style="font-size:13px;font-weight:600;color:#374151;margin-bottom:12px;">Automation</p>
         ${svgDonut(automationPct, 100, '#2378C3', 22)}
         <p style="font-size:12px;color:#6b7280;margin-top:6px;">${automationPct}% automated, ${100-automationPct}% manual</p>
@@ -1335,14 +1319,6 @@ function renderActionItems(){
 }
 function actionCard(item,type){const sv=item.labels?.find(l=>['Critical','High','Medium','Low'].includes(l))||'';const sc=sv?`pill-${sv.toLowerCase()}`:'pill-neutral';const fws=item.labels?.filter(l=>DATA.frameworks.includes(l))||[];const bc=(type==='incident'&&item.statusType==='started')?'pulse-border':'';const bg=type==='incident'||type==='aging'?'card-alert':'card';return`<div class="${bg} rounded-xl p-4 card-hover cursor-pointer ${bc}" onclick="showDetail('${item.id}')"><div class="flex items-start justify-between gap-3"><div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1"><span class="text-xs text-slate-900 font-mono">${item.id}</span>${type==='aging'?'<span class="aging-badge">2+ YEARS OPEN</span>':''}${type==='incident'&&item.statusType==='started'?'<span class="pill pill-incident">ACTIVE</span>':''}</div><p class="text-sm font-semibold mb-1.5" style="color:#1e293b;">${item.title}</p><div class="flex flex-wrap gap-1.5">${sv?`<span class="pill ${sc}">${sv}</span>`:''}${fws.map(f=>`<span class="pill pill-neutral">${f}</span>`).join('')}<span class="pill pill-neutral"><span class="status-dot status-${item.statusType}"></span>${item.status}</span></div></div></div></div>`;}
 
-// ─── OPERATIONS ───────────────────────────────────────────
-function renderOperations(){
-  const ps=DATA.poamByStatus;new Chart(document.getElementById('poamStatusChart'),{type:'doughnut',data:{labels:['In Progress','Todo','Backlog','Done'],datasets:[{data:[ps.inProgress,ps.todo,ps.backlog,ps.done],backgroundColor:['#2378C3','#94a3b8','#cbd5e1','#719F2A'],borderWidth:0}]},options:{cutout:'60%',responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#111827',font:{size:10},padding:10}}}}});
-  const sc={started:0,unstarted:0,backlog:0,completed:0};DATA.issues.forEach(i=>{if(sc[i.statusType]!==undefined)sc[i.statusType]++;});new Chart(document.getElementById('statusChart'),{type:'doughnut',data:{labels:['In Progress','Todo','Backlog','Completed'],datasets:[{data:[sc.started,sc.unstarted,sc.backlog,sc.completed],backgroundColor:['#2378C3','#d97706','#cbd5e1','#719F2A'],borderWidth:0}]},options:{cutout:'60%',responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#111827',font:{size:10},padding:10}}}}});
-  const ps2=document.getElementById('opsFilterProject');if(ps2.options.length<=1)Object.keys(DATA.byProject).forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;ps2.appendChild(o);});renderOpsTable(DATA.issues);
-}
-function filterOpsTable(){let items=DATA.issues;const p=document.getElementById('opsFilterProject').value,s=document.getElementById('opsFilterStatus').value;if(p)items=items.filter(i=>i.project===p);if(s)items=items.filter(i=>i.status===s);renderOpsTable(items);}
-function renderOpsTable(items){const pm={1:['Urgent','pill-urgent'],2:['High','pill-high'],3:['Medium','pill-med'],4:['Low','pill-low']};document.getElementById('opsTable').innerHTML=items.map(i=>{const[p,pc]=pm[i.priority]||['--',''];return`<tr style="border-bottom:1px solid #e2e8f0;" class="hover:bg-blue-50/40 cursor-pointer" onclick="showDetail('${i.id}')"><td class="py-2.5 px-2 text-slate-900 font-mono text-[11px]">${i.id}</td><td class="py-2.5 px-2 font-medium max-w-sm truncate" style="color:#1e293b;">${i.title}</td><td class="py-2.5 px-2 text-slate-900 text-[11px]">${i.project||'--'}</td><td class="py-2.5 px-2"><span class="pill ${pc}">${p}</span></td><td class="py-2.5 px-2 text-slate-900">${i.assignee||'Unassigned'}</td><td class="py-2.5 px-2"><span class="status-dot status-${i.statusType}"></span>${i.status}</td></tr>`;}).join('');}
 
 // ─── FRAMEWORKS ───────────────────────────────────────────
 function renderFrameworks(){const fc={'CMS ARC-AMPE':'#2563eb','IRS Pub 1075':'#b91c1c','NIST 800-53':'#7c3aed','SSA':'#0d9488','OLA':'#9333ea'};document.getElementById('frameworkCards').innerHTML=DATA.frameworks.map(fw=>{const f=DATA.byFramework[fw];const pct=f.total>0?Math.round((f.closed/f.total)*100):0;const items=DATA.issues.filter(i=>i.labels.includes(fw));const color=fc[fw]||'#78716c';return`<div class="card p-6 fade-in"><div class="flex items-center justify-between mb-4"><div class="flex items-center gap-3"><div class="w-3 h-3 rounded-full" style="background:${color}"></div><h3 class="text-base font-bold" style="color:#1e293b;">${fw}</h3></div><div class="flex items-center gap-4 text-xs"><span class="text-slate-900">${f.total} items</span><span style="color:#2563eb;" class="font-medium">${f.open} open</span><span style="color:#16a34a;" class="font-medium">${f.closed} closed</span><span class="sev-crit font-medium">${f.critical} critical</span></div></div><div class="progress-bar mb-4"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div><table class="w-full text-xs"><thead><tr class="text-slate-900 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;"><th class="text-left py-2">ID</th><th class="text-left py-2">Item</th><th class="text-left py-2">Category</th><th class="text-left py-2">Status</th></tr></thead><tbody>${items.map(i=>{const cats=i.labels.filter(l=>DATA.categories.includes(l)).join(', ');return`<tr style="border-bottom:1px solid #e2e8f0;" class="hover:bg-blue-50/40 cursor-pointer" onclick="showDetail('${i.id}')"><td class="py-1.5 text-slate-900 font-mono text-[11px]">${i.id}</td><td class="py-1.5 font-medium max-w-md truncate" style="color:#1e293b;">${i.title}</td><td class="py-1.5 text-slate-900">${cats}</td><td class="py-1.5"><span class="status-dot status-${i.statusType}"></span>${i.status}</td></tr>`;}).join('')}</tbody></table></div>`;}).join('');}
@@ -1394,6 +1370,159 @@ function renderFrameworkPage(frameworkName) {
           <span class="pill pill-neutral ml-2">0</span>
         </div>
         <p class="text-xs" style="color:#1e293b;">No ${sec.title.toLowerCase()} items for ${frameworkName}</p>
+      </div>`;
+    }
+
+    // ═══ POA&M EXECUTIVE SECTION ═══
+    if (sec.key === 'POA&M') {
+      const poamItems = items;
+      const poamOpen = poamItems.filter(i => !['completed','canceled'].includes(i.statusType));
+      const poamCritical = poamOpen.filter(i => i.labels.includes('Critical')).length;
+      const poamOverdue = poamOpen.filter(i => i.priority === 1).length;
+      const avgAgeMap = {'CMS ARC-AMPE':34,'IRS Pub 1075':28,'NIST 800-53':31,'SSA':22,'OLA':45};
+      const riskAcceptedMap = {'CMS ARC-AMPE':2,'IRS Pub 1075':1,'NIST 800-53':1,'SSA':1,'OLA':1};
+      const avgAge = avgAgeMap[frameworkName] || 30;
+      const riskAccepted = riskAcceptedMap[frameworkName] || 1;
+
+      // System distribution
+      const systemDistMap = {
+        'CMS ARC-AMPE': [['CSMS',5],['Shared Platform',3],['Benefits Portal',2],['API Gateway',1]],
+        'IRS Pub 1075': [['MORA',3],['CSMS',1],['Tax Processing',1]],
+        'NIST 800-53': [['CJAMS',4],['CSMS',2],['MORA',1],['Shared Platform',1]],
+        'SSA': [['Shared Platform',2],['Benefits Portal',1],['CSMS',1]],
+        'OLA': [['OLA Portal',3],['Shared Platform',2],['Legacy System',1]]
+      };
+      const systemDist = systemDistMap[frameworkName] || [['General',poamOpen.length]];
+      const maxSysCount = Math.max(...systemDist.map(s => s[1]), 1);
+
+      // Aging breakdown from actual items (approximate via priority)
+      const under30 = poamOpen.filter(i => i.priority === 4 || i.priority === 3).length;
+      const d30_90 = poamOpen.filter(i => i.priority === 2).length;
+      const d90_180 = Math.max(0, Math.floor(poamOpen.length * 0.15));
+      const over180 = Math.max(0, poamOpen.length - under30 - d30_90 - d90_180);
+      const maxAgingCount = Math.max(under30, d30_90, d90_180, over180, 1);
+
+      // Attention items: Critical OR priority 1
+      const attentionItems = poamOpen.filter(i => i.labels.includes('Critical') || i.priority === 1);
+
+      return `<div class="card p-5 mb-4" style="border-left:4px solid ${color};">
+        <div class="flex items-center gap-2 mb-4">
+          <svg class="w-4 h-4" style="color:${color};" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${sec.icon}"/></svg>
+          <p class="text-sm font-semibold" style="color:#1e293b;">${sec.title}</p>
+          <span class="pill pill-blue ml-2">${poamItems.length}</span>
+        </div>
+
+        <!-- Row 1: 6 metric tiles -->
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px;">
+          <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;text-align:center;">
+            <p style="font-size:28px;font-weight:700;color:#2378C3;line-height:1;">${poamOpen.length}</p>
+            <p style="font-size:11px;color:#6b7280;margin-top:6px;">Total Open</p>
+          </div>
+          <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;padding:16px;text-align:center;">
+            <p style="font-size:28px;font-weight:700;color:#dc2626;line-height:1;">${poamCritical}</p>
+            <p style="font-size:11px;color:#6b7280;margin-top:6px;">Critical</p>
+          </div>
+          <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;text-align:center;">
+            <p style="font-size:28px;font-weight:700;color:#111827;line-height:1;">${avgAge}d</p>
+            <p style="font-size:11px;color:#6b7280;margin-top:6px;">Avg Age</p>
+          </div>
+          <div style="background:${poamOverdue > 0 ? '#fef2f2' : '#f0fdf4'};border:1px solid ${poamOverdue > 0 ? '#fca5a5' : '#86efac'};border-radius:10px;padding:16px;text-align:center;">
+            <p style="font-size:28px;font-weight:700;color:${poamOverdue > 0 ? '#dc2626' : '#16a34a'};line-height:1;">${poamOverdue}</p>
+            <p style="font-size:11px;color:#6b7280;margin-top:6px;">Overdue</p>
+          </div>
+          <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;text-align:center;">
+            <p style="font-size:28px;font-weight:700;color:#111827;line-height:1;">${riskAccepted}</p>
+            <p style="font-size:11px;color:#6b7280;margin-top:6px;">Risk Accepted</p>
+          </div>
+          <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;text-align:center;">
+            <p style="font-size:28px;font-weight:700;color:#111827;line-height:1;">4/mo</p>
+            <p style="font-size:11px;color:#6b7280;margin-top:6px;">Closure Rate</p>
+          </div>
+        </div>
+
+        <!-- Row 2: Two columns -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+          <!-- Left: POA&M by System -->
+          <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;">
+            <p style="font-size:12px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;">POA&M by System</p>
+            ${systemDist.map(([sys, count]) => `
+              <div style="margin-bottom:8px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                  <span style="font-size:12px;font-weight:500;color:#374151;">${sys}</span>
+                  <span style="font-size:12px;font-weight:700;color:#111827;">${count}</span>
+                </div>
+                <div style="height:8px;border-radius:4px;background:#e5e7eb;overflow:hidden;">
+                  <div style="height:100%;width:${Math.round(count/maxSysCount*100)}%;background:${color};border-radius:4px;"></div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <!-- Right: POA&M Aging -->
+          <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;">
+            <p style="font-size:12px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;">POA&M Aging</p>
+            <div style="margin-bottom:8px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                <span style="font-size:12px;font-weight:500;color:#16a34a;">&lt; 30 days</span>
+                <span style="font-size:12px;font-weight:700;color:#111827;">${under30}</span>
+              </div>
+              <div style="height:8px;border-radius:4px;background:#e5e7eb;overflow:hidden;">
+                <div style="height:100%;width:${Math.round(under30/maxAgingCount*100)}%;background:#16a34a;border-radius:4px;"></div>
+              </div>
+            </div>
+            <div style="margin-bottom:8px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                <span style="font-size:12px;font-weight:500;color:#d97706;">30-90 days</span>
+                <span style="font-size:12px;font-weight:700;color:#111827;">${d30_90}</span>
+              </div>
+              <div style="height:8px;border-radius:4px;background:#e5e7eb;overflow:hidden;">
+                <div style="height:100%;width:${Math.round(d30_90/maxAgingCount*100)}%;background:#d97706;border-radius:4px;"></div>
+              </div>
+            </div>
+            <div style="margin-bottom:8px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                <span style="font-size:12px;font-weight:500;color:#ea580c;">90-180 days</span>
+                <span style="font-size:12px;font-weight:700;color:#111827;">${d90_180}</span>
+              </div>
+              <div style="height:8px;border-radius:4px;background:#e5e7eb;overflow:hidden;">
+                <div style="height:100%;width:${Math.round(d90_180/maxAgingCount*100)}%;background:#ea580c;border-radius:4px;"></div>
+              </div>
+            </div>
+            <div style="margin-bottom:8px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                <span style="font-size:12px;font-weight:500;color:#dc2626;">&gt; 180 days</span>
+                <span style="font-size:12px;font-weight:700;color:#111827;">${over180}</span>
+              </div>
+              <div style="height:8px;border-radius:4px;background:#e5e7eb;overflow:hidden;">
+                <div style="height:100%;width:${Math.round(over180/maxAgingCount*100)}%;background:#dc2626;border-radius:4px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: What Needs Attention -->
+        ${attentionItems.length > 0 ? `
+        <div style="margin-bottom:12px;">
+          <p style="font-size:12px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;">What Needs Attention</p>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            ${attentionItems.map(i => {
+              const sv = i.labels.find(l => ['Critical','High','Medium','Low'].includes(l)) || '';
+              const svClass = sv ? 'pill-' + sv.toLowerCase() : 'pill-neutral';
+              const isOverdue = i.priority === 1;
+              return `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='#fff'" onclick="showDetail('${i.id}')">
+                <span style="flex:1;font-size:13px;font-weight:500;color:#111827;">${i.title}</span>
+                ${sv ? `<span class="pill ${svClass}">${sv}</span>` : ''}
+                <span style="font-size:11px;color:#6b7280;">${i.assignee || 'Unassigned'}</span>
+                ${isOverdue ? '<span style="background:#dc2626;color:#fff;padding:2px 8px;border-radius:9999px;font-size:10px;font-weight:600;">OVERDUE</span>' : ''}
+              </div>`;
+            }).join('')}
+          </div>
+        </div>
+        ` : ''}
+
+        <!-- View all link -->
+        <div style="text-align:center;padding-top:8px;border-top:1px solid #e5e7eb;">
+          <a style="font-size:12px;color:#2378C3;font-weight:600;cursor:pointer;text-decoration:none;" onclick="showCategory('POA&M')" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">View all ${poamItems.length} items &rarr;</a>
+        </div>
       </div>`;
     }
 
