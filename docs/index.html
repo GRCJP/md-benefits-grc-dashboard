@@ -266,10 +266,16 @@
         <div id="vulnManagement"></div>
         <!-- Section C: POA&M Health -->
         <div id="poamHealth"></div>
-        <!-- Section D: Assessment & Audit Status -->
+        <!-- Section D: CISA KEVs -->
         <div id="assessmentAudit"></div>
-        <!-- Section E: Evidence & Continuous Monitoring -->
+        <!-- Section E: Certificate Expirations -->
         <div id="evidenceConmon"></div>
+        <!-- Section F: Document Review Schedule -->
+        <div id="docReviews"></div>
+        <!-- Priority Efforts Banner -->
+        <div id="priorityBanner"></div>
+        <!-- Evidence & ConMon Gauges -->
+        <div id="evidenceGauges"></div>
       </div>
 
       <!-- ═══ LEADERSHIP METRICS ═══ -->
@@ -848,137 +854,287 @@ function renderExecutive() {
       </div>
     </div>`;
 
-  // ═══ TRUST CENTER: Vulnerability Severity — stacked bar + numbers ═══
-  const critCount = s.critical;
-  const highCount = s.high;
-  const medCount = 47;
-  const lowCount = 123;
-  const vulnTotal = critCount + highCount + medCount + lowCount;
-  const critPct = Math.round(critCount/vulnTotal*100);
-  const highPct = Math.round(highCount/vulnTotal*100);
-  const medPct = Math.round(medCount/vulnTotal*100);
-  const lowPct = 100 - critPct - highPct - medPct;
-
+  // ═══ TRUST CENTER: SECTION 1 — POA&M Management ═══
   document.getElementById('poamHealth').innerHTML = `
-    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;margin-bottom:16px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
-        <svg style="width:18px;height:18px;color:#dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-        <span style="font-size:14px;font-weight:700;color:#111827;">Vulnerability Severity Breakdown</span>
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;margin-bottom:16px;">
+      <!-- Card Title -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+        <svg style="width:20px;height:20px;color:#2378C3;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+        <span style="font-size:16px;font-weight:700;color:#111827;">POA&M Management</span>
       </div>
-      <!-- Stacked bar -->
-      <div style="display:flex;height:20px;border-radius:10px;overflow:hidden;margin-bottom:16px;">
-        <div style="width:${critPct}%;background:#dc2626;"></div>
-        <div style="width:${highPct}%;background:#ea580c;"></div>
-        <div style="width:${medPct}%;background:#d97706;"></div>
-        <div style="width:${lowPct}%;background:#16a34a;"></div>
-      </div>
-      <!-- Numbers below -->
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;text-align:center;">
-        <div style="cursor:pointer;padding:8px;border-radius:8px;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-          <p style="font-size:24px;font-weight:700;color:#dc2626;">${critCount}</p>
-          <p style="font-size:12px;color:#6b7280;">Critical</p>
-        </div>
-        <div style="cursor:pointer;padding:8px;border-radius:8px;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-          <p style="font-size:24px;font-weight:700;color:#ea580c;">${highCount}</p>
-          <p style="font-size:12px;color:#6b7280;">High</p>
-        </div>
-        <div style="cursor:pointer;padding:8px;border-radius:8px;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-          <p style="font-size:24px;font-weight:700;color:#d97706;">${medCount}</p>
-          <p style="font-size:12px;color:#6b7280;">Medium</p>
-        </div>
-        <div style="cursor:pointer;padding:8px;border-radius:8px;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-          <p style="font-size:24px;font-weight:700;color:#16a34a;">${lowCount}</p>
-          <p style="font-size:12px;color:#6b7280;">Low</p>
-        </div>
-      </div>
-    </div>
 
-    <!-- POA&M Summary — 4 metric tiles (larger) -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px;">
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-        <p style="font-size:14px;font-weight:600;color:#374151;margin-bottom:12px;">Open POA&Ms</p>
-        <p style="font-size:44px;font-weight:700;color:#2378C3;line-height:1;">${s.open}</p>
+      <!-- Top Row: 4 metric tiles -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+        <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:20px;text-align:center;cursor:pointer;" onclick="showCategory('POA&M')">
+          <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Total Open</p>
+          <p style="font-size:36px;font-weight:700;color:#2378C3;line-height:1;">${s.open}</p>
+        </div>
+        <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;padding:20px;text-align:center;cursor:pointer;" onclick="showCategory('POA&M')">
+          <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Critical</p>
+          <p style="font-size:36px;font-weight:700;color:#dc2626;line-height:1;">${s.critical}</p>
+        </div>
+        <div style="background:${overdueItems.length > 0 ? '#fef2f2' : '#f0fdf4'};border:1px solid ${overdueItems.length > 0 ? '#fca5a5' : '#86efac'};border-radius:10px;padding:20px;text-align:center;cursor:pointer;" onclick="showCategory('POA&M')">
+          <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Overdue</p>
+          <p style="font-size:36px;font-weight:700;color:${overdueItems.length > 0 ? '#dc2626' : '#16a34a'};line-height:1;">${overdueItems.length}</p>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:20px;text-align:center;">
+          <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Closure Rate</p>
+          <p style="font-size:36px;font-weight:700;color:#111827;line-height:1;">12<span style="font-size:16px;font-weight:500;color:#6b7280;">/mo</span></p>
+        </div>
       </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-        <p style="font-size:14px;font-weight:600;color:#374151;margin-bottom:12px;">Overdue</p>
-        <p style="font-size:44px;font-weight:700;color:${overdueItems.length > 0 ? '#dc2626' : '#16a34a'};line-height:1;">${overdueItems.length}</p>
-      </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-        <p style="font-size:14px;font-weight:600;color:#374151;margin-bottom:12px;">Closure Rate</p>
-        <p style="font-size:44px;font-weight:700;color:#111827;line-height:1;">12</p>
-        <p style="font-size:12px;color:#6b7280;margin-top:4px;">per month</p>
-      </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-        <p style="font-size:14px;font-weight:600;color:#374151;margin-bottom:12px;">Risk Acceptances</p>
-        <p style="font-size:44px;font-weight:700;color:#111827;line-height:1;">3</p>
-        <p style="font-size:12px;color:#6b7280;margin-top:4px;">active</p>
-      </div>
-    </div>
 
-    <!-- POA&M By System -->
-    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">
-      <p style="font-size:12px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;">By System</p>
-      <div style="display:flex;height:24px;border-radius:6px;overflow:hidden;margin-bottom:8px;">
-        <div style="width:${Math.round(8/31*100)}%;background:#2563eb;" title="CaseTrack: 8"></div>
-        <div style="width:${Math.round(12/31*100)}%;background:#7c3aed;" title="HealthConnect: 12"></div>
-        <div style="width:${Math.round(5/31*100)}%;background:#0d9488;" title="RevenuePro: 5"></div>
-        <div style="width:${Math.round(6/31*100)}%;background:#ea580c;" title="Shared Platform: 6"></div>
-      </div>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;">
-        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#2563eb;"></div><span style="font-size:12px;color:#374151;font-weight:500;">CaseTrack 8</span></div>
-        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#7c3aed;"></div><span style="font-size:12px;color:#374151;font-weight:500;">HealthConnect 12</span></div>
-        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#0d9488;"></div><span style="font-size:12px;color:#374151;font-weight:500;">RevenuePro 5</span></div>
-        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#ea580c;"></div><span style="font-size:12px;color:#374151;font-weight:500;">Shared Platform 6</span></div>
-      </div>
-    </div>
+      <!-- Middle Row: Two columns -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
 
-    <!-- POA&M Aging -->
-    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">
-      <p style="font-size:12px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;">Aging</p>
-      <div style="display:flex;gap:0;align-items:center;">
-        <div style="flex:1;text-align:center;padding:8px 12px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px 0 0 8px;">
-          <p style="font-size:18px;font-weight:700;color:#16a34a;">14</p>
-          <p style="font-size:10px;color:#6b7280;">&lt;30d</p>
+        <!-- Left Column: Aging Distribution -->
+        <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:20px;">
+          <p style="font-size:13px;font-weight:700;color:#111827;margin-bottom:4px;">POA&M Aging — Risk Acceptance Review</p>
+          <p style="font-size:11px;color:#6b7280;margin-bottom:16px;">Aging tiers inform risk acceptance decisions</p>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <!-- < 1 month -->
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span style="font-size:12px;color:#374151;font-weight:500;width:100px;flex-shrink:0;">< 1 month</span>
+              <div style="flex:1;background:#e5e7eb;border-radius:8px;height:16px;overflow:hidden;">
+                <div style="width:${Math.round(14/31*100)}%;background:#16a34a;height:100%;border-radius:8px;"></div>
+              </div>
+              <span style="font-size:16px;font-weight:700;color:#16a34a;width:36px;text-align:right;">14</span>
+            </div>
+            <!-- 1-6 months -->
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span style="font-size:12px;color:#374151;font-weight:500;width:100px;flex-shrink:0;">1–6 months</span>
+              <div style="flex:1;background:#e5e7eb;border-radius:8px;height:16px;overflow:hidden;">
+                <div style="width:${Math.round(9/31*100)}%;background:#d97706;height:100%;border-radius:8px;"></div>
+              </div>
+              <span style="font-size:16px;font-weight:700;color:#d97706;width:36px;text-align:right;">9</span>
+            </div>
+            <!-- 6 months - 1 year -->
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span style="font-size:12px;color:#374151;font-weight:500;width:100px;flex-shrink:0;">6 mo–1 year</span>
+              <div style="flex:1;background:#e5e7eb;border-radius:8px;height:16px;overflow:hidden;">
+                <div style="width:${Math.round(5/31*100)}%;background:#ea580c;height:100%;border-radius:8px;"></div>
+              </div>
+              <span style="font-size:16px;font-weight:700;color:#ea580c;width:36px;text-align:right;">5</span>
+            </div>
+            <!-- Over 1 year -->
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span style="font-size:12px;color:#374151;font-weight:500;width:100px;flex-shrink:0;">Over 1 year</span>
+              <div style="flex:1;background:#e5e7eb;border-radius:8px;height:16px;overflow:hidden;">
+                <div style="width:${Math.round(3/31*100)}%;background:#dc2626;height:100%;border-radius:8px;"></div>
+              </div>
+              <span style="font-size:16px;font-weight:700;color:#dc2626;width:36px;text-align:right;">3</span>
+            </div>
+          </div>
         </div>
-        <div style="flex:1;text-align:center;padding:8px 12px;background:#fffbeb;border-top:1px solid #fcd34d;border-bottom:1px solid #fcd34d;">
-          <p style="font-size:18px;font-weight:700;color:#d97706;">9</p>
-          <p style="font-size:10px;color:#6b7280;">30-90d</p>
-        </div>
-        <div style="flex:1;text-align:center;padding:8px 12px;background:#fff7ed;border-top:1px solid #fdba74;border-bottom:1px solid #fdba74;">
-          <p style="font-size:18px;font-weight:700;color:#ea580c;">5</p>
-          <p style="font-size:10px;color:#6b7280;">90-180d</p>
-        </div>
-        <div style="flex:1;text-align:center;padding:8px 12px;background:#fef2f2;border:1px solid #fca5a5;border-radius:0 8px 8px 0;">
-          <p style="font-size:18px;font-weight:700;color:#dc2626;">3</p>
-          <p style="font-size:10px;color:#6b7280;">&gt;180d</p>
-        </div>
-      </div>
-    </div>
 
-    <!-- Source Breakdown — horizontal stacked bar -->
-    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;margin-bottom:16px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-        <svg style="width:18px;height:18px;color:#2378C3;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-        <span style="font-size:14px;font-weight:700;color:#111827;">Finding Sources</span>
+        <!-- Right Column: By System -->
+        <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:20px;">
+          <p style="font-size:13px;font-weight:700;color:#111827;margin-bottom:16px;">By System</p>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="showSystem('CaseTrack')">
+              <span style="font-size:12px;color:#374151;font-weight:500;width:100px;flex-shrink:0;">CaseTrack</span>
+              <div style="flex:1;background:#e5e7eb;border-radius:8px;height:16px;overflow:hidden;">
+                <div style="width:${Math.round(8/31*100)}%;background:#2563eb;height:100%;border-radius:8px;"></div>
+              </div>
+              <span style="font-size:16px;font-weight:700;color:#2563eb;width:36px;text-align:right;">8</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="showSystem('HealthConnect')">
+              <span style="font-size:12px;color:#374151;font-weight:500;width:100px;flex-shrink:0;">HealthConnect</span>
+              <div style="flex:1;background:#e5e7eb;border-radius:8px;height:16px;overflow:hidden;">
+                <div style="width:${Math.round(12/31*100)}%;background:#7c3aed;height:100%;border-radius:8px;"></div>
+              </div>
+              <span style="font-size:16px;font-weight:700;color:#7c3aed;width:36px;text-align:right;">12</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="showSystem('RevenuePro')">
+              <span style="font-size:12px;color:#374151;font-weight:500;width:100px;flex-shrink:0;">RevenuePro</span>
+              <div style="flex:1;background:#e5e7eb;border-radius:8px;height:16px;overflow:hidden;">
+                <div style="width:${Math.round(5/31*100)}%;background:#0d9488;height:100%;border-radius:8px;"></div>
+              </div>
+              <span style="font-size:16px;font-weight:700;color:#0d9488;width:36px;text-align:right;">5</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="showSystem('MD DataHub')">
+              <span style="font-size:12px;color:#374151;font-weight:500;width:100px;flex-shrink:0;">DataHub</span>
+              <div style="flex:1;background:#e5e7eb;border-radius:8px;height:16px;overflow:hidden;">
+                <div style="width:${Math.round(6/31*100)}%;background:#ea580c;height:100%;border-radius:8px;"></div>
+              </div>
+              <span style="font-size:16px;font-weight:700;color:#ea580c;width:36px;text-align:right;">6</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div style="display:flex;height:20px;border-radius:10px;overflow:hidden;margin-bottom:12px;">
-        <div style="width:62%;background:#2378C3;" title="Vuln Scans 62%"></div>
-        <div style="width:18%;background:#7c3aed;" title="Pen Tests 18%"></div>
-        <div style="width:12%;background:#be185d;" title="External Audits 12%"></div>
-        <div style="width:5%;background:#ea580c;" title="Bug Bounty 5%"></div>
-        <div style="width:3%;background:#0d9488;" title="Internal 3%"></div>
-      </div>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;">
-        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#2378C3;"></div><span style="font-size:12px;color:#374151;">Vuln Scans 62%</span></div>
-        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#7c3aed;"></div><span style="font-size:12px;color:#374151;">Pen Tests 18%</span></div>
-        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#be185d;"></div><span style="font-size:12px;color:#374151;">External Audits 12%</span></div>
-        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#ea580c;"></div><span style="font-size:12px;color:#374151;">Bug Bounty 5%</span></div>
-        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#0d9488;"></div><span style="font-size:12px;color:#374151;">Internal 3%</span></div>
+
+      <!-- Bottom Row: Finding Sources -->
+      <div>
+        <p style="font-size:13px;font-weight:700;color:#111827;margin-bottom:12px;">Finding Sources</p>
+        <div style="display:flex;height:20px;border-radius:10px;overflow:hidden;margin-bottom:10px;">
+          <div style="width:62%;background:#2378C3;" title="Vuln Scans 62%"></div>
+          <div style="width:18%;background:#7c3aed;" title="Pen Tests 18%"></div>
+          <div style="width:12%;background:#be185d;" title="External Audits 12%"></div>
+          <div style="width:5%;background:#ea580c;" title="Bug Bounty 5%"></div>
+          <div style="width:3%;background:#0d9488;" title="Internal 3%"></div>
+        </div>
+        <div style="display:flex;gap:20px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#2378C3;"></div><span style="font-size:12px;color:#374151;">Vuln Scans 62%</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#7c3aed;"></div><span style="font-size:12px;color:#374151;">Pen Tests 18%</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#be185d;"></div><span style="font-size:12px;color:#374151;">Audits 12%</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#ea580c;"></div><span style="font-size:12px;color:#374151;">Bug Bounty 5%</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#0d9488;"></div><span style="font-size:12px;color:#374151;">Internal 3%</span></div>
+        </div>
       </div>
     </div>`;
 
-  // ═══ TRUST CENTER: Action Items Banner ═══
+  // ═══ TRUST CENTER: SECTION 2 — CISA KEVs ═══
+  const kev = DATA.kevs || {};
+  const kevItems = kev.items || [];
+  const kevOpen = kevItems.filter(i => !['completed','canceled'].includes(i.statusType));
+  const kevResolved = kevItems.filter(i => i.statusType === 'completed');
+  const kevOverdue = kevItems.filter(i => !['completed','canceled'].includes(i.statusType) && i.daysLeft !== null && i.daysLeft < 0);
+
   document.getElementById('assessmentAudit').innerHTML = `
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+        <svg style="width:20px;height:20px;color:#dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+        <span style="font-size:16px;font-weight:700;color:#111827;">CISA Known Exploited Vulnerabilities (KEVs)</span>
+      </div>
+      <!-- Metric tiles -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;">
+        <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;padding:16px;text-align:center;">
+          <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Open</p>
+          <p style="font-size:28px;font-weight:700;color:#dc2626;line-height:1;">${kev.open || kevOpen.length}</p>
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:16px;text-align:center;">
+          <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Resolved</p>
+          <p style="font-size:28px;font-weight:700;color:#16a34a;line-height:1;">${kev.resolved || kevResolved.length}</p>
+        </div>
+        <div style="background:${(kev.overdue || kevOverdue.length) > 0 ? '#fef2f2' : '#f8fafc'};border:1px solid ${(kev.overdue || kevOverdue.length) > 0 ? '#fca5a5' : '#e5e7eb'};border-radius:10px;padding:16px;text-align:center;">
+          <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Overdue</p>
+          <p style="font-size:28px;font-weight:700;color:${(kev.overdue || kevOverdue.length) > 0 ? '#dc2626' : '#16a34a'};line-height:1;">${kev.overdue || kevOverdue.length}</p>
+        </div>
+      </div>
+      <!-- Item list -->
+      ${kevOpen.length > 0 ? `
+      <div style="border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;">
+        ${kevOpen.map((item, idx) => {
+          const pillColor = item.daysLeft === null ? 'background:#f1f5f9;color:#374151;border:1px solid #cbd5e1;' :
+            item.daysLeft < 0 ? 'background:#fef2f2;color:#991b1b;border:1px solid #fca5a5;' :
+            item.daysLeft <= 7 ? 'background:#fef2f2;color:#991b1b;border:1px solid #fca5a5;' :
+            item.daysLeft <= 30 ? 'background:#fffbeb;color:#92400e;border:1px solid #fcd34d;' :
+            'background:#f0fdf4;color:#166534;border:1px solid #86efac;';
+          const pillText = item.daysLeft === null ? 'No deadline' :
+            item.daysLeft < 0 ? Math.abs(item.daysLeft) + 'd overdue' :
+            item.daysLeft + 'd left';
+          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;${idx < kevOpen.length - 1 ? 'border-bottom:1px solid #e5e7eb;' : ''}cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'" onclick="showDetail('${item.id}')">
+            <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
+              <span style="font-size:11px;color:#6b7280;font-family:monospace;flex-shrink:0;">${item.id}</span>
+              <span style="font-size:13px;font-weight:500;color:#111827;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${item.title}</span>
+            </div>
+            <span style="flex-shrink:0;margin-left:12px;padding:3px 10px;border-radius:9999px;font-size:11px;font-weight:600;${pillColor}">${pillText}</span>
+          </div>`;
+        }).join('')}
+      </div>` : '<p style="font-size:13px;color:#6b7280;text-align:center;padding:16px;">No open KEVs</p>'}
+    </div>`;
+
+  // ═══ TRUST CENTER: SECTION 3 — Certificate Expirations ═══
+  const c = DATA.certs || {};
+  const certItems = c.items || [];
+  const certCrit = certItems.filter(i => i.daysLeft !== null && i.daysLeft <= 7 && !['completed','canceled'].includes(i.statusType));
+  const certWarn = certItems.filter(i => i.daysLeft !== null && i.daysLeft > 7 && i.daysLeft <= 30 && !['completed','canceled'].includes(i.statusType));
+  const certOk = certItems.filter(i => (i.daysLeft === null || i.daysLeft > 30) && !['completed','canceled'].includes(i.statusType));
+
+  document.getElementById('evidenceConmon').innerHTML = `
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+        <svg style="width:20px;height:20px;color:#d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        <span style="font-size:16px;font-weight:700;color:#111827;">Certificate Expirations</span>
+      </div>
+      <!-- Metric tiles -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;">
+        <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;padding:16px;text-align:center;">
+          <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Expiring < 7 days</p>
+          <p style="font-size:28px;font-weight:700;color:#dc2626;line-height:1;">${c.critical || certCrit.length}</p>
+        </div>
+        <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:16px;text-align:center;">
+          <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">7–30 days</p>
+          <p style="font-size:28px;font-weight:700;color:#d97706;line-height:1;">${c.warning || certWarn.length}</p>
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:16px;text-align:center;">
+          <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">> 30 days</p>
+          <p style="font-size:28px;font-weight:700;color:#16a34a;line-height:1;">${c.ok || certOk.length}</p>
+        </div>
+      </div>
+      <!-- Item list -->
+      ${certItems.filter(i => !['completed','canceled'].includes(i.statusType)).length > 0 ? `
+      <div style="border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;">
+        ${certItems.filter(i => !['completed','canceled'].includes(i.statusType)).map((item, idx, arr) => {
+          const pillColor = item.daysLeft === null ? 'background:#f1f5f9;color:#374151;border:1px solid #cbd5e1;' :
+            item.daysLeft <= 7 ? 'background:#fef2f2;color:#991b1b;border:1px solid #fca5a5;' :
+            item.daysLeft <= 30 ? 'background:#fffbeb;color:#92400e;border:1px solid #fcd34d;' :
+            'background:#f0fdf4;color:#166534;border:1px solid #86efac;';
+          const pillText = item.daysLeft === null ? 'No date' :
+            item.daysLeft < 0 ? 'Expired ' + Math.abs(item.daysLeft) + 'd ago' :
+            item.daysLeft + 'd until expiry';
+          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;${idx < arr.length - 1 ? 'border-bottom:1px solid #e5e7eb;' : ''}cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'" onclick="showDetail('${item.id}')">
+            <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
+              <span style="font-size:11px;color:#6b7280;font-family:monospace;flex-shrink:0;">${item.id}</span>
+              <span style="font-size:13px;font-weight:500;color:#111827;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${item.title}</span>
+            </div>
+            <span style="flex-shrink:0;margin-left:12px;padding:3px 10px;border-radius:9999px;font-size:11px;font-weight:600;${pillColor}">${pillText}</span>
+          </div>`;
+        }).join('')}
+      </div>` : '<p style="font-size:13px;color:#6b7280;text-align:center;padding:16px;">No certificate expirations to track</p>'}
+    </div>`;
+
+  // ═══ TRUST CENTER: SECTION 4 — Document Review Schedule ═══
+  const d = DATA.docs || {};
+  const docItems = d.items || [];
+  const docOverdue = docItems.filter(i => !['completed','canceled'].includes(i.statusType) && i.daysLeft !== null && i.daysLeft < 0);
+  const docDueSoon = docItems.filter(i => !['completed','canceled'].includes(i.statusType) && i.daysLeft !== null && i.daysLeft >= 0 && i.daysLeft <= 30);
+  const docCompleted = docItems.filter(i => i.statusType === 'completed');
+
+  document.getElementById('docReviews').innerHTML = `
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+        <svg style="width:20px;height:20px;color:#2378C3;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span style="font-size:16px;font-weight:700;color:#111827;">Document Review Schedule</span>
+      </div>
+      <!-- Metric tiles -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;">
+        <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;padding:16px;text-align:center;">
+          <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Overdue</p>
+          <p style="font-size:28px;font-weight:700;color:#dc2626;line-height:1;">${d.overdue || docOverdue.length}</p>
+        </div>
+        <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:16px;text-align:center;">
+          <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Due < 30 days</p>
+          <p style="font-size:28px;font-weight:700;color:#d97706;line-height:1;">${d.dueSoon || docDueSoon.length}</p>
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:16px;text-align:center;">
+          <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Completed</p>
+          <p style="font-size:28px;font-weight:700;color:#16a34a;line-height:1;">${d.completed || docCompleted.length}</p>
+        </div>
+      </div>
+      <!-- Item list -->
+      ${docItems.filter(i => !['completed','canceled'].includes(i.statusType)).length > 0 ? `
+      <div style="border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;">
+        ${docItems.filter(i => !['completed','canceled'].includes(i.statusType)).map((item, idx, arr) => {
+          const pillColor = item.daysLeft === null ? 'background:#f1f5f9;color:#374151;border:1px solid #cbd5e1;' :
+            item.daysLeft < 0 ? 'background:#fef2f2;color:#991b1b;border:1px solid #fca5a5;' :
+            item.daysLeft <= 30 ? 'background:#fffbeb;color:#92400e;border:1px solid #fcd34d;' :
+            'background:#f0fdf4;color:#166534;border:1px solid #86efac;';
+          const pillText = item.daysLeft === null ? 'No date' :
+            item.daysLeft < 0 ? Math.abs(item.daysLeft) + 'd overdue' :
+            item.daysLeft + 'd remaining';
+          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;${idx < arr.length - 1 ? 'border-bottom:1px solid #e5e7eb;' : ''}cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'" onclick="showDetail('${item.id}')">
+            <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
+              <span style="font-size:11px;color:#6b7280;font-family:monospace;flex-shrink:0;">${item.id}</span>
+              <span style="font-size:13px;font-weight:500;color:#111827;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${item.title}</span>
+            </div>
+            <span style="flex-shrink:0;margin-left:12px;padding:3px 10px;border-radius:9999px;font-size:11px;font-weight:600;${pillColor}">${pillText}</span>
+          </div>`;
+        }).join('')}
+      </div>` : '<p style="font-size:13px;color:#6b7280;text-align:center;padding:16px;">No pending document reviews</p>'}
+    </div>`;
+
+  // ═══ TRUST CENTER: Priority Efforts Banner (moved below sections) ═══
+  document.getElementById('priorityBanner').innerHTML = `
     <div style="background:#fff;border:1px solid #e5e7eb;border-left:4px solid #d97706;border-radius:12px;padding:16px 20px;margin-bottom:16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''" onclick="showView('action')">
       <svg style="width:24px;height:24px;color:#d97706;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
       <div style="flex:1;">
@@ -988,15 +1144,13 @@ function renderExecutive() {
       <svg style="width:20px;height:20px;color:#6b7280;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
     </div>`;
 
-  // ═══ TRUST CENTER: Evidence & ConMon — 3 metric tiles ═══
-  const d = DATA.docs || {};
-  const c = DATA.certs || {};
+  // ═══ TRUST CENTER: Evidence & ConMon Gauges (moved below banner) ═══
   const evTotal = (d.completed||0) + (d.dueSoon||0) + (d.overdue||0);
-  const evFreshPct = evTotal > 0 ? Math.round((d.completed / evTotal) * 100) : 0;
+  const evFreshPct = evTotal > 0 ? Math.round(((d.completed||0) / evTotal) * 100) : 0;
   const conmonPct = 83;
   const automationPct = 34;
 
-  document.getElementById('evidenceConmon').innerHTML = `
+  document.getElementById('evidenceGauges').innerHTML = `
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px;">
       <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('Evidence')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
         <p style="font-size:13px;font-weight:600;color:#374151;margin-bottom:12px;">Evidence Freshness</p>
