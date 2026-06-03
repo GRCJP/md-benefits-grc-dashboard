@@ -153,15 +153,21 @@
       </a>
       <a onclick="showView('action')" id="tab-action" class="sidebar-item">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-        Action Items
+        Priority Efforts
       </a>
+      <a onclick="showView('executive');setTimeout(()=>{switchExecTab('intake');document.querySelectorAll('.sidebar-item').forEach(el=>el.classList.remove('active'));document.getElementById('tab-intake').classList.add('active');},0)" id="tab-intake" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+        Intake Monitoring
+      </a>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-label">Tools</div>
       <a onclick="showView('datasecurity')" id="tab-datasecurity" class="sidebar-item">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
         Data Security
       </a>
       <a onclick="showView('sanitdemo')" id="tab-sanitdemo" class="sidebar-item">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
-        Sanitization Demo
+        Intake Filter
       </a>
       <a onclick="showView('whylinear')" id="tab-whylinear" class="sidebar-item">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -294,7 +300,7 @@
       <div class="section-divider"></div>
       <div class="mb-6"><div class="flex items-center gap-2 mb-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#9d174d;"><svg class="w-4 h-4 text-pink-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg></div><h2 class="text-base font-bold" style="color:#1e293b;">External Audit Findings</h2></div><div id="auditCards" class="grid grid-cols-1 gap-3"></div></div>
       <div class="section-divider"></div>
-      <div class="card p-5"><p class="text-sm font-semibold mb-4" style="color:#1e293b;">All Action Items</p><table class="w-full text-xs"><thead><tr class="text-slate-900 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;"><th class="text-left py-2.5 px-2">ID</th><th class="text-left py-2.5 px-2">Item</th><th class="text-left py-2.5 px-2">Source</th><th class="text-left py-2.5 px-2">Severity</th><th class="text-left py-2.5 px-2">Assignee</th><th class="text-left py-2.5 px-2">Status</th></tr></thead><tbody id="actionTable"></tbody></table></div>
+      <div class="card p-5"><p class="text-sm font-semibold mb-4" style="color:#1e293b;">All Priority Efforts</p><table class="w-full text-xs"><thead><tr class="text-slate-900 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;"><th class="text-left py-2.5 px-2">ID</th><th class="text-left py-2.5 px-2">Item</th><th class="text-left py-2.5 px-2">Source</th><th class="text-left py-2.5 px-2">Severity</th><th class="text-left py-2.5 px-2">Assignee</th><th class="text-left py-2.5 px-2">Status</th></tr></thead><tbody id="actionTable"></tbody></table></div>
     </div>
 
 
@@ -878,25 +884,65 @@ function renderExecutive() {
       </div>
     </div>
 
-    <!-- POA&M Summary — 4 metric tiles -->
+    <!-- POA&M Summary — 4 metric tiles (larger) -->
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px;">
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-        <p style="font-size:13px;font-weight:600;color:#374151;margin-bottom:8px;">Open POA&Ms</p>
-        <p style="font-size:36px;font-weight:700;color:#2378C3;line-height:1;">${s.open}</p>
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <p style="font-size:14px;font-weight:600;color:#374151;margin-bottom:12px;">Open POA&Ms</p>
+        <p style="font-size:44px;font-weight:700;color:#2378C3;line-height:1;">${s.open}</p>
       </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-        <p style="font-size:13px;font-weight:600;color:#374151;margin-bottom:8px;">Overdue</p>
-        <p style="font-size:36px;font-weight:700;color:${overdueItems.length > 0 ? '#dc2626' : '#16a34a'};line-height:1;">${overdueItems.length}</p>
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <p style="font-size:14px;font-weight:600;color:#374151;margin-bottom:12px;">Overdue</p>
+        <p style="font-size:44px;font-weight:700;color:${overdueItems.length > 0 ? '#dc2626' : '#16a34a'};line-height:1;">${overdueItems.length}</p>
       </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-        <p style="font-size:13px;font-weight:600;color:#374151;margin-bottom:8px;">Closure Rate</p>
-        <p style="font-size:36px;font-weight:700;color:#111827;line-height:1;">12</p>
-        <p style="font-size:12px;color:#6b7280;margin-top:2px;">per month</p>
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <p style="font-size:14px;font-weight:600;color:#374151;margin-bottom:12px;">Closure Rate</p>
+        <p style="font-size:44px;font-weight:700;color:#111827;line-height:1;">12</p>
+        <p style="font-size:12px;color:#6b7280;margin-top:4px;">per month</p>
       </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-        <p style="font-size:13px;font-weight:600;color:#374151;margin-bottom:8px;">Risk Acceptances</p>
-        <p style="font-size:36px;font-weight:700;color:#111827;line-height:1;">3</p>
-        <p style="font-size:12px;color:#6b7280;margin-top:2px;">active</p>
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showCategory('POA&M')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <p style="font-size:14px;font-weight:600;color:#374151;margin-bottom:12px;">Risk Acceptances</p>
+        <p style="font-size:44px;font-weight:700;color:#111827;line-height:1;">3</p>
+        <p style="font-size:12px;color:#6b7280;margin-top:4px;">active</p>
+      </div>
+    </div>
+
+    <!-- POA&M By System -->
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">
+      <p style="font-size:12px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;">By System</p>
+      <div style="display:flex;height:24px;border-radius:6px;overflow:hidden;margin-bottom:8px;">
+        <div style="width:${Math.round(8/31*100)}%;background:#2563eb;" title="CJAMS: 8"></div>
+        <div style="width:${Math.round(12/31*100)}%;background:#7c3aed;" title="CSMS: 12"></div>
+        <div style="width:${Math.round(5/31*100)}%;background:#0d9488;" title="MORA: 5"></div>
+        <div style="width:${Math.round(6/31*100)}%;background:#ea580c;" title="Shared Platform: 6"></div>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#2563eb;"></div><span style="font-size:12px;color:#374151;font-weight:500;">CJAMS 8</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#7c3aed;"></div><span style="font-size:12px;color:#374151;font-weight:500;">CSMS 12</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#0d9488;"></div><span style="font-size:12px;color:#374151;font-weight:500;">MORA 5</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#ea580c;"></div><span style="font-size:12px;color:#374151;font-weight:500;">Shared Platform 6</span></div>
+      </div>
+    </div>
+
+    <!-- POA&M Aging -->
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">
+      <p style="font-size:12px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;">Aging</p>
+      <div style="display:flex;gap:0;align-items:center;">
+        <div style="flex:1;text-align:center;padding:8px 12px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px 0 0 8px;">
+          <p style="font-size:18px;font-weight:700;color:#16a34a;">14</p>
+          <p style="font-size:10px;color:#6b7280;">&lt;30d</p>
+        </div>
+        <div style="flex:1;text-align:center;padding:8px 12px;background:#fffbeb;border-top:1px solid #fcd34d;border-bottom:1px solid #fcd34d;">
+          <p style="font-size:18px;font-weight:700;color:#d97706;">9</p>
+          <p style="font-size:10px;color:#6b7280;">30-90d</p>
+        </div>
+        <div style="flex:1;text-align:center;padding:8px 12px;background:#fff7ed;border-top:1px solid #fdba74;border-bottom:1px solid #fdba74;">
+          <p style="font-size:18px;font-weight:700;color:#ea580c;">5</p>
+          <p style="font-size:10px;color:#6b7280;">90-180d</p>
+        </div>
+        <div style="flex:1;text-align:center;padding:8px 12px;background:#fef2f2;border:1px solid #fca5a5;border-radius:0 8px 8px 0;">
+          <p style="font-size:18px;font-weight:700;color:#dc2626;">3</p>
+          <p style="font-size:10px;color:#6b7280;">&gt;180d</p>
+        </div>
       </div>
     </div>
 
@@ -927,7 +973,7 @@ function renderExecutive() {
     <div style="background:#fff;border:1px solid #e5e7eb;border-left:4px solid #d97706;border-radius:12px;padding:16px 20px;margin-bottom:16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''" onclick="showView('action')">
       <svg style="width:24px;height:24px;color:#d97706;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
       <div style="flex:1;">
-        <span style="font-size:15px;font-weight:700;color:#111827;">${actionCount} Action Items Require Attention</span>
+        <span style="font-size:15px;font-weight:700;color:#111827;">${actionCount} Priority Efforts Require Attention</span>
         <span style="font-size:13px;color:#6b7280;margin-left:8px;">Click to review incidents, aging findings, pen test results, and audit findings</span>
       </div>
       <svg style="width:20px;height:20px;color:#6b7280;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -1346,7 +1392,6 @@ function showFramework(frameworkName) {
 function renderFrameworkPage(frameworkName) {
   const fc = {'CMS ARC-AMPE':'#2563eb','IRS Pub 1075':'#b91c1c','NIST 800-53':'#7c3aed','SSA':'#0d9488','OLA':'#9333ea'};
   const color = fc[frameworkName] || '#374151';
-  const pm = {1:['Urgent','pill-urgent'],2:['High','pill-high'],3:['Medium','pill-med'],4:['Low','pill-low']};
 
   // Get ALL issues for this framework
   const allFwIssues = DATA.issues.filter(i => i.labels.includes(frameworkName));
@@ -1354,276 +1399,182 @@ function renderFrameworkPage(frameworkName) {
   const closedIssues = allFwIssues.filter(i => i.statusType === 'completed');
   const criticalIssues = openIssues.filter(i => i.labels.includes('Critical'));
   const compPct = allFwIssues.length > 0 ? Math.round((closedIssues.length / allFwIssues.length) * 100) : 0;
+  const overdueIssues = openIssues.filter(i => i.priority === 1);
 
-  // Sections: filter by category label AND framework
-  const sections = [
-    { key: 'Compliance', title: 'Controls & Compliance', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' },
-    { key: 'POA&M', title: 'POA&Ms', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
-    { key: 'Assessment', title: 'Assessments', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
-    { key: 'Evidence', title: 'Evidence', icon: 'M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4' },
-    { key: 'ATO', title: 'ATO / Authorization', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
-    { key: 'External Request', title: 'External Requests', icon: 'M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4' },
-  ];
-
-  // Build section HTML
-  function buildSection(sec) {
-    const items = allFwIssues.filter(i => i.labels.includes(sec.key));
-    const sOpen = items.filter(i => !['completed','canceled'].includes(i.statusType)).length;
-    const sInProgress = items.filter(i => i.statusType === 'started').length;
-    const sDone = items.filter(i => i.statusType === 'completed').length;
-
-    if (items.length === 0) {
-      return `<div class="card p-5 mb-4" style="border-left:4px solid ${color};">
-        <div class="flex items-center gap-2 mb-2">
-          <svg class="w-4 h-4" style="color:${color};" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${sec.icon}"/></svg>
-          <p class="text-sm font-semibold" style="color:#1e293b;">${sec.title}</p>
-          <span class="pill pill-neutral ml-2">0</span>
-        </div>
-        <p class="text-xs" style="color:#1e293b;">No ${sec.title.toLowerCase()} items for ${frameworkName}</p>
-      </div>`;
-    }
-
-    // ═══ POA&M EXECUTIVE SECTION ═══
-    if (sec.key === 'POA&M') {
-      const poamItems = items;
-      const poamOpen = poamItems.filter(i => !['completed','canceled'].includes(i.statusType));
-      const poamCritical = poamOpen.filter(i => i.labels.includes('Critical')).length;
-      const poamOverdue = poamOpen.filter(i => i.priority === 1).length;
-      const avgAgeMap = {'CMS ARC-AMPE':34,'IRS Pub 1075':28,'NIST 800-53':31,'SSA':22,'OLA':45};
-      const riskAcceptedMap = {'CMS ARC-AMPE':2,'IRS Pub 1075':1,'NIST 800-53':1,'SSA':1,'OLA':1};
-      const avgAge = avgAgeMap[frameworkName] || 30;
-      const riskAccepted = riskAcceptedMap[frameworkName] || 1;
-
-      // System distribution
-      const systemDistMap = {
-        'CMS ARC-AMPE': [['CSMS',5],['Shared Platform',3],['Benefits Portal',2],['API Gateway',1]],
-        'IRS Pub 1075': [['MORA',3],['CSMS',1],['Tax Processing',1]],
-        'NIST 800-53': [['CJAMS',4],['CSMS',2],['MORA',1],['Shared Platform',1]],
-        'SSA': [['Shared Platform',2],['Benefits Portal',1],['CSMS',1]],
-        'OLA': [['OLA Portal',3],['Shared Platform',2],['Legacy System',1]]
-      };
-      const systemDist = systemDistMap[frameworkName] || [['General',poamOpen.length]];
-      const maxSysCount = Math.max(...systemDist.map(s => s[1]), 1);
-
-      // Aging breakdown from actual items (approximate via priority)
-      const under30 = poamOpen.filter(i => i.priority === 4 || i.priority === 3).length;
-      const d30_90 = poamOpen.filter(i => i.priority === 2).length;
-      const d90_180 = Math.max(0, Math.floor(poamOpen.length * 0.15));
-      const over180 = Math.max(0, poamOpen.length - under30 - d30_90 - d90_180);
-      const maxAgingCount = Math.max(under30, d30_90, d90_180, over180, 1);
-
-      // Attention items: Critical OR priority 1
-      const attentionItems = poamOpen.filter(i => i.labels.includes('Critical') || i.priority === 1);
-
-      return `<div class="card p-5 mb-4" style="border-left:4px solid ${color};">
-        <div class="flex items-center gap-2 mb-4">
-          <svg class="w-4 h-4" style="color:${color};" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${sec.icon}"/></svg>
-          <p class="text-sm font-semibold" style="color:#1e293b;">${sec.title}</p>
-          <span class="pill pill-blue ml-2">${poamItems.length}</span>
-        </div>
-
-        <!-- Row 1: 6 metric tiles -->
-        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px;">
-          <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;text-align:center;">
-            <p style="font-size:28px;font-weight:700;color:#2378C3;line-height:1;">${poamOpen.length}</p>
-            <p style="font-size:11px;color:#6b7280;margin-top:6px;">Total Open</p>
-          </div>
-          <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;padding:16px;text-align:center;">
-            <p style="font-size:28px;font-weight:700;color:#dc2626;line-height:1;">${poamCritical}</p>
-            <p style="font-size:11px;color:#6b7280;margin-top:6px;">Critical</p>
-          </div>
-          <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;text-align:center;">
-            <p style="font-size:28px;font-weight:700;color:#111827;line-height:1;">${avgAge}d</p>
-            <p style="font-size:11px;color:#6b7280;margin-top:6px;">Avg Age</p>
-          </div>
-          <div style="background:${poamOverdue > 0 ? '#fef2f2' : '#f0fdf4'};border:1px solid ${poamOverdue > 0 ? '#fca5a5' : '#86efac'};border-radius:10px;padding:16px;text-align:center;">
-            <p style="font-size:28px;font-weight:700;color:${poamOverdue > 0 ? '#dc2626' : '#16a34a'};line-height:1;">${poamOverdue}</p>
-            <p style="font-size:11px;color:#6b7280;margin-top:6px;">Overdue</p>
-          </div>
-          <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;text-align:center;">
-            <p style="font-size:28px;font-weight:700;color:#111827;line-height:1;">${riskAccepted}</p>
-            <p style="font-size:11px;color:#6b7280;margin-top:6px;">Risk Accepted</p>
-          </div>
-          <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;text-align:center;">
-            <p style="font-size:28px;font-weight:700;color:#111827;line-height:1;">4/mo</p>
-            <p style="font-size:11px;color:#6b7280;margin-top:6px;">Closure Rate</p>
-          </div>
-        </div>
-
-        <!-- Row 2: Two columns -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
-          <!-- Left: POA&M by System -->
-          <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;">
-            <p style="font-size:12px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;">POA&M by System</p>
-            ${systemDist.map(([sys, count]) => `
-              <div style="margin-bottom:8px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-                  <span style="font-size:12px;font-weight:500;color:#374151;">${sys}</span>
-                  <span style="font-size:12px;font-weight:700;color:#111827;">${count}</span>
-                </div>
-                <div style="height:8px;border-radius:4px;background:#e5e7eb;overflow:hidden;">
-                  <div style="height:100%;width:${Math.round(count/maxSysCount*100)}%;background:${color};border-radius:4px;"></div>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-          <!-- Right: POA&M Aging -->
-          <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;">
-            <p style="font-size:12px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;">POA&M Aging</p>
-            <div style="margin-bottom:8px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-                <span style="font-size:12px;font-weight:500;color:#16a34a;">&lt; 30 days</span>
-                <span style="font-size:12px;font-weight:700;color:#111827;">${under30}</span>
-              </div>
-              <div style="height:8px;border-radius:4px;background:#e5e7eb;overflow:hidden;">
-                <div style="height:100%;width:${Math.round(under30/maxAgingCount*100)}%;background:#16a34a;border-radius:4px;"></div>
-              </div>
-            </div>
-            <div style="margin-bottom:8px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-                <span style="font-size:12px;font-weight:500;color:#d97706;">30-90 days</span>
-                <span style="font-size:12px;font-weight:700;color:#111827;">${d30_90}</span>
-              </div>
-              <div style="height:8px;border-radius:4px;background:#e5e7eb;overflow:hidden;">
-                <div style="height:100%;width:${Math.round(d30_90/maxAgingCount*100)}%;background:#d97706;border-radius:4px;"></div>
-              </div>
-            </div>
-            <div style="margin-bottom:8px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-                <span style="font-size:12px;font-weight:500;color:#ea580c;">90-180 days</span>
-                <span style="font-size:12px;font-weight:700;color:#111827;">${d90_180}</span>
-              </div>
-              <div style="height:8px;border-radius:4px;background:#e5e7eb;overflow:hidden;">
-                <div style="height:100%;width:${Math.round(d90_180/maxAgingCount*100)}%;background:#ea580c;border-radius:4px;"></div>
-              </div>
-            </div>
-            <div style="margin-bottom:8px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-                <span style="font-size:12px;font-weight:500;color:#dc2626;">&gt; 180 days</span>
-                <span style="font-size:12px;font-weight:700;color:#111827;">${over180}</span>
-              </div>
-              <div style="height:8px;border-radius:4px;background:#e5e7eb;overflow:hidden;">
-                <div style="height:100%;width:${Math.round(over180/maxAgingCount*100)}%;background:#dc2626;border-radius:4px;"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Row 3: What Needs Attention -->
-        ${attentionItems.length > 0 ? `
-        <div style="margin-bottom:12px;">
-          <p style="font-size:12px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;">What Needs Attention</p>
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            ${attentionItems.map(i => {
-              const sv = i.labels.find(l => ['Critical','High','Medium','Low'].includes(l)) || '';
-              const svClass = sv ? 'pill-' + sv.toLowerCase() : 'pill-neutral';
-              const isOverdue = i.priority === 1;
-              return `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='#fff'" onclick="showDetail('${i.id}')">
-                <span style="flex:1;font-size:13px;font-weight:500;color:#111827;">${i.title}</span>
-                ${sv ? `<span class="pill ${svClass}">${sv}</span>` : ''}
-                <span style="font-size:11px;color:#6b7280;">${i.assignee || 'Unassigned'}</span>
-                ${isOverdue ? '<span style="background:#dc2626;color:#fff;padding:2px 8px;border-radius:9999px;font-size:10px;font-weight:600;">OVERDUE</span>' : ''}
-              </div>`;
-            }).join('')}
-          </div>
-        </div>
-        ` : ''}
-
-        <!-- View all link -->
-        <div style="text-align:center;padding-top:8px;border-top:1px solid #e5e7eb;">
-          <a style="font-size:12px;color:#2378C3;font-weight:600;cursor:pointer;text-decoration:none;" onclick="showCategory('POA&M')" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">View all ${poamItems.length} items &rarr;</a>
-        </div>
-      </div>`;
-    }
-
-    return `<div class="card p-5 mb-4" style="border-left:4px solid ${color};">
-      <div class="flex items-center gap-2 mb-3">
-        <svg class="w-4 h-4" style="color:${color};" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${sec.icon}"/></svg>
-        <p class="text-sm font-semibold" style="color:#1e293b;">${sec.title}</p>
-        <span class="pill pill-blue ml-2">${items.length}</span>
-      </div>
-      <div class="flex gap-4 mb-3 text-[11px]">
-        <span><strong style="color:#1e293b;">${sOpen}</strong> <span style="color:#1e293b;">open</span></span>
-        <span><strong style="color:#2378C3;">${sInProgress}</strong> <span style="color:#1e293b;">in progress</span></span>
-        <span><strong style="color:#719F2A;">${sDone}</strong> <span style="color:#1e293b;">done</span></span>
-      </div>
-      <table class="w-full text-xs">
-        <thead><tr class="text-slate-900 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;">
-          <th class="text-left py-2 px-2">ID</th>
-          <th class="text-left py-2 px-2">Item</th>
-          <th class="text-left py-2 px-2">Severity</th>
-          <th class="text-left py-2 px-2">Assignee</th>
-          <th class="text-left py-2 px-2">Due Date</th>
-          <th class="text-left py-2 px-2">Status</th>
-        </tr></thead>
-        <tbody>${items.map(i => {
-          const [p,pc] = pm[i.priority] || ['--',''];
-          const due = i.dueDate ? new Date(i.dueDate).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '--';
-          return `<tr style="border-bottom:1px solid #e2e8f0;" class="hover:bg-blue-50/40 cursor-pointer" onclick="showDetail('${i.id}')">
-            <td class="py-2 px-2 font-mono text-[11px]" style="color:#111827;">${i.id}</td>
-            <td class="py-2 px-2 font-medium max-w-sm truncate" style="color:#1e293b;">${i.title}</td>
-            <td class="py-2 px-2"><span class="pill ${pc}">${p}</span></td>
-            <td class="py-2 px-2" style="color:#111827;">${i.assignee || 'Unassigned'}</td>
-            <td class="py-2 px-2 text-[11px]" style="color:#111827;">${due}</td>
-            <td class="py-2 px-2"><span class="status-dot status-${i.statusType}"></span>${i.status}</td>
-          </tr>`;
-        }).join('')}</tbody>
-      </table>
-    </div>`;
-  }
-
-  const circumference = 2 * Math.PI * 30;
+  const circumference = 2 * Math.PI * 54;
   const dashoffset = circumference - (compPct / 100) * circumference;
-  const gaugeColor = compPct >= 90 ? '#719F2A' : compPct >= 70 ? '#d97706' : '#dc2626';
+  const gaugeColor = compPct >= 80 ? '#719F2A' : compPct >= 60 ? '#d97706' : '#dc2626';
+
+  // Systems under this framework
+  const systemsMap = {
+    'CMS ARC-AMPE': [
+      {name:'CSMS', comp:71, poams:12, health:'#d97706'},
+      {name:'MD Benefits Shared Data Platform', comp:58, poams:6, health:'#dc2626'}
+    ],
+    'IRS Pub 1075': [
+      {name:'MORA', comp:84, poams:5, health:'#16a34a'},
+      {name:'CSMS', comp:71, poams:4, health:'#d97706', note:'FTI component'}
+    ],
+    'NIST 800-53': [
+      {name:'CJAMS', comp:87, poams:8, health:'#16a34a'},
+      {name:'CSMS', comp:71, poams:12, health:'#d97706'},
+      {name:'MORA', comp:84, poams:5, health:'#16a34a'},
+      {name:'MD Benefits Shared Data Platform', comp:58, poams:6, health:'#dc2626'}
+    ],
+    'SSA': [
+      {name:'MD Benefits Shared Data Platform', comp:58, poams:6, health:'#dc2626'}
+    ],
+    'OLA': [
+      {name:'CJAMS', comp:87, poams:8, health:'#16a34a'}
+    ]
+  };
+  const systems = systemsMap[frameworkName] || [];
+
+  // Risk indicators
+  const poamOpen = openIssues.filter(i => i.labels.includes('POA&M')).length || openIssues.length;
+  const poamOverdue = overdueIssues.length;
+  const avgAgeMap = {'CMS ARC-AMPE':34,'IRS Pub 1075':28,'NIST 800-53':31,'SSA':22,'OLA':45};
+  const avgAge = avgAgeMap[frameworkName] || 30;
+  const riskAcceptMap = {'CMS ARC-AMPE':2,'IRS Pub 1075':1,'NIST 800-53':1,'SSA':1,'OLA':1};
+  const riskAccepted = riskAcceptMap[frameworkName] || 1;
+  const nextReviewMap = {'CMS ARC-AMPE':'Aug 2026','IRS Pub 1075':'Jul 2026','NIST 800-53':'Sep 2026','SSA':'Oct 2026','OLA':'Jul 2026'};
+  const nextReview = nextReviewMap[frameworkName] || 'TBD';
+  const evCompMap = {'CMS ARC-AMPE':68,'IRS Pub 1075':82,'NIST 800-53':79,'SSA':55,'OLA':61};
+  const evComp = evCompMap[frameworkName] || 70;
+  const nextAssessMap = {'CMS ARC-AMPE':'Sep 2026','IRS Pub 1075':'Nov 2026','NIST 800-53':'Aug 2026','SSA':'Jan 2027','OLA':'Oct 2026'};
+  const nextAssess = nextAssessMap[frameworkName] || 'TBD';
+
+  // Aging breakdown
+  const under30 = openIssues.filter(i => i.priority === 4 || i.priority === 3).length;
+  const d30_90 = openIssues.filter(i => i.priority === 2).length;
+  const d90_180 = Math.max(0, Math.floor(openIssues.length * 0.15));
+  const over180 = Math.max(0, openIssues.length - under30 - d30_90 - d90_180);
 
   let html = `
-    <!-- OSCAL Pipeline Banner -->
-    <div class="flex items-center gap-2 px-4 py-2.5 rounded-lg mb-5" style="background:#eff6ff;border:1px solid #bfdbfe;">
-      <svg class="w-4 h-4" style="color:#2563eb;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-      <p class="text-xs font-medium" style="color:#1e40af;">OSCAL Pipeline: <span style="color:#166534;">Connected</span> &mdash; automated controls testing feeds findings into this view</p>
-    </div>
-
-    <!-- Framework Header -->
+    <!-- Framework Scorecard -->
     <div class="card p-6 mb-5">
-      <div class="flex items-center gap-6">
-        <div class="flex flex-col items-center" style="min-width:100px;">
-          <svg width="70" height="70" viewBox="0 0 70 70">
-            <circle cx="35" cy="35" r="30" fill="none" stroke="#e2e8f0" stroke-width="5"/>
-            <circle cx="35" cy="35" r="30" fill="none" stroke="${gaugeColor}" stroke-width="5" stroke-linecap="round"
-              stroke-dasharray="${circumference}" stroke-dashoffset="${dashoffset}" transform="rotate(-90 35 35)"/>
-            <text x="35" y="39" text-anchor="middle" font-size="15" font-weight="700" fill="${gaugeColor}">${compPct}%</text>
+      <div class="flex items-center gap-8">
+        <div class="flex flex-col items-center" style="min-width:140px;">
+          <svg width="130" height="130" viewBox="0 0 130 130">
+            <circle cx="65" cy="65" r="54" fill="none" stroke="#e5e7eb" stroke-width="8"/>
+            <circle cx="65" cy="65" r="54" fill="none" stroke="${gaugeColor}" stroke-width="8" stroke-linecap="round"
+              stroke-dasharray="${circumference}" stroke-dashoffset="${dashoffset}" transform="rotate(-90 65 65)"/>
+            <text x="65" y="62" text-anchor="middle" font-size="28" font-weight="700" fill="${gaugeColor}">${compPct}%</text>
+            <text x="65" y="80" text-anchor="middle" font-size="11" fill="#6b7280">compliant</text>
           </svg>
-          <p class="text-[11px] mt-1" style="color:#1e293b;">compliant</p>
         </div>
         <div class="flex-1">
-          <div class="flex items-center gap-3 mb-2">
-            <div class="w-3 h-3 rounded-full" style="background:${color};"></div>
-            <h2 class="text-lg font-bold" style="color:#1e293b;">${frameworkName}</h2>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-4 h-4 rounded-full" style="background:${color};"></div>
+            <h2 class="text-xl font-bold" style="color:#1e293b;">${frameworkName}</h2>
           </div>
-          <div class="grid grid-cols-4 gap-4 mt-3">
-            <div class="text-center">
-              <p class="text-2xl font-bold" style="color:#1e293b;">${allFwIssues.length}</p>
-              <p class="text-[11px]" style="color:#1e293b;">Total Items</p>
+          <div class="grid grid-cols-4 gap-6">
+            <div>
+              <p class="text-3xl font-bold" style="color:#1e293b;">${openIssues.length}</p>
+              <p class="text-xs" style="color:#6b7280;">Open Items</p>
             </div>
-            <div class="text-center">
-              <p class="text-2xl font-bold" style="color:#2378C3;">${openIssues.length}</p>
-              <p class="text-[11px]" style="color:#1e293b;">Open</p>
+            <div>
+              <p class="text-3xl font-bold sev-crit">${criticalIssues.length}</p>
+              <p class="text-xs" style="color:#6b7280;">Critical</p>
             </div>
-            <div class="text-center">
-              <p class="text-2xl font-bold" style="color:#719F2A;">${closedIssues.length}</p>
-              <p class="text-[11px]" style="color:#1e293b;">Closed</p>
+            <div>
+              <p class="text-3xl font-bold" style="color:${poamOverdue > 0 ? '#dc2626' : '#16a34a'};">${poamOverdue}</p>
+              <p class="text-xs" style="color:#6b7280;">Overdue</p>
             </div>
-            <div class="text-center">
-              <p class="text-2xl font-bold sev-crit">${criticalIssues.length}</p>
-              <p class="text-[11px]" style="color:#1e293b;">Critical Open</p>
+            <div>
+              <p class="text-3xl font-bold" style="color:#719F2A;">${closedIssues.length}</p>
+              <p class="text-xs" style="color:#6b7280;">Closed</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Sections -->
-    ${sections.map(s => buildSection(s)).join('')}
+    <!-- Systems Under This Framework -->
+    <div class="card p-6 mb-5">
+      <p class="text-sm font-bold mb-4" style="color:#1e293b;">Systems Under This Framework</p>
+      <div style="display:grid;grid-template-columns:repeat(${Math.min(systems.length, 4)},1fr);gap:14px;">
+        ${systems.map(sys => {
+          const sysColor = sys.comp >= 80 ? '#16a34a' : sys.comp >= 60 ? '#d97706' : '#dc2626';
+          const sysBg = sys.comp >= 80 ? '#f0fdf4' : sys.comp >= 60 ? '#fffbeb' : '#fef2f2';
+          const sysBorder = sys.comp >= 80 ? '#86efac' : sys.comp >= 60 ? '#fcd34d' : '#fca5a5';
+          return `<div style="background:${sysBg};border:1px solid ${sysBorder};border-radius:12px;padding:20px;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onclick="showSystem('${sys.name}')" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+              <div style="width:10px;height:10px;border-radius:50%;background:${sys.health};"></div>
+              <p style="font-size:14px;font-weight:600;color:#1e293b;">${sys.name.length > 25 ? sys.name.substring(0,25)+'...' : sys.name}</p>
+            </div>
+            <p style="font-size:32px;font-weight:700;color:${sysColor};line-height:1;margin-bottom:4px;">${sys.comp}%</p>
+            <p style="font-size:11px;color:#6b7280;margin-bottom:8px;">compliance</p>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-size:12px;font-weight:600;color:#374151;">${sys.poams} open POA&Ms</span>
+            </div>
+            ${sys.note ? `<p style="font-size:10px;color:#6b7280;margin-top:4px;font-style:italic;">${sys.note}</p>` : ''}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- Key Risk Indicators -->
+    <div class="card p-6 mb-5">
+      <p class="text-sm font-bold mb-4" style="color:#1e293b;">Key Risk Indicators</p>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
+        <!-- POA&M Aging Summary -->
+        <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:18px;">
+          <p style="font-size:12px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:14px;">POA&M Aging Summary</p>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
+            <div style="text-align:center;">
+              <p style="font-size:22px;font-weight:700;color:#2378C3;">${openIssues.length}</p>
+              <p style="font-size:10px;color:#6b7280;">Open</p>
+            </div>
+            <div style="text-align:center;">
+              <p style="font-size:22px;font-weight:700;color:${poamOverdue > 0 ? '#dc2626' : '#16a34a'};">${poamOverdue}</p>
+              <p style="font-size:10px;color:#6b7280;">Overdue</p>
+            </div>
+            <div style="text-align:center;">
+              <p style="font-size:22px;font-weight:700;color:#111827;">${avgAge}d</p>
+              <p style="font-size:10px;color:#6b7280;">Avg Age</p>
+            </div>
+            <div style="text-align:center;">
+              <p style="font-size:22px;font-weight:700;color:#111827;">4/mo</p>
+              <p style="font-size:10px;color:#6b7280;">Closure Rate</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <span style="font-size:10px;color:#16a34a;font-weight:600;background:#f0fdf4;border:1px solid #86efac;padding:2px 8px;border-radius:99px;">&lt;30d: ${under30}</span>
+            <span style="font-size:10px;color:#d97706;font-weight:600;background:#fffbeb;border:1px solid #fcd34d;padding:2px 8px;border-radius:99px;">30-90d: ${d30_90}</span>
+            <span style="font-size:10px;color:#ea580c;font-weight:600;background:#fff7ed;border:1px solid #fdba74;padding:2px 8px;border-radius:99px;">90-180d: ${d90_180}</span>
+            <span style="font-size:10px;color:#dc2626;font-weight:600;background:#fef2f2;border:1px solid #fca5a5;padding:2px 8px;border-radius:99px;">&gt;180d: ${over180}</span>
+          </div>
+        </div>
+
+        <!-- Risk & Evidence -->
+        <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:18px;">
+          <p style="font-size:12px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:14px;">Compliance Health</p>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:12px;color:#374151;">Risk Acceptances</span>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:14px;font-weight:700;color:#111827;">${riskAccepted}</span>
+                <span style="font-size:10px;color:#6b7280;">next review: ${nextReview}</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:12px;color:#374151;">Evidence Completion</span>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:100px;height:6px;border-radius:3px;background:#e5e7eb;overflow:hidden;">
+                  <div style="height:100%;width:${evComp}%;background:${evComp >= 80 ? '#16a34a' : evComp >= 60 ? '#d97706' : '#dc2626'};border-radius:3px;"></div>
+                </div>
+                <span style="font-size:14px;font-weight:700;color:#111827;">${evComp}%</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:12px;color:#374151;">Next Assessment</span>
+              <span style="font-size:14px;font-weight:600;color:#2378C3;">${nextAssess}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   `;
 
   document.getElementById('frameworkPageContent').innerHTML = html;
@@ -2925,28 +2876,26 @@ function renderWhyLinear() {
               <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#374151;">Capability</th>
               <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#374151;"><span style="background:#5b21b6;color:#fff;padding:2px 8px;border-radius:6px;">Linear</span></th>
               <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#374151;">Jira Cloud</th>
-              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#374151;">Jira Data Center</th>
             </tr>
           </thead>
           <tbody>
             ${[
-              ['Speed &amp; UX','Sub-100ms UI, keyboard-first','Slow page loads, complex menus','Slower, self-hosted overhead'],
-              ['API Quality','GraphQL, real-time, clean schema','REST, rate-limited, complex','REST, same limitations'],
-              ['Custom Dashboard','Full API access, easy integration','Requires plugins, marketplace','Same + server management'],
-              ['Teams Integration','Bidirectional via webhooks','Native plugin (basic)','Native plugin'],
-              ['Workflow Automation','Built-in automations, cycles','Requires Jira Automation add-on','Same'],
-              ['AI Features','Native AI assistant, search','Atlassian Intelligence (beta)','Limited'],
-              ['FedRAMP Status','Not authorized (workflow only)','Not authorized (Cloud)','Self-hosted (you control)'],
-              ['Data Residency','US/EU options','Atlassian Cloud regions','On your infrastructure'],
-              ['Cost (12 users)','~$96/mo (Standard)','~$84/mo (Standard)','~$42K/yr (server license)'],
-              ['Setup Time','Same day','1-2 weeks (admin overhead)','2-4 weeks (infrastructure)'],
-              ['Mobile','Native iOS/Android','Native iOS/Android','Web only'],
-              ['Roadmap/Projects','Built-in initiatives, roadmaps','Requires Jira Portfolio/Advanced','Same'],
+              ['Speed &amp; UX','Sub-100ms UI, keyboard-first','Slow page loads, complex menus'],
+              ['API Quality','GraphQL, real-time, clean schema','REST, rate-limited, complex'],
+              ['Custom Dashboard','Full API access, easy integration','Requires plugins, marketplace'],
+              ['Teams Integration','Bidirectional via webhooks','Native plugin (basic)'],
+              ['Workflow Automation','Built-in automations, cycles','Requires Jira Automation add-on'],
+              ['AI Features','Native AI assistant, search','Atlassian Intelligence (beta)'],
+              ['FedRAMP Status','Not authorized (workflow only)','Not authorized (Cloud)'],
+              ['Data Residency','US/EU options','Atlassian Cloud regions'],
+              ['Cost (12 users)','~$96/mo (Standard)','~$84/mo (Standard)'],
+              ['Setup Time','Same day','1-2 weeks (admin overhead)'],
+              ['Mobile','Native iOS/Android','Native iOS/Android'],
+              ['Roadmap/Projects','Built-in initiatives, roadmaps','Requires Jira Portfolio/Advanced'],
             ].map((r,i) => `<tr style="border-bottom:1px solid #f1f5f9;${i%2===1?'background:#f8fafc;':''}">
               <td class="py-2.5 px-3 font-semibold" style="color:#1e293b;">${r[0]}</td>
               <td class="py-2.5 px-3" style="color:#5b21b6;font-weight:500;">${r[1]}</td>
               <td class="py-2.5 px-3" style="color:#1e293b;">${r[2]}</td>
-              <td class="py-2.5 px-3" style="color:#1e293b;">${r[3]}</td>
             </tr>`).join('')}
           </tbody>
         </table>
@@ -3000,28 +2949,57 @@ function renderWhyLinear() {
       </div>
     </div>
 
-    <!-- Section C: "But Jira is already here" -->
-    <div style="background:linear-gradient(135deg,#0d2137 0%,#1a3a5c 100%);border-radius:12px;padding:24px;margin-bottom:20px;">
-      <div style="display:flex;align-items:flex-start;gap:14px;">
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg style="width:20px;height:20px;color:#fbbf24;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <!-- Section C: Linear for GRC, Jira for Development -->
+    <div class="card p-6 mb-5">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#0d2137,#2378C3);display:flex;align-items:center;justify-content:center;">
+          <svg style="width:18px;height:18px;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
         </div>
-        <div>
-          <p style="font-size:14px;font-weight:700;color:#ffffff;margin-bottom:10px;">"But Jira is already here..."</p>
-          <p style="font-size:13px;color:#cbd5e1;line-height:1.7;margin-bottom:14px;">Many state agencies already use Jira. This solution doesn't require ripping out Jira. Options:</p>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:12px 14px;">
-              <p style="font-size:12px;color:#fff;"><strong>1. Use Linear for GRC, keep Jira for dev</strong> <span style="color:#94a3b8;">&mdash; teams already separate</span></p>
+        <p class="text-sm font-bold" style="color:#1e293b;">Linear for GRC, Jira for Development</p>
+      </div>
+      <p style="font-size:13px;color:#374151;line-height:1.7;margin-bottom:20px;">Linear handles GRC-specific workflows: POA&amp;Ms, evidence collection, assessments, compliance tracking. When a finding requires development work, the integration pushes a ticket to Jira automatically. Security team works in Linear. Dev team works in Jira. One source of truth, no duplicate entry.</p>
+
+      <!-- Flow diagram -->
+      <div style="display:flex;align-items:center;gap:0;overflow-x:auto;padding:16px 0;">
+        ${[
+          {label:'Finding identified', color:'#dc2626', bg:'#fef2f2', border:'#fca5a5'},
+          {label:'Linear POA&M created', color:'#5b21b6', bg:'#f5f3ff', border:'#c4b5fd'},
+          {label:'Remediation requires code change', color:'#d97706', bg:'#fffbeb', border:'#fcd34d'},
+          {label:'Jira ticket auto-created', color:'#2563eb', bg:'#eff6ff', border:'#93c5fd'},
+          {label:'Dev fixes', color:'#16a34a', bg:'#f0fdf4', border:'#86efac'},
+          {label:'Jira closes', color:'#2563eb', bg:'#eff6ff', border:'#93c5fd'},
+          {label:'Linear POA&M updated', color:'#5b21b6', bg:'#f5f3ff', border:'#c4b5fd'},
+          {label:'Dashboard reflects', color:'#0d9488', bg:'#f0fdfa', border:'#99f6e4'}
+        ].map((step, i, arr) => `
+          <div style="display:flex;align-items:center;flex-shrink:0;">
+            <div style="background:${step.bg};border:1px solid ${step.border};border-radius:10px;padding:10px 14px;text-align:center;min-width:120px;">
+              <p style="font-size:11px;font-weight:600;color:${step.color};line-height:1.3;">${step.label}</p>
             </div>
-            <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:12px 14px;">
-              <p style="font-size:12px;color:#fff;"><strong>2. Build the Trust Center on Jira instead</strong> <span style="color:#94a3b8;">&mdash; same architecture, different backend</span></p>
-            </div>
-            <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:12px 14px;">
-              <p style="font-size:12px;color:#fff;"><strong>3. Pilot Linear for 90 days</strong> <span style="color:#94a3b8;">&mdash; migrate the POA&amp;M workflow, compare team velocity</span></p>
-            </div>
+            ${i < arr.length - 1 ? '<svg style="width:24px;height:24px;color:#94a3b8;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>' : ''}
           </div>
-          <p style="font-size:12px;color:#93c5fd;margin-top:14px;line-height:1.6;">The Trust Center dashboard is <strong style="color:#fff;">backend-agnostic</strong>. The data classification model is <strong style="color:#fff;">tool-agnostic</strong>. We recommend Linear for speed and API quality, but the compliance architecture works regardless.</p>
-        </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- Section D: Integrations -->
+    <div class="card p-6 mb-5">
+      <p class="text-sm font-semibold mb-4" style="color:#1e293b;">Platform Integrations</p>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;">
+        ${[
+          {name:'Google Workspace', desc:'Docs, Sheets, Drive', color:'#4285F4', icon:'M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10z'},
+          {name:'Microsoft 365', desc:'Teams, OneDrive, Outlook', color:'#0078D4', icon:'M11.5 3v8.5H3V3h8.5zm0 18H3v-8.5h8.5V21zm1-18H21v8.5h-8.5V3zm8.5 9.5V21h-8.5v-8.5H21z'},
+          {name:'SharePoint GCC High', desc:'Evidence vault', color:'#038387', icon:'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'},
+          {name:'Jira Cloud', desc:'Development ticket handoff', color:'#0052CC', icon:'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1'},
+          {name:'OSCAL Pipeline', desc:'Automated control testing', color:'#7c3aed', icon:'M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z'}
+        ].map(int => `
+          <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;text-align:center;">
+            <div style="width:36px;height:36px;border-radius:8px;background:${int.color};display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+              <svg style="width:18px;height:18px;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${int.icon}"/></svg>
+            </div>
+            <p style="font-size:12px;font-weight:600;color:#1e293b;margin-bottom:2px;">${int.name}</p>
+            <p style="font-size:11px;color:#6b7280;">${int.desc}</p>
+          </div>
+        `).join('')}
       </div>
     </div>
   `;
@@ -3063,11 +3041,11 @@ function sanitizeText(text) {
 }
 
 const SANIT_PRESETS = {
-  ip: { title: 'Patch required for web server', description: 'The web server at 192.168.1.100 needs the latest security patches applied.\nSee vulnerability scan for details.' },
-  hostname: { title: 'Certificate renewal on portal.state.md.us', description: 'The TLS certificate on portal.state.md.us expires in 3 days.\nAlso affects api.maryland.gov reverse proxy.' },
-  ssn: { title: 'Data exposure incident — PII found in logs', description: 'Application logs contained SSN: 123-45-6789\nImmediate remediation required.\nContact security team.' },
-  clean: { title: 'Update NIST 800-53 control mapping documentation', description: 'The AC-2 control mapping needs to be updated to reflect the new account management procedures.\nSee evidence repository for current artifacts.' },
-  full: { title: 'Vulnerability found on medicaid-db01.state.md.us — needs patching', description: 'Critical SQL injection on 10.0.1.50 (medicaid-db01.state.md.us)\nCVE-2026-1234 exploit allows remote code execution\nAffected server at \\\\fileserv01\\fti-data\\reports\nContact Tom Chen for FTI access (SSN records at risk)\nSee Qualys scan #4521 for details' },
+  wiz: { title: 'Wiz Alert: S3 bucket public access on CSMS staging', description: 'Wiz Cloud Security Finding\nResource: s3://csms-staging-exports\nAccount: 442891234567 (CSMS-Staging)\nIP: 10.128.4.22 (NAT Gateway)\nFinding: S3 bucket has public-read ACL enabled\nRisk: Data exposure of Medicaid eligibility exports\nRecommendation: Remove public ACL, enable Block Public Access\nAffected host: csms-app01.state.md.us' },
+  qualys: { title: 'Qualys: Critical vuln on MORA database server', description: 'Qualys Vulnerability Scan Results — MORA Environment\nHost: 10.0.1.50 (mora-db01.state.md.us)\nOS: Oracle Linux 8.6\nQID: 376234 — Oracle DB Unpatched (CVE-2026-1234)\nCVSS: 9.1 Critical\nExploit available: CVE-2026-1234 exploit allows remote code execution via crafted SQL\nFTI data at risk — database contains IRS 1075 protected information\nRemediation: Apply Oracle CPU patch Q2-2026\nScan date: 2026-06-01' },
+  teams: { title: 'From Teams: Maria flagged access review gap', description: 'Forwarded from Microsoft Teams — MDH Security Channel\nMaria Gonzalez: "We just realized the quarterly access review for csms-admin.state.md.us was never completed. The shared service account (svc-csms-batch) on 10.0.2.15 still has elevated privileges. Can someone from the ISSO team pick this up? Password is stored in the admin vault at \\\\fileserv01\\admin-creds\\csms."' },
+  ssn: { title: 'Email intake: DHS data incident report', description: 'Forwarded from DHS Security Officer\nSubject: Potential data exposure in Benefits Portal\nAffected user SSN: 123-45-6789\nThe benefits portal at benefits.state.md.us exposed PII in the URL parameters.\nUser reported seeing another applicant\'s information.\nServer: 10.0.5.100 (benefits-web03.state.md.us)\nImmediate investigation needed.' },
+  clean: { title: 'Intake form: Evidence request for AC-2 quarterly review', description: 'Submitted via GRC Intake Form\nRequestor: Lisa Park (Compliance Analyst)\nFramework: CMS ARC-AMPE\nControl: AC-2 Account Management\nSystem: CSMS\nRequest: Need quarterly access review evidence for Q2 2026\nDue date: June 30, 2026\nNotes: Template has been distributed to system owners. Waiting on 3 of 5 responses.' },
 };
 
 function sanitPreview() {
@@ -3221,33 +3199,46 @@ function renderSanitDemo() {
         <svg class="w-5 h-5 text-blue-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
       </div>
       <div>
-        <h2 class="text-lg font-bold" style="color:#1e293b;">Data Sanitization Demo</h2>
-        <p class="text-xs" style="color:#374151;">Interactive demonstration of the data sanitization middleware</p>
+        <h2 class="text-lg font-bold" style="color:#1e293b;">Intake Sanitization</h2>
+        <p class="text-xs" style="color:#374151;">All incoming data is filtered before it reaches Linear</p>
       </div>
     </div>
 
     <div class="card p-4 mb-5" style="background:#eff6ff;border-color:#93c5fd;">
-      <p style="font-size:12px;color:#1e40af;line-height:1.6;">This demonstrates the data sanitization layer. All issues created through the Trust Center or Microsoft Teams integration pass through this filter before reaching Linear. Sensitive patterns (SSNs, IP addresses, hostnames, file paths, exploit details) are detected, redacted, or blocked automatically.</p>
+      <p style="font-size:12px;color:#1e40af;line-height:1.6;">Findings arrive from multiple sources — Wiz scans, Qualys reports, email requests, Teams messages, intake forms. Before anything enters Linear, the sanitization layer scans for sensitive patterns (hostnames, IPs, SSNs, exploit details, file paths) and redacts or blocks them. The raw data stays in SharePoint GCC. Linear gets the sanitized workflow item.</p>
     </div>
 
     <div style="display:flex;gap:20px;align-items:flex-start;">
       <!-- Left Panel: Form (60%) -->
       <div style="flex:0 0 58%;">
         <div class="card p-5">
-          <p class="text-sm font-semibold mb-4" style="color:#1e293b;">Create Test Issue</p>
-
+          <p class="text-sm font-semibold mb-2" style="color:#1e293b;">Simulate Incoming Data</p>
           <div style="margin-bottom:14px;">
-            <label style="font-size:11px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Title</label>
-            <input id="sanitTitle" type="text" oninput="sanitPreview()" value="Vulnerability found on medicaid-db01.state.md.us — needs patching" style="width:100%;border:1px solid #d1d9e0;border-radius:8px;padding:9px 12px;font-size:13px;color:#1e293b;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#2378C3';this.style.boxShadow='0 0 0 2px rgba(35,120,195,0.15)'" onblur="this.style.borderColor='#d1d9e0';this.style.boxShadow='none'">
+            <label style="font-size:11px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Source</label>
+            <select id="sanitSource" style="width:100%;border:1px solid #d1d9e0;border-radius:8px;padding:9px 12px;font-size:13px;color:#1e293b;outline:none;background:#fff;box-sizing:border-box;margin-bottom:10px;">
+              <option value="wiz">Wiz Cloud Scan</option>
+              <option value="qualys">Qualys Vulnerability Scan</option>
+              <option value="teams">Microsoft Teams Message</option>
+              <option value="email">Email Request</option>
+              <option value="form">Intake Form Submission</option>
+              <option value="pentest">Pen Test Report</option>
+            </select>
           </div>
 
           <div style="margin-bottom:14px;">
-            <label style="font-size:11px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Description</label>
-            <textarea id="sanitDesc" rows="6" oninput="sanitPreview()" style="width:100%;border:1px solid #d1d9e0;border-radius:8px;padding:9px 12px;font-size:13px;color:#1e293b;outline:none;resize:vertical;font-family:inherit;box-sizing:border-box;" onfocus="this.style.borderColor='#2378C3';this.style.boxShadow='0 0 0 2px rgba(35,120,195,0.15)'" onblur="this.style.borderColor='#d1d9e0';this.style.boxShadow='none'">Critical SQL injection on 10.0.1.50 (medicaid-db01.state.md.us)
-CVE-2026-1234 exploit allows remote code execution
-Affected server at \\\\fileserv01\\fti-data\\reports
-Contact Tom Chen for FTI access (SSN records at risk)
-See Qualys scan #4521 for details</textarea>
+            <label style="font-size:11px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Subject / Finding Title</label>
+            <input id="sanitTitle" type="text" oninput="sanitPreview()" value="Wiz Alert: S3 bucket public access on CSMS staging" style="width:100%;border:1px solid #d1d9e0;border-radius:8px;padding:9px 12px;font-size:13px;color:#1e293b;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#2378C3';this.style.boxShadow='0 0 0 2px rgba(35,120,195,0.15)'" onblur="this.style.borderColor='#d1d9e0';this.style.boxShadow='none'">
+          </div>
+
+          <div style="margin-bottom:14px;">
+            <label style="font-size:11px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Details / Raw Content</label>
+            <textarea id="sanitDesc" rows="6" oninput="sanitPreview()" style="width:100%;border:1px solid #d1d9e0;border-radius:8px;padding:9px 12px;font-size:13px;color:#1e293b;outline:none;resize:vertical;font-family:inherit;box-sizing:border-box;" onfocus="this.style.borderColor='#2378C3';this.style.boxShadow='0 0 0 2px rgba(35,120,195,0.15)'" onblur="this.style.borderColor='#d1d9e0';this.style.boxShadow='none'">Wiz Cloud Security Finding
+Resource: s3://csms-staging-exports
+Account: 442891234567 (CSMS-Staging)
+IP: 10.128.4.22 (NAT Gateway)
+Finding: S3 bucket has public-read ACL enabled
+Risk: Data exposure of Medicaid eligibility exports
+Affected host: csms-app01.state.md.us</textarea>
           </div>
 
           <div style="display:flex;gap:12px;margin-bottom:14px;">
@@ -3269,20 +3260,20 @@ See Qualys scan #4521 for details</textarea>
           </div>
 
           <button id="sanitCreateBtn" onclick="sanitCreateIssue()" style="width:100%;background:#2378C3;color:#fff;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;transition:background 0.15s;" onmouseover="if(!this.disabled)this.style.background='#1a5f9e'" onmouseout="if(!this.disabled)this.style.background='#2378C3'">
-            Create Issue
+            Process Intake → Linear
           </button>
 
           <div id="sanitStatus" style="margin-top:12px;"></div>
 
           <!-- Quick test buttons -->
           <div style="margin-top:16px;padding-top:14px;border-top:1px solid #e2e8f0;">
-            <p style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#374151;font-weight:600;margin-bottom:8px;">Quick Tests</p>
+            <p style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#374151;font-weight:600;margin-bottom:8px;">Simulate Intake Source</p>
             <div style="display:flex;flex-wrap:wrap;gap:6px;">
-              <button onclick="sanitLoadPreset('ip')" style="background:#eff6ff;border:1px solid #93c5fd;color:#1e40af;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#eff6ff'">Test: IP Address</button>
-              <button onclick="sanitLoadPreset('hostname')" style="background:#eff6ff;border:1px solid #93c5fd;color:#1e40af;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#eff6ff'">Test: Hostname</button>
-              <button onclick="sanitLoadPreset('ssn')" style="background:#fef2f2;border:1px solid #fca5a5;color:#991b1b;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fef2f2'">Test: SSN (Blocked)</button>
-              <button onclick="sanitLoadPreset('clean')" style="background:#f0fdf4;border:1px solid #86efac;color:#166534;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">Test: Clean Input</button>
-              <button onclick="sanitLoadPreset('full')" style="background:#fff7ed;border:1px solid #fdba74;color:#9a3412;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#ffedd5'" onmouseout="this.style.background='#fff7ed'">Test: Full Violation</button>
+              <button onclick="sanitLoadPreset('wiz')" style="background:#eff6ff;border:1px solid #93c5fd;color:#1e40af;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#eff6ff'">Wiz Scan Finding</button>
+              <button onclick="sanitLoadPreset('qualys')" style="background:#eff6ff;border:1px solid #93c5fd;color:#1e40af;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#eff6ff'">Qualys Vuln Report</button>
+              <button onclick="sanitLoadPreset('teams')" style="background:#f3e8ff;border:1px solid #c4b5fd;color:#6d28d9;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#ede9fe'" onmouseout="this.style.background='#f3e8ff'">Teams Message</button>
+              <button onclick="sanitLoadPreset('ssn')" style="background:#fef2f2;border:1px solid #fca5a5;color:#991b1b;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fef2f2'">Email w/ PII (Blocked)</button>
+              <button onclick="sanitLoadPreset('clean')" style="background:#f0fdf4;border:1px solid #86efac;color:#166534;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">Clean Intake Form</button>
             </div>
           </div>
         </div>
