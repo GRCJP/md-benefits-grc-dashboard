@@ -13,7 +13,7 @@
 ## OPENING (1 minute)
 
 **Say:**
-"Today I want to show you how we can consolidate GRC operations into a single platform that gives leadership real-time visibility into compliance posture across CJAMS, CSMS, MORA, and the Shared Data Platform. Right now this information lives in spreadsheets, emails, and people's heads. What I'm going to show you eliminates that."
+"Today I want to show you how we can consolidate GRC operations into a single platform that gives leadership real-time visibility into compliance posture across CaseTrack, HealthConnect, RevenuePro, and the DataHub. Right now this information lives in spreadsheets, emails, and people's heads. What I'm going to show you eliminates that."
 
 ---
 
@@ -22,7 +22,7 @@
 ### Show the Executive Dashboard — Trust Center tab
 
 **Posture Banner (30 sec)**
-"At a glance — compliance health, risk score, and authorization status of every system. CJAMS and MORA are authorized, CSMS is conditional, Shared Data Platform is in review. These numbers are real — they're seeded from the latest assessment artifacts."
+"At a glance — compliance health, risk score, and authorization status of every system. CaseTrack and RevenuePro are authorized, HealthConnect is conditional, DataHub is in review. These numbers are real — they're seeded from the latest assessment artifacts."
 
 **KEY TALKING POINT — Living Compliance (30 sec)**
 "This is important — these numbers aren't static. We load the latest SAR and POA&M workbook, which creates all findings as tracked items with severity, control mapping, and due dates. That's the baseline. From that point forward, every time the team closes a finding, remediates a control, or collects evidence, the compliance percentage updates. It's a living number — not a report that's outdated the day after the assessment."
@@ -31,7 +31,7 @@
 "Vulnerability posture across all sources — scans, pen tests, external audits, bug bounty. SLA compliance at 78%, remediation times by severity, and the trend is improving. These metrics update as the team works through findings in Linear."
 
 **POA&M Health (30 sec)**
-"POA&Ms by system — CSMS has the most at 12. Aging distribution shows what's been open too long. Risk acceptances tracked with review dates. Closure rate and milestone tracking."
+"POA&Ms by system — HealthConnect has the most at 12. Aging distribution shows what's been open too long. Risk acceptances tracked with review dates. Closure rate and milestone tracking."
 
 **Evidence & ConMon (30 sec)**
 "Evidence freshness, ConMon delivery at 83%, and automation progress. The OSCAL pipeline handles automated control testing — failures create findings automatically. Manual controls get flagged for review."
@@ -43,17 +43,17 @@
 
 ## PART 2: SYSTEM DRILL-DOWN (2 minutes)
 
-### Click "Leadership Metrics" tab, then click CSMS card (yellow)
+### Click "Leadership Metrics" tab, then click HealthConnect card (yellow)
 
 **Say:**
-"CSMS is our Medicaid system under CMS ARC-AMPE — it's conditional right now. Let me show you why."
+"HealthConnect is our Medicaid system under CMS ARC-AMPE — it's conditional right now. Let me show you why."
 
 - "71% compliant — 5 compliance gaps including FTI encryption and ConMon delays"
 - "Two risk acceptances with expiration dates and named owners"
 - "Evidence completion only 68% — 11 items missing. This is blocking the full ATO."
 - "Recent findings from the pen test and CMS assessment"
 
-**Click Shared Data Platform (red):**
+**Click DataHub (red):**
 "Our biggest risk — 58% compliant, ConMon not established, 152 controls not yet assessed. But we can see it clearly now instead of discovering it during an audit."
 
 ---

@@ -26,7 +26,7 @@ app.post("/api/chat", async (req, res) => {
       `${i.id}: ${i.title} [${i.status}] P${i.priority} ${i.assignee||'Unassigned'} ${i.labels.filter(l=>!l.startsWith('Team:')).join(',')}`
     ).join('\n');
 
-    const systemPrompt = `You are a GRC (Governance, Risk, and Compliance) operations assistant for the MD Benefits Trust Center. Answer questions about compliance data concisely and accurately. Use specific issue IDs and data when possible.
+    const systemPrompt = `You are a GRC (Governance, Risk, and Compliance) operations assistant for the MD Trust Center. Answer questions about compliance data concisely and accurately. Use specific issue IDs and data when possible.
 
 Current Data Summary:
 - Total items: ${data.summary.total} | Open: ${data.summary.open} | Closed: ${data.summary.closed}
@@ -522,5 +522,5 @@ app.post("/api/create-issue", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`\n  MD Benefits GRC Trust Center running at http://localhost:${PORT}\n`);
+  console.log(`\n  MD GRC Trust Center running at http://localhost:${PORT}\n`);
 });

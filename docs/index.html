@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MD Benefits - GRC Trust Center</title>
+  <title>MD - GRC Trust Center</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -140,7 +140,7 @@
           <svg class="w-5 h-5 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
         </div>
         <div>
-          <h1 class="text-sm font-bold text-white tracking-tight">MD Benefits</h1>
+          <h1 class="text-sm font-bold text-white tracking-tight">MD</h1>
           <p class="text-[9px] text-blue-200/60 uppercase tracking-widest">GRC Trust Center</p>
         </div>
       </div>
@@ -746,10 +746,10 @@ function renderExecutive() {
   const actionCount = (DATA.actionItems||[]).filter(i => !['completed','canceled'].includes(i.statusType)).length;
 
   const systems = [
-    { name:'CJAMS', ato:'Authorized', expires:'Dec 2026', framework:'NIST 800-53', atoColor:'#16a34a', dotColor:'#16a34a' },
-    { name:'CSMS', ato:'Conditional', expires:'Sep 2026', framework:'CMS ARC-AMPE', atoColor:'#d97706', dotColor:'#d97706' },
-    { name:'MORA', ato:'Authorized', expires:'Mar 2027', framework:'IRS Pub 1075', atoColor:'#16a34a', dotColor:'#16a34a' },
-    { name:'MD Benefits - Shared Data Platform', ato:'In Review', expires:'--', framework:'CMS ARC-AMPE, SSA', atoColor:'#dc2626', dotColor:'#dc2626' }
+    { name:'CaseTrack', ato:'Authorized', expires:'Dec 2026', framework:'NIST 800-53', atoColor:'#16a34a', dotColor:'#16a34a' },
+    { name:'HealthConnect', ato:'Conditional', expires:'Sep 2026', framework:'CMS ARC-AMPE', atoColor:'#d97706', dotColor:'#d97706' },
+    { name:'RevenuePro', ato:'Authorized', expires:'Mar 2027', framework:'IRS Pub 1075', atoColor:'#16a34a', dotColor:'#16a34a' },
+    { name:'MD DataHub', ato:'In Review', expires:'--', framework:'CMS ARC-AMPE, SSA', atoColor:'#dc2626', dotColor:'#dc2626' }
   ];
 
   // ═══ TRUST CENTER: SECTION A — 5 Posture Gauge Tiles ═══
@@ -910,15 +910,15 @@ function renderExecutive() {
     <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-bottom:16px;">
       <p style="font-size:12px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;">By System</p>
       <div style="display:flex;height:24px;border-radius:6px;overflow:hidden;margin-bottom:8px;">
-        <div style="width:${Math.round(8/31*100)}%;background:#2563eb;" title="CJAMS: 8"></div>
-        <div style="width:${Math.round(12/31*100)}%;background:#7c3aed;" title="CSMS: 12"></div>
-        <div style="width:${Math.round(5/31*100)}%;background:#0d9488;" title="MORA: 5"></div>
+        <div style="width:${Math.round(8/31*100)}%;background:#2563eb;" title="CaseTrack: 8"></div>
+        <div style="width:${Math.round(12/31*100)}%;background:#7c3aed;" title="HealthConnect: 12"></div>
+        <div style="width:${Math.round(5/31*100)}%;background:#0d9488;" title="RevenuePro: 5"></div>
         <div style="width:${Math.round(6/31*100)}%;background:#ea580c;" title="Shared Platform: 6"></div>
       </div>
       <div style="display:flex;gap:20px;flex-wrap:wrap;">
-        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#2563eb;"></div><span style="font-size:12px;color:#374151;font-weight:500;">CJAMS 8</span></div>
-        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#7c3aed;"></div><span style="font-size:12px;color:#374151;font-weight:500;">CSMS 12</span></div>
-        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#0d9488;"></div><span style="font-size:12px;color:#374151;font-weight:500;">MORA 5</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#2563eb;"></div><span style="font-size:12px;color:#374151;font-weight:500;">CaseTrack 8</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#7c3aed;"></div><span style="font-size:12px;color:#374151;font-weight:500;">HealthConnect 12</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#0d9488;"></div><span style="font-size:12px;color:#374151;font-weight:500;">RevenuePro 5</span></div>
         <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:3px;background:#ea580c;"></div><span style="font-size:12px;color:#374151;font-weight:500;">Shared Platform 6</span></div>
       </div>
     </div>
@@ -1008,10 +1008,10 @@ function renderExecutive() {
 
   // ═══ LEADERSHIP: SECTION F — System Scorecards (2x2) ═══
   const scorecards = [
-    { name:'CJAMS', fw:'NIST 800-53', ato:'Authorized', comp:87, poams:8, crit:1, evidence:92, health:'green' },
-    { name:'CSMS', fw:'CMS ARC-AMPE', ato:'Conditional', comp:71, poams:12, crit:3, evidence:68, health:'yellow' },
-    { name:'MORA', fw:'IRS Pub 1075', ato:'Authorized', comp:84, poams:5, crit:0, evidence:88, health:'green' },
-    { name:'MD Benefits - Shared Data Platform', fw:'CMS ARC-AMPE, SSA', ato:'In Review', comp:58, poams:6, crit:2, evidence:52, health:'red' }
+    { name:'CaseTrack', fw:'NIST 800-53', ato:'Authorized', comp:87, poams:8, crit:1, evidence:92, health:'green' },
+    { name:'HealthConnect', fw:'CMS ARC-AMPE', ato:'Conditional', comp:71, poams:12, crit:3, evidence:68, health:'yellow' },
+    { name:'RevenuePro', fw:'IRS Pub 1075', ato:'Authorized', comp:84, poams:5, crit:0, evidence:88, health:'green' },
+    { name:'MD DataHub', fw:'CMS ARC-AMPE, SSA', ato:'In Review', comp:58, poams:6, crit:2, evidence:52, health:'red' }
   ];
   const healthColors = {green:'#16a34a',yellow:'#d97706',red:'#dc2626'};
   const healthLabels = {green:'Healthy',yellow:'At Risk',red:'Critical'};
@@ -1333,7 +1333,7 @@ function renderIntakeMonitoring() {
             { req:'DHS Evidence Request — AC-2 Access Reviews', agency:'DHS', type:'Evidence Request', days:67, assignee:'Maria Gonzalez', status:'Partially collected' },
             { req:'MDH Compliance Review — Medicaid Eligibility', agency:'MDH', type:'Compliance Documentation', days:58, assignee:'Mike Torres', status:'Draft 60% complete' },
             { req:'DHS Risk Assessment — Benefits Portal', agency:'DHS', type:'Risk Assessment', days:52, assignee:'Rachel Adams', status:'Assessment in progress' },
-            { req:'DPSCS Audit Response — CJAMS Annual', agency:'DPSCS', type:'Audit Response', days:45, assignee:'Sarah Chen', status:'Collecting evidence' },
+            { req:'DPSCS Audit Response — CaseTrack Annual', agency:'DPSCS', type:'Audit Response', days:45, assignee:'Sarah Chen', status:'Collecting evidence' },
             { req:'MDH Security Questionnaire — Provider Portal', agency:'MDH', type:'Security Questionnaire', days:44, assignee:'Lisa Park', status:'80% complete' },
             { req:'DHS Vendor Review — Payment Processor', agency:'DHS', type:'Vendor Review', days:41, assignee:'Robert Chen', status:'Awaiting SOC 2 report' },
             { req:'Comptroller Evidence — FTI Encryption Cert', agency:'Comptroller', type:'Evidence Request', days:38, assignee:'Tom Chen', status:'Pending procurement' },
@@ -1408,24 +1408,24 @@ function renderFrameworkPage(frameworkName) {
   // Systems under this framework
   const systemsMap = {
     'CMS ARC-AMPE': [
-      {name:'CSMS', comp:71, poams:12, health:'#d97706'},
-      {name:'MD Benefits Shared Data Platform', comp:58, poams:6, health:'#dc2626'}
+      {name:'HealthConnect', comp:71, poams:12, health:'#d97706'},
+      {name:'MD DataHub', comp:58, poams:6, health:'#dc2626'}
     ],
     'IRS Pub 1075': [
-      {name:'MORA', comp:84, poams:5, health:'#16a34a'},
-      {name:'CSMS', comp:71, poams:4, health:'#d97706', note:'FTI component'}
+      {name:'RevenuePro', comp:84, poams:5, health:'#16a34a'},
+      {name:'HealthConnect', comp:71, poams:4, health:'#d97706', note:'FTI component'}
     ],
     'NIST 800-53': [
-      {name:'CJAMS', comp:87, poams:8, health:'#16a34a'},
-      {name:'CSMS', comp:71, poams:12, health:'#d97706'},
-      {name:'MORA', comp:84, poams:5, health:'#16a34a'},
-      {name:'MD Benefits Shared Data Platform', comp:58, poams:6, health:'#dc2626'}
+      {name:'CaseTrack', comp:87, poams:8, health:'#16a34a'},
+      {name:'HealthConnect', comp:71, poams:12, health:'#d97706'},
+      {name:'RevenuePro', comp:84, poams:5, health:'#16a34a'},
+      {name:'MD DataHub', comp:58, poams:6, health:'#dc2626'}
     ],
     'SSA': [
-      {name:'MD Benefits Shared Data Platform', comp:58, poams:6, health:'#dc2626'}
+      {name:'MD DataHub', comp:58, poams:6, health:'#dc2626'}
     ],
     'OLA': [
-      {name:'CJAMS', comp:87, poams:8, health:'#16a34a'}
+      {name:'CaseTrack', comp:87, poams:8, health:'#16a34a'}
     ]
   };
   const systems = systemsMap[frameworkName] || [];
@@ -2199,7 +2199,7 @@ function renderIntegrations() {
 
 // ─── SYSTEM DETAIL PAGE ──────────────────────────────────
 const SYSTEMS = {
-  'CJAMS': {
+  'CaseTrack': {
     fullName: 'Criminal Justice Application Management System',
     framework: 'NIST 800-53',
     atoStatus: 'Authorized',
@@ -2231,7 +2231,7 @@ const SYSTEMS = {
       { source: 'Annual Assessment', count: 6, severity: 'Mixed', date: 'Mar 15' }
     ]
   },
-  'CSMS': {
+  'HealthConnect': {
     fullName: 'Client Services Management System',
     framework: 'CMS ARC-AMPE',
     atoStatus: 'Conditional',
@@ -2251,7 +2251,7 @@ const SYSTEMS = {
     lastPenTest: 'May 2026',
     conmonStatus: '2 months behind',
     riskAcceptances: [
-      { id: 'RA-003', desc: 'Shared service account for CSMS batch jobs', risk: 'Medium', expires: 'Oct 2026', owner: 'Maria Gonzalez' },
+      { id: 'RA-003', desc: 'Shared service account for HealthConnect batch jobs', risk: 'Medium', expires: 'Oct 2026', owner: 'Maria Gonzalez' },
       { id: 'RA-004', desc: 'Legacy API without rate limiting', risk: 'Medium', expires: 'Aug 2026', owner: 'Carlos Reyes' }
     ],
     gaps: [
@@ -2267,7 +2267,7 @@ const SYSTEMS = {
       { source: 'Vuln Scan', count: 14, severity: 'Mixed', date: 'May 25' }
     ]
   },
-  'MORA': {
+  'RevenuePro': {
     fullName: 'Maryland Online Revenue Application',
     framework: 'IRS Pub 1075',
     atoStatus: 'Authorized',
@@ -2298,8 +2298,8 @@ const SYSTEMS = {
       { source: 'Vuln Scan', count: 2, severity: 'High', date: 'May 27' }
     ]
   },
-  'MD Benefits - Shared Data Platform': {
-    fullName: 'Maryland Benefits Shared Data Platform',
+  'MD DataHub': {
+    fullName: 'Maryland Benefits DataHub',
     framework: 'CMS ARC-AMPE, SSA EIEP',
     atoStatus: 'In Review',
     atoExpires: '--',
@@ -2732,10 +2732,10 @@ function renderDataSecurity() {
           </thead>
           <tbody>
             ${[
-              ['Task title','Internal','Linear','"Remediate AC-2 finding for CSMS"','#1e40af','#eff6ff','#bfdbfe'],
+              ['Task title','Internal','Linear','"Remediate AC-2 finding for HealthConnect"','#1e40af','#eff6ff','#bfdbfe'],
               ['Assignee &amp; due date','Internal','Linear','"Maria Gonzalez &mdash; Due Jun 30"','#1e40af','#eff6ff','#bfdbfe'],
               ['Framework &amp; control ID','Public','Linear','"CMS ARC-AMPE, AC-2"','#15803d','#f0fdf4','#86efac'],
-              ['Evidence reference ID','Internal','Linear','"EV-AC2-CSMS-001"','#1e40af','#eff6ff','#bfdbfe'],
+              ['Evidence reference ID','Internal','Linear','"EV-AC2-HealthConnect-001"','#1e40af','#eff6ff','#bfdbfe'],
               ['Remediation status','Internal','Linear','"In Progress &mdash; 80% complete"','#1e40af','#eff6ff','#bfdbfe'],
               ['Vulnerability scan output','Sensitive','SharePoint GCC','Raw Qualys/Wiz/Tenable reports','#c2410c','#fff7ed','#fdba74'],
               ['Screenshots','Sensitive','SharePoint GCC','System configuration evidence','#c2410c','#fff7ed','#fdba74'],
@@ -2908,7 +2908,7 @@ function renderWhyLinear() {
             <svg style="width:20px;height:20px;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
           </div>
           <p style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:6px;">AI-Powered Compliance Assistant</p>
-          <p style="font-size:13px;color:#374151;line-height:1.6;">Ask "What POA&Ms are overdue for CSMS?" and get an instant answer. The AI assistant understands your compliance data and can surface insights across frameworks, teams, and systems.</p>
+          <p style="font-size:13px;color:#374151;line-height:1.6;">Ask "What POA&Ms are overdue for HealthConnect?" and get an instant answer. The AI assistant understands your compliance data and can surface insights across frameworks, teams, and systems.</p>
         </div>
 
         <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px;">
@@ -3013,11 +3013,11 @@ function sanitizeText(text) {
 }
 
 const SANIT_PRESETS = {
-  wiz: { title: 'Wiz Alert: S3 bucket public access on CSMS staging', description: 'Wiz Cloud Security Finding\nResource: s3://csms-staging-exports\nAccount: 442891234567 (CSMS-Staging)\nIP: 10.128.4.22 (NAT Gateway)\nFinding: S3 bucket has public-read ACL enabled\nRisk: Data exposure of Medicaid eligibility exports\nRecommendation: Remove public ACL, enable Block Public Access\nAffected host: csms-app01.state.md.us' },
-  qualys: { title: 'Qualys: Critical vuln on MORA database server', description: 'Qualys Vulnerability Scan Results — MORA Environment\nHost: 10.0.1.50 (mora-db01.state.md.us)\nOS: Oracle Linux 8.6\nQID: 376234 — Oracle DB Unpatched (CVE-2026-1234)\nCVSS: 9.1 Critical\nExploit available: CVE-2026-1234 exploit allows remote code execution via crafted SQL\nFTI data at risk — database contains IRS 1075 protected information\nRemediation: Apply Oracle CPU patch Q2-2026\nScan date: 2026-06-01' },
+  wiz: { title: 'Wiz Alert: S3 bucket public access on HealthConnect staging', description: 'Wiz Cloud Security Finding\nResource: s3://csms-staging-exports\nAccount: 442891234567 (HealthConnect-Staging)\nIP: 10.128.4.22 (NAT Gateway)\nFinding: S3 bucket has public-read ACL enabled\nRisk: Data exposure of Medicaid eligibility exports\nRecommendation: Remove public ACL, enable Block Public Access\nAffected host: csms-app01.state.md.us' },
+  qualys: { title: 'Qualys: Critical vuln on RevenuePro database server', description: 'Qualys Vulnerability Scan Results — RevenuePro Environment\nHost: 10.0.1.50 (mora-db01.state.md.us)\nOS: Oracle Linux 8.6\nQID: 376234 — Oracle DB Unpatched (CVE-2026-1234)\nCVSS: 9.1 Critical\nExploit available: CVE-2026-1234 exploit allows remote code execution via crafted SQL\nFTI data at risk — database contains IRS 1075 protected information\nRemediation: Apply Oracle CPU patch Q2-2026\nScan date: 2026-06-01' },
   teams: { title: 'From Teams: Maria flagged access review gap', description: 'Forwarded from Microsoft Teams — MDH Security Channel\nMaria Gonzalez: "We just realized the quarterly access review for csms-admin.state.md.us was never completed. The shared service account (svc-csms-batch) on 10.0.2.15 still has elevated privileges. Can someone from the ISSO team pick this up? Password is stored in the admin vault at \\\\fileserv01\\admin-creds\\csms."' },
   ssn: { title: 'Email intake: DHS data incident report', description: 'Forwarded from DHS Security Officer\nSubject: Potential data exposure in Benefits Portal\nAffected user SSN: 123-45-6789\nThe benefits portal at benefits.state.md.us exposed PII in the URL parameters.\nUser reported seeing another applicant\'s information.\nServer: 10.0.5.100 (benefits-web03.state.md.us)\nImmediate investigation needed.' },
-  clean: { title: 'Intake form: Evidence request for AC-2 quarterly review', description: 'Submitted via GRC Intake Form\nRequestor: Lisa Park (Compliance Analyst)\nFramework: CMS ARC-AMPE\nControl: AC-2 Account Management\nSystem: CSMS\nRequest: Need quarterly access review evidence for Q2 2026\nDue date: June 30, 2026\nNotes: Template has been distributed to system owners. Waiting on 3 of 5 responses.' },
+  clean: { title: 'Intake form: Evidence request for AC-2 quarterly review', description: 'Submitted via GRC Intake Form\nRequestor: Lisa Park (Compliance Analyst)\nFramework: CMS ARC-AMPE\nControl: AC-2 Account Management\nSystem: HealthConnect\nRequest: Need quarterly access review evidence for Q2 2026\nDue date: June 30, 2026\nNotes: Template has been distributed to system owners. Waiting on 3 of 5 responses.' },
 };
 
 function sanitPreview() {
@@ -3199,14 +3199,14 @@ function renderSanitDemo() {
 
           <div style="margin-bottom:14px;">
             <label style="font-size:11px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Subject / Finding Title</label>
-            <input id="sanitTitle" type="text" oninput="sanitPreview()" value="Wiz Alert: S3 bucket public access on CSMS staging" style="width:100%;border:1px solid #d1d9e0;border-radius:8px;padding:9px 12px;font-size:13px;color:#1e293b;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#2378C3';this.style.boxShadow='0 0 0 2px rgba(35,120,195,0.15)'" onblur="this.style.borderColor='#d1d9e0';this.style.boxShadow='none'">
+            <input id="sanitTitle" type="text" oninput="sanitPreview()" value="Wiz Alert: S3 bucket public access on HealthConnect staging" style="width:100%;border:1px solid #d1d9e0;border-radius:8px;padding:9px 12px;font-size:13px;color:#1e293b;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#2378C3';this.style.boxShadow='0 0 0 2px rgba(35,120,195,0.15)'" onblur="this.style.borderColor='#d1d9e0';this.style.boxShadow='none'">
           </div>
 
           <div style="margin-bottom:14px;">
             <label style="font-size:11px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Details / Raw Content</label>
             <textarea id="sanitDesc" rows="6" oninput="sanitPreview()" style="width:100%;border:1px solid #d1d9e0;border-radius:8px;padding:9px 12px;font-size:13px;color:#1e293b;outline:none;resize:vertical;font-family:inherit;box-sizing:border-box;" onfocus="this.style.borderColor='#2378C3';this.style.boxShadow='0 0 0 2px rgba(35,120,195,0.15)'" onblur="this.style.borderColor='#d1d9e0';this.style.boxShadow='none'">Wiz Cloud Security Finding
 Resource: s3://csms-staging-exports
-Account: 442891234567 (CSMS-Staging)
+Account: 442891234567 (HealthConnect-Staging)
 IP: 10.128.4.22 (NAT Gateway)
 Finding: S3 bucket has public-read ACL enabled
 Risk: Data exposure of Medicaid eligibility exports
