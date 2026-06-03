@@ -237,105 +237,36 @@
 
     <!-- ═══ EXECUTIVE VIEW ═══ -->
     <div id="view-executive">
-
-      <!-- ROW 1: Trust Center Health Score Banner -->
-      <div class="card p-4 mb-3">
-        <div class="flex items-center gap-6">
-          <!-- Large Compliance Gauge -->
-          <div class="flex flex-col items-center" style="min-width:130px;">
-            <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-1">Compliance Health</p>
-            <div class="relative" style="width:100px;height:100px;">
-              <canvas id="healthRing"></canvas>
-              <div class="absolute inset-0 flex flex-col items-center justify-center">
-                <span id="healthPct" class="text-3xl font-bold" style="color:#1e293b;">--</span>
-                <span class="text-[10px]" style="color:#475569;">compliant</span>
-              </div>
-            </div>
-          </div>
-          <!-- Key Risk Indicators -->
-          <div class="flex-1 grid grid-cols-4 gap-3">
-            <div class="card p-3 text-center card-hover" style="border-left:4px solid #2378C3;">
-              <p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">Risk Score</p>
-              <p class="text-2xl font-bold" id="riskScore" style="color:#1e293b;">--</p>
-              <p class="text-[10px]" id="riskLabel" style="color:#475569;">--</p>
-            </div>
-            <div class="card p-3 text-center card-hover" style="border-left:4px solid #d97706;">
-              <p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">Open Findings</p>
-              <p class="text-2xl font-bold" id="openCount" style="color:#1e293b;">--</p>
-              <p class="text-[10px]" style="color:#475569;"><span id="critCount" class="font-semibold sev-crit">--</span> critical</p>
-            </div>
-            <div class="card p-3 text-center card-hover" style="border-left:4px solid #dc2626;">
-              <p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">Overdue Items</p>
-              <p class="text-2xl font-bold sev-crit" id="overdueCount">--</p>
-              <p class="text-[10px]" style="color:#475569;">require action</p>
-            </div>
-            <div class="card p-3 text-center card-hover" style="border-left:4px solid #719F2A;">
-              <p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">Avg Remediation</p>
-              <p class="text-2xl font-bold" id="mttrValue" style="color:#1e293b;">--</p>
-              <p class="text-[10px]" style="color:#475569;">days to close</p>
-            </div>
-          </div>
-        </div>
+      <!-- Sub-tab navigation -->
+      <div class="flex gap-2 mb-3">
+        <button id="execTabTrust" onclick="switchExecTab('trust')" class="px-4 py-2 text-xs font-semibold rounded-lg transition-all" style="background:#0d2137;color:#fff;">Trust Center</button>
+        <button id="execTabLeadership" onclick="switchExecTab('leadership')" class="px-4 py-2 text-xs font-semibold rounded-lg transition-all" style="background:#f1f5f9;color:#475569;border:1px solid #d1d9e0;">Leadership Metrics</button>
       </div>
 
-      <!-- ROW 2: Framework Compliance Scorecards -->
-      <div class="grid grid-cols-5 gap-3 mb-3" id="frameworkCards"></div>
-
-      <!-- ROW 3: Risk Heatmap + Key Metrics -->
-      <div class="grid grid-cols-12 gap-3 mb-3">
-        <!-- Risk Heatmap (60%) -->
-        <div class="col-span-7 card p-4">
-          <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-4">Risk Heatmap &mdash; Severity vs Category</p>
-          <div id="riskHeatmap"></div>
-        </div>
-        <!-- Key Metrics (40%) -->
-        <div class="col-span-5 space-y-4">
-          <div class="card p-4">
-            <div class="flex items-center gap-2 mb-3"><div class="w-6 h-6 rounded flex items-center justify-center" style="background:#991b1b;"><svg class="w-3.5 h-3.5 text-red-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01"/></svg></div><p class="text-[10px] text-slate-700 uppercase tracking-widest">CISA KEVs</p></div>
-            <div id="kevSummary"></div><div id="kevList" class="mt-2 space-y-1"></div>
-          </div>
-          <div class="card p-4">
-            <div class="flex items-center gap-2 mb-3"><div class="w-6 h-6 rounded flex items-center justify-center" style="background:#b45309;"><svg class="w-3.5 h-3.5 text-amber-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg></div><p class="text-[10px] text-slate-700 uppercase tracking-widest">Certificate Health</p></div>
-            <div id="certSummary"></div><div id="certList" class="mt-2 space-y-1"></div>
-          </div>
-          <div class="card p-4">
-            <div class="flex items-center gap-2 mb-3"><div class="w-6 h-6 rounded flex items-center justify-center" style="background:#4338ca;"><svg class="w-3.5 h-3.5 text-indigo-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div><p class="text-[10px] text-slate-700 uppercase tracking-widest">Document Reviews</p></div>
-            <div id="docSummary"></div><div id="docList" class="mt-2 space-y-1"></div>
-          </div>
-          <div class="card p-4">
-            <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">Age Distribution</p>
-            <div id="ageBuckets" class="space-y-2"></div>
-          </div>
-        </div>
+      <!-- ═══ TRUST CENTER ═══ -->
+      <div id="exec-trust">
+        <!-- Section A: Overall Posture Banner -->
+        <div id="postureBanner"></div>
+        <!-- Section B: Vulnerability Management -->
+        <div id="vulnManagement"></div>
+        <!-- Section C: POA&M Health -->
+        <div id="poamHealth"></div>
+        <!-- Section D: Assessment & Audit Status -->
+        <div id="assessmentAudit"></div>
+        <!-- Section E: Evidence & Continuous Monitoring -->
+        <div id="evidenceConmon"></div>
       </div>
 
-      <!-- ROW 4: Team Accountability -->
-      <div class="card p-4 mb-5">
-        <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">Team Accountability</p>
-        <div id="teamWorkload" class="grid grid-cols-5 gap-3"></div>
-      </div>
-
-      <!-- ROW 5: Action Items Alert Banner -->
-      <div id="actionBanner" class="card-alert rounded-xl p-4 mb-5 cursor-pointer card-hover" onclick="showView('action')">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:#991b1b;"><svg class="w-5 h-5 text-red-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg></div>
-            <div><p class="text-sm font-semibold" style="color:#991b1b;">Action Items Requiring Attention</p><p class="text-xs text-slate-700" id="actionBannerSub">--</p></div>
-          </div>
-          <div class="flex items-center gap-2" id="actionBannerStats"></div>
-        </div>
-      </div>
-
-      <!-- ROW 5b: Critical & High Priority Items Table -->
-      <div class="card p-5">
-        <div class="flex items-center justify-between mb-4">
-          <p class="text-sm font-semibold" style="color:#1e293b;">Critical &amp; High Priority Items</p>
-          <div class="flex gap-2">
-            <select id="filterFramework" onchange="filterTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#f8fafc;border-color:#cbd5e1;color:#475569;"><option value="">All Frameworks</option></select>
-            <select id="filterCategory" onchange="filterTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#f8fafc;border-color:#cbd5e1;color:#475569;"><option value="">All Categories</option></select>
-          </div>
-        </div>
-        <table class="w-full text-xs"><thead><tr class="text-slate-700 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;"><th class="text-left py-2.5 px-2">ID</th><th class="text-left py-2.5 px-2">Item</th><th class="text-left py-2.5 px-2">Severity</th><th class="text-left py-2.5 px-2">Framework</th><th class="text-left py-2.5 px-2">Team</th><th class="text-left py-2.5 px-2">Assignee</th><th class="text-left py-2.5 px-2">Due Date</th><th class="text-left py-2.5 px-2">Status</th></tr></thead><tbody id="criticalTable"></tbody></table>
+      <!-- ═══ LEADERSHIP METRICS ═══ -->
+      <div id="exec-leadership" class="hidden">
+        <!-- Section F: System-by-System Scorecard -->
+        <div id="systemScorecard"></div>
+        <!-- Section G: Team Performance -->
+        <div id="teamPerformance"></div>
+        <!-- Section H: Risk Register Summary -->
+        <div id="riskRegister"></div>
+        <!-- Section I: Compliance Calendar -->
+        <div id="complianceCalendar"></div>
       </div>
     </div>
 
@@ -740,135 +671,387 @@ document.addEventListener('click', e => {
 });
 
 // ─── EXECUTIVE VIEW ───────────────────────────────────────
+let execActiveTab = 'trust';
+function switchExecTab(tab) {
+  execActiveTab = tab;
+  document.getElementById('exec-trust').classList.toggle('hidden', tab !== 'trust');
+  document.getElementById('exec-leadership').classList.toggle('hidden', tab !== 'leadership');
+  const trustBtn = document.getElementById('execTabTrust');
+  const leadBtn = document.getElementById('execTabLeadership');
+  if (tab === 'trust') {
+    trustBtn.style.background = '#0d2137'; trustBtn.style.color = '#fff'; trustBtn.style.border = 'none';
+    leadBtn.style.background = '#f1f5f9'; leadBtn.style.color = '#475569'; leadBtn.style.border = '1px solid #d1d9e0';
+  } else {
+    leadBtn.style.background = '#0d2137'; leadBtn.style.color = '#fff'; leadBtn.style.border = 'none';
+    trustBtn.style.background = '#f1f5f9'; trustBtn.style.color = '#475569'; trustBtn.style.border = '1px solid #d1d9e0';
+  }
+}
+
+function colorForPct(pct) { return pct >= 80 ? '#719F2A' : pct >= 60 ? '#d97706' : '#dc2626'; }
+function bgForPct(pct) { return pct >= 80 ? '#f0fdf4' : pct >= 60 ? '#fffbeb' : '#fef2f2'; }
+function pillForPct(pct) { return pct >= 80 ? 'pill-low' : pct >= 60 ? 'pill-med' : 'pill-crit'; }
+
 function renderExecutive() {
   const s = DATA.summary;
   const pct = s.total > 0 ? Math.round((s.closed / s.total) * 100) : 0;
-  document.getElementById('healthPct').textContent = pct + '%';
-  document.getElementById('openCount').textContent = s.open;
-  document.getElementById('critCount').textContent = s.critical;
-  new Chart(document.getElementById('healthRing'), { type:'doughnut', data:{datasets:[{data:[s.closed,s.open],backgroundColor:['#719F2A','#e2e8f0'],borderWidth:0}]}, options:{cutout:'75%',responsive:true,plugins:{legend:{display:false},tooltip:{enabled:false}}} });
-
-  // Risk Score: 100 - (critical*10 + high*5 + medium*2), capped 0-100
   const riskScore = Math.max(0, Math.min(100, 100 - (s.critical*10 + s.high*5 + s.medium*2)));
-  const riskEl = document.getElementById('riskScore');
-  riskEl.textContent = riskScore;
-  riskEl.style.color = riskScore >= 80 ? '#719F2A' : riskScore >= 60 ? '#d97706' : '#dc2626';
+  const riskColor = riskScore >= 80 ? '#719F2A' : riskScore >= 60 ? '#d97706' : '#dc2626';
   const riskLabel = riskScore >= 80 ? 'Low Risk' : riskScore >= 60 ? 'Moderate Risk' : 'High Risk';
-  document.getElementById('riskLabel').textContent = riskLabel;
-
-  // Overdue count
   const overdueItems = (DATA.notifications||[]).filter(n => n.type === 'overdue');
-  document.getElementById('overdueCount').textContent = overdueItems.length;
 
-  // MTTR: use average age of closed items or hardcode for demo
-  document.getElementById('mttrValue').textContent = '32 days';
+  // ═══ SECTION A: Overall Posture Banner ═══
+  const systems = [
+    { name:'CJAMS', ato:'Authorized', expires:'Dec 2026', framework:'NIST 800-53', atoColor:'#719F2A', atoBg:'#f0fdf4' },
+    { name:'CSMS', ato:'Conditional', expires:'Sep 2026', framework:'CMS ARC-AMPE', atoColor:'#d97706', atoBg:'#fffbeb' },
+    { name:'MORA', ato:'Authorized', expires:'Mar 2027', framework:'IRS Pub 1075', atoColor:'#719F2A', atoBg:'#f0fdf4' },
+    { name:'MD Benefits - Shared Data Platform', ato:'In Review', expires:'--', framework:'CMS ARC-AMPE, SSA', atoColor:'#dc2626', atoBg:'#fef2f2' }
+  ];
 
-  // Action banner
-  const ai = DATA.actionItems||[], activeAI = ai.filter(i=>!['completed','canceled'].includes(i.statusType));
-  const inc=activeAI.filter(i=>i.source==='Incident'), aging=activeAI.filter(i=>i.labels?.includes('Aging Finding'));
-  document.getElementById('actionBannerSub').textContent=`${activeAI.length} items — ${inc.length} incidents, ${aging.length} aging findings`;
-  document.getElementById('actionBannerStats').innerHTML=`${inc.length?`<span class="pill pill-incident">${inc.length} Incidents</span>`:''}${aging.length?`<span class="pill pill-aging">${aging.length} Aging</span>`:''}<span class="pill pill-pentest">${activeAI.filter(i=>i.source==='Pen Test').length} Pen Test</span><span class="pill pill-audit">${activeAI.filter(i=>i.source==='External Audit').length} Ext Audit</span>`;
-
-  // Framework Scorecards
-  renderFrameworkScorecards();
-  // Risk Heatmap
-  renderRiskHeatmap();
-
-  renderLeadershipMetrics();
-  renderTeamWorkload();
-
-  renderCriticalTable();
-  const fw=document.getElementById('filterFramework');DATA.frameworks.forEach(f=>{const o=document.createElement('option');o.value=f;o.textContent=f;fw.appendChild(o);});
-  const cs=document.getElementById('filterCategory');DATA.categories.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;cs.appendChild(o);});
-}
-
-function renderFrameworkScorecards() {
-  const fc={'CMS ARC-AMPE':'#2563eb','IRS Pub 1075':'#b91c1c','NIST 800-53':'#7c3aed','SSA':'#0d9488','OLA':'#9333ea'};
-  document.getElementById('frameworkCards').innerHTML = DATA.frameworks.map(fw => {
-    const f = DATA.byFramework[fw] || {};
-    const compPct = f.total > 0 ? Math.round((f.closed / f.total) * 100) : 0;
-    const color = compPct >= 90 ? '#719F2A' : compPct >= 70 ? '#d97706' : '#dc2626';
-    const bgColor = compPct >= 90 ? '#f0fdf4' : compPct >= 70 ? '#fffbeb' : '#fef2f2';
-    const borderColor = compPct >= 90 ? '#86efac' : compPct >= 70 ? '#fcd34d' : '#fca5a5';
-    const accentColor = fc[fw] || '#64748b';
-    const circumference = 2 * Math.PI * 22;
-    const dashoffset = circumference - (compPct / 100) * circumference;
-    return `<div class="card p-4 card-hover cursor-pointer" onclick="showFramework('${fw}')" style="border-top:3px solid ${accentColor};background:${bgColor};border-color:${borderColor};">
-      <div class="flex items-center justify-between mb-3">
-        <p class="text-xs font-bold" style="color:#1e293b;">${fw}</p>
-        <svg width="50" height="50" viewBox="0 0 50 50">
-          <circle cx="25" cy="25" r="22" fill="none" stroke="#e2e8f0" stroke-width="4"/>
-          <circle cx="25" cy="25" r="22" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round"
-            stroke-dasharray="${circumference}" stroke-dashoffset="${dashoffset}" transform="rotate(-90 25 25)"/>
-          <text x="25" y="28" text-anchor="middle" font-size="11" font-weight="700" fill="${color}">${compPct}%</text>
-        </svg>
+  document.getElementById('postureBanner').innerHTML = `
+    <div class="card p-4 mb-3">
+      <div class="flex items-center gap-6">
+        <div class="flex flex-col items-center" style="min-width:120px;">
+          <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-1">Compliance Health</p>
+          <div class="relative" style="width:90px;height:90px;">
+            <svg viewBox="0 0 90 90" width="90" height="90">
+              <circle cx="45" cy="45" r="38" fill="none" stroke="#e2e8f0" stroke-width="6"/>
+              <circle cx="45" cy="45" r="38" fill="none" stroke="${colorForPct(pct)}" stroke-width="6" stroke-linecap="round"
+                stroke-dasharray="${2*Math.PI*38}" stroke-dashoffset="${2*Math.PI*38 - (pct/100)*2*Math.PI*38}" transform="rotate(-90 45 45)"/>
+              <text x="45" y="49" text-anchor="middle" font-size="18" font-weight="700" fill="${colorForPct(pct)}">${pct}%</text>
+            </svg>
+          </div>
+        </div>
+        <div class="flex-1">
+          <div class="grid grid-cols-3 gap-3 mb-3">
+            <div class="card p-3 text-center" style="border-left:4px solid ${riskColor};">
+              <p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">Risk Score</p>
+              <p class="text-2xl font-bold" style="color:${riskColor};">${riskScore}</p>
+              <p class="text-[10px]" style="color:#475569;">${riskLabel}</p>
+            </div>
+            <div class="card p-3 text-center" style="border-left:4px solid #d97706;">
+              <p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">Open Findings</p>
+              <p class="text-2xl font-bold" style="color:#1e293b;">${s.open}</p>
+              <p class="text-[10px]" style="color:#475569;"><span class="font-semibold sev-crit">${s.critical}</span> critical</p>
+            </div>
+            <div class="card p-3 text-center" style="border-left:4px solid #dc2626;">
+              <p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">Overdue Items</p>
+              <p class="text-2xl font-bold sev-crit">${overdueItems.length}</p>
+              <p class="text-[10px]" style="color:#475569;">require action</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="text-[10px] space-y-1" style="color:#334155;">
-        <div class="flex justify-between"><span>Open</span><span class="font-semibold" style="color:#2378C3;">${f.open||0}</span></div>
-        <div class="flex justify-between"><span>Critical</span><span class="font-semibold sev-crit">${f.critical||0}</span></div>
-        <div class="flex justify-between"><span>Closed</span><span class="font-semibold" style="color:#719F2A;">${f.closed||0}</span></div>
+      <div class="section-divider" style="margin:12px 0;"></div>
+      <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-2">Authorization Status</p>
+      <table class="w-full text-xs">
+        <thead><tr style="border-bottom:2px solid #e2e8f0;">
+          <th class="text-left py-2 px-2 text-slate-700 uppercase tracking-wider">System</th>
+          <th class="text-left py-2 px-2 text-slate-700 uppercase tracking-wider">ATO Status</th>
+          <th class="text-left py-2 px-2 text-slate-700 uppercase tracking-wider">Expires</th>
+          <th class="text-left py-2 px-2 text-slate-700 uppercase tracking-wider">Framework</th>
+        </tr></thead>
+        <tbody>${systems.map((sys,i) => `<tr style="background:${i%2===0?'#f8fafc':'#ffffff'};border-bottom:1px solid #e2e8f0;">
+          <td class="py-2 px-2 font-medium" style="color:#1e293b;">${sys.name}</td>
+          <td class="py-2 px-2"><span class="pill" style="background:${sys.atoBg};color:${sys.atoColor};border:1px solid ${sys.atoColor}40;">${sys.ato}</span></td>
+          <td class="py-2 px-2" style="color:#475569;">${sys.expires}</td>
+          <td class="py-2 px-2" style="color:#475569;">${sys.framework}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>`;
+
+  // ═══ SECTION B: Vulnerability Management ═══
+  const totalVulns = s.total + 147;
+  document.getElementById('vulnManagement').innerHTML = `
+    <div class="card p-4 mb-3">
+      <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">Vulnerability Management</p>
+      <div class="grid grid-cols-12 gap-3">
+        <div class="col-span-5">
+          <div class="grid grid-cols-2 gap-2 mb-3">
+            <div class="rounded-lg p-2 text-center" style="background:#f8fafc;border:1px solid #e2e8f0;">
+              <p class="text-xl font-bold" style="color:#1e293b;">${totalVulns}</p>
+              <p class="text-[10px]" style="color:#475569;">Total Tracked</p>
+            </div>
+            <div class="rounded-lg p-2 text-center" style="background:#fffbeb;border:1px solid #fcd34d;">
+              <p class="text-xl font-bold" style="color:#d97706;">78%</p>
+              <p class="text-[10px]" style="color:#475569;">SLA Compliance</p>
+            </div>
+          </div>
+          <div class="space-y-2 text-xs">
+            <div class="flex justify-between items-center"><span class="font-medium sev-crit">Critical</span><span class="font-bold" style="color:#1e293b;">${s.critical}</span></div>
+            <div class="flex justify-between items-center"><span class="font-medium sev-high">High</span><span class="font-bold" style="color:#1e293b;">${s.high}</span></div>
+            <div class="flex justify-between items-center"><span class="font-medium sev-med">Medium</span><span class="font-bold" style="color:#1e293b;">47</span></div>
+            <div class="flex justify-between items-center"><span class="font-medium sev-low">Low</span><span class="font-bold" style="color:#1e293b;">123</span></div>
+          </div>
+          <div class="mt-3 text-xs" style="color:#475569;">
+            <p class="font-medium mb-1" style="color:#1e293b;">Avg Time to Remediate</p>
+            <div class="flex gap-3">
+              <span><strong class="sev-crit">12d</strong> Crit</span>
+              <span><strong class="sev-high">28d</strong> High</span>
+              <span><strong class="sev-med">45d</strong> Med</span>
+            </div>
+            <p class="mt-2 text-[10px]" style="color:#16a34a;">&#8595; 12% from last month</p>
+          </div>
+        </div>
+        <div class="col-span-7">
+          <p class="text-[10px] font-semibold mb-2" style="color:#334155;">SLA Compliance</p>
+          <div class="progress-bar mb-3" style="height:10px;"><div class="progress-fill" style="width:78%;background:#d97706;"></div></div>
+          <p class="text-[10px] font-semibold mb-2 mt-3" style="color:#334155;">Sources Breakdown</p>
+          <div class="space-y-2">
+            ${[{n:'Vulnerability Scans',p:62,c:'#2378C3'},{n:'Pen Tests',p:18,c:'#7c3aed'},{n:'External Audits',p:12,c:'#be185d'},{n:'Bug Bounty',p:5,c:'#ea580c'},{n:'Internal Audit',p:3,c:'#0d9488'}].map(s=>`
+              <div>
+                <div class="flex justify-between text-[10px] mb-0.5"><span style="color:#334155;">${s.n}</span><span class="font-semibold" style="color:#1e293b;">${s.p}%</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:${s.p}%;background:${s.c};"></div></div>
+              </div>`).join('')}
+          </div>
+        </div>
       </div>
     </div>`;
-  }).join('');
-}
 
-function renderRiskHeatmap() {
-  const sevs = ['Critical','High','Medium','Low'];
-  const cats = ['POA&M','Assessment','ATO','Evidence','External Request','Compliance'];
-  const sevColors = {'Critical':'#dc2626','High':'#ea580c','Medium':'#d97706','Low':'#16a34a'};
-  // Solid bold backgrounds for non-zero cells
-  const bgSolid = {'Critical':'#dc2626','High':'#ea580c','Medium':'#d97706','Low':'#16a34a'};
-  const bgLight = {'Critical':'#fecaca','High':'#fed7aa','Medium':'#fde68a','Low':'#bbf7d0'};
+  // ═══ SECTION C: POA&M Health ═══
+  const ab = DATA.ageBuckets;
+  const abTot = ab.under1Month + ab.months1to6 + ab.months6to12 + ab.over12;
+  const poamSystems = [{n:'CJAMS',c:8},{n:'CSMS',c:12},{n:'MORA',c:5},{n:'Shared Data Platform',c:6}];
+  const riskAcceptances = [
+    {id:'RA-001',desc:'Legacy FTP for batch transfers',review:'Aug 2026'},
+    {id:'RA-002',desc:'Shared service account for CJAMS batch',review:'Oct 2026'},
+    {id:'RA-003',desc:'TLS 1.1 on mainframe interface',review:'Jul 2026'}
+  ];
 
-  let html = '<table class="w-full text-xs" style="border-collapse:separate;border-spacing:4px;">';
-  html += '<thead><tr><th class="text-left py-2 px-2" style="color:#1e293b;width:80px;"></th>';
-  cats.forEach(c => { html += `<th class="text-center py-2 px-1" style="color:#1e293b;font-size:10px;font-weight:600;">${c}</th>`; });
-  html += '</tr></thead><tbody>';
+  document.getElementById('poamHealth').innerHTML = `
+    <div class="card p-4 mb-3">
+      <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">POA&M Health</p>
+      <div class="grid grid-cols-12 gap-3">
+        <div class="col-span-4">
+          <div class="grid grid-cols-2 gap-2 mb-3">
+            <div class="rounded-lg p-2 text-center" style="background:#eff6ff;border:1px solid #93c5fd;">
+              <p class="text-xl font-bold" style="color:#2378C3;">${s.open}</p>
+              <p class="text-[10px]" style="color:#475569;">Open POA&Ms</p>
+            </div>
+            <div class="rounded-lg p-2 text-center" style="background:#fef2f2;border:1px solid #fca5a5;">
+              <p class="text-xl font-bold sev-crit">${overdueItems.length}</p>
+              <p class="text-[10px]" style="color:#475569;">Overdue</p>
+            </div>
+          </div>
+          <p class="text-[10px] font-semibold mb-1" style="color:#334155;">Closure Rate</p>
+          <p class="text-xs" style="color:#1e293b;">12/month avg</p>
+          <p class="text-[10px] font-semibold mt-2 mb-1" style="color:#334155;">By System</p>
+          <div class="space-y-1">
+            ${poamSystems.map(ps=>`<div class="flex justify-between text-xs"><span style="color:#475569;">${ps.n}</span><span class="font-semibold" style="color:#1e293b;">${ps.c}</span></div>`).join('')}
+          </div>
+        </div>
+        <div class="col-span-4">
+          <p class="text-[10px] font-semibold mb-2" style="color:#334155;">Aging Distribution</p>
+          <div class="space-y-2">
+            ${[{l:'< 1 Month',c:ab.under1Month,clr:'#16a34a'},{l:'1-6 Months',c:ab.months1to6,clr:'#ca8a04'},{l:'6-12 Months',c:ab.months6to12,clr:'#ea580c'},{l:'> 12 Months',c:ab.over12,clr:'#b91c1c'}].map(b=>`
+              <div>
+                <div class="flex justify-between text-[10px] mb-0.5"><span class="font-medium" style="color:${b.clr};">${b.l}</span><span class="font-semibold" style="color:#1e293b;">${b.c}</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:${abTot?Math.round(b.c/abTot*100):0}%;background:${b.clr};"></div></div>
+              </div>`).join('')}
+          </div>
+        </div>
+        <div class="col-span-4">
+          <p class="text-[10px] font-semibold mb-2" style="color:#334155;">Remediation Milestones</p>
+          <div class="progress-bar mb-1" style="height:14px;border-radius:7px;display:flex;overflow:hidden;">
+            <div style="width:65%;background:#719F2A;height:100%;"></div>
+            <div style="width:25%;background:#d97706;height:100%;"></div>
+            <div style="width:10%;background:#dc2626;height:100%;"></div>
+          </div>
+          <div class="flex justify-between text-[10px] mb-3">
+            <span style="color:#719F2A;">On Track 65%</span>
+            <span style="color:#d97706;">Delayed 25%</span>
+            <span style="color:#dc2626;">At Risk 10%</span>
+          </div>
+          <p class="text-[10px] font-semibold mb-1" style="color:#334155;">Risk Acceptances (${riskAcceptances.length})</p>
+          <div class="space-y-1">
+            ${riskAcceptances.map(r=>`<div class="text-[10px] flex justify-between" style="color:#475569;"><span>${r.id}: ${r.desc}</span><span class="font-medium" style="color:#1e293b;">Review: ${r.review}</span></div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`;
 
-  sevs.forEach(sev => {
-    html += `<tr><td class="py-2 px-2 font-bold" style="color:${sevColors[sev]};font-size:11px;">${sev}</td>`;
-    cats.forEach(cat => {
-      const catData = DATA.byCategory[cat] || {};
-      const issues = catData.issues || [];
-      const count = issues.filter(i => i.labels.includes(sev) && !['completed','canceled'].includes(i.statusType)).length;
-      let bg, textColor, border;
-      if (count > 2) { bg = bgSolid[sev]; textColor = '#ffffff'; border = 'none'; }
-      else if (count > 0) { bg = bgLight[sev]; textColor = sevColors[sev]; border = `2px solid ${sevColors[sev]}`; }
-      else { bg = '#f1f5f9'; textColor = '#94a3b8'; border = '1px solid #e2e8f0'; }
-      html += `<td class="text-center rounded-lg cursor-pointer hover:opacity-80" style="background:${bg};border:${border};padding:10px 4px;" onclick="drillDown('${cat}')">
-        <span class="font-bold" style="color:${textColor};font-size:${count>0?'16px':'12px'};">${count}</span>
-      </td>`;
-    });
-    html += '</tr>';
-  });
+  // ═══ SECTION D: Assessment & Audit Status ═══
+  const controlsPct = 76;
+  const quarterFindings = [{q:'Q3 2025',c:18},{q:'Q4 2025',c:14},{q:'Q1 2026',c:11},{q:'Q2 2026',c:8}];
+  const maxQF = Math.max(...quarterFindings.map(q=>q.c));
 
-  html += '</tbody></table>';
-  document.getElementById('riskHeatmap').innerHTML = html;
-}
+  document.getElementById('assessmentAudit').innerHTML = `
+    <div class="card p-4 mb-3">
+      <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">Assessment & Audit Status</p>
+      <div class="grid grid-cols-12 gap-3">
+        <div class="col-span-4">
+          <p class="text-[10px] font-semibold mb-2" style="color:#334155;">Controls Assessed</p>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-lg font-bold" style="color:#1e293b;">198</span>
+            <span class="text-xs" style="color:#475569;">of 261 (${controlsPct}%)</span>
+          </div>
+          <div class="progress-bar mb-3" style="height:8px;"><div class="progress-fill" style="width:${controlsPct}%;background:${colorForPct(controlsPct)};"></div></div>
+          <p class="text-[10px] font-semibold mb-1" style="color:#334155;">Pen Test Summary</p>
+          <div class="text-[10px] space-y-0.5" style="color:#475569;">
+            <p>Last test: <strong style="color:#1e293b;">Apr 2026</strong></p>
+            <p>Findings: <strong style="color:#1e293b;">7</strong> (2 crit, 3 high, 2 med)</p>
+            <p>Remediated: <strong style="color:#719F2A;">5 of 7</strong></p>
+          </div>
+          <p class="text-[10px] font-semibold mt-2 mb-1" style="color:#334155;">Bug Bounty</p>
+          <p class="text-[10px]" style="color:#475569;">3 active reports, <strong class="sev-crit">1 critical</strong>, avg $2,400 payout</p>
+        </div>
+        <div class="col-span-4">
+          <p class="text-[10px] font-semibold mb-2" style="color:#334155;">Upcoming Assessments</p>
+          <div class="space-y-1.5">
+            ${[
+              {fw:'IRS Pub 1075',dt:'Jun 15, 2026',type:'Safeguard Review'},
+              {fw:'CMS ARC-AMPE',dt:'Jul 15, 2026',type:'MARS-E Review'},
+              {fw:'NIST 800-53',dt:'Aug 1, 2026',type:'Annual Assessment'},
+              {fw:'SSA',dt:'Jun 20, 2026',type:'ISA Deadline'},
+              {fw:'OLA',dt:'Sep 30, 2026',type:'ATO Renewal'}
+            ].map(a=>`
+              <div class="flex items-center gap-2 text-[10px] p-1.5 rounded" style="background:#f8fafc;border:1px solid #e2e8f0;">
+                <span class="font-semibold" style="color:#2378C3;min-width:60px;">${a.dt.split(',')[0].replace(', 2026','')}</span>
+                <span style="color:#1e293b;">${a.fw}</span>
+                <span style="color:#475569;">- ${a.type}</span>
+              </div>`).join('')}
+          </div>
+        </div>
+        <div class="col-span-4">
+          <p class="text-[10px] font-semibold mb-2" style="color:#334155;">Findings per Assessment (Quarterly)</p>
+          <div class="flex items-end gap-2" style="height:80px;">
+            ${quarterFindings.map(q=>`
+              <div class="flex-1 flex flex-col items-center justify-end" style="height:100%;">
+                <span class="text-[10px] font-bold" style="color:#1e293b;">${q.c}</span>
+                <div class="w-full rounded-t" style="height:${Math.round(q.c/maxQF*60)}px;background:${q.c<=10?'#719F2A':q.c<=15?'#d97706':'#dc2626'};min-height:8px;"></div>
+                <span class="text-[9px] mt-1" style="color:#475569;">${q.q.replace('20','')}</span>
+              </div>`).join('')}
+          </div>
+          <p class="text-[10px] mt-2" style="color:#16a34a;">Trending down - 56% reduction over 4 quarters</p>
+        </div>
+      </div>
+    </div>`;
 
-function renderLeadershipMetrics(){
-  const ab=DATA.ageBuckets,tot=ab.under1Month+ab.months1to6+ab.months6to12+ab.over12;
-  [{l:'< 1 Month',c:ab.under1Month,clr:'#16a34a'},{l:'1–6 Months',c:ab.months1to6,clr:'#ca8a04'},{l:'6–12 Months',c:ab.months6to12,clr:'#ea580c'},{l:'> 12 Months',c:ab.over12,clr:'#b91c1c'}].forEach(b=>{});
-  document.getElementById('ageBuckets').innerHTML=[{l:'< 1 Month',c:ab.under1Month,clr:'#16a34a'},{l:'1–6 Months',c:ab.months1to6,clr:'#ca8a04'},{l:'6–12 Months',c:ab.months6to12,clr:'#ea580c'},{l:'> 12 Months',c:ab.over12,clr:'#b91c1c'}].map(b=>`<div><div class="flex justify-between text-xs mb-1"><span class="font-medium" style="color:${b.clr}">${b.l}</span><span class="font-semibold" style="color:#1e293b;">${b.c}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${tot?Math.round(b.c/tot*100):0}%;background:${b.clr}"></div></div></div>`).join('');
+  // ═══ SECTION E: Evidence & Continuous Monitoring ═══
+  const d = DATA.docs || {};
+  const c = DATA.certs || {};
+  const evTotal = (d.completed||0) + (d.dueSoon||0) + (d.overdue||0);
+  const evFreshPct = evTotal > 0 ? Math.round((d.completed / evTotal) * 100) : 0;
+  const missingEvidence = [{fam:'AC',c:3},{fam:'AU',c:2},{fam:'CM',c:2},{fam:'SC',c:3},{fam:'SI',c:3}];
 
-  const k=DATA.kevs;
-  document.getElementById('kevSummary').innerHTML=`<div class="flex gap-3"><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('KEV','open')"><p class="text-xl font-bold sev-crit">${k.open}</p><p class="text-[10px] text-slate-700">Open</p></div><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('KEV','resolved')"><p class="text-xl font-bold" style="color:#16a34a;">${k.resolved}</p><p class="text-[10px] text-slate-700">Resolved</p></div><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('KEV','overdue')"><p class="text-xl font-bold" style="color:${k.overdue?'#b91c1c':'#16a34a'};">${k.overdue}</p><p class="text-[10px] text-slate-700">Overdue</p></div></div>`;
-  document.getElementById('kevList').innerHTML=k.items.filter(i=>i.statusType!=='completed').map(i=>{const u=i.daysLeft<=7?'pill-crit':i.daysLeft<=14?'pill-high':'pill-med';return`<div class="flex items-center justify-between text-xs cursor-pointer rounded p-1.5 -mx-1 hover:bg-slate-50" onclick="showDetail('${i.id}')"><span class="font-medium truncate max-w-[180px]" style="color:#1e293b;">${i.title.replace(/^KEV-\d+:\s*/,'').substring(0,40)}...</span><span class="pill ${u} text-[10px]">${i.daysLeft}d</span></div>`;}).join('');
+  document.getElementById('evidenceConmon').innerHTML = `
+    <div class="card p-4 mb-3">
+      <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">Evidence & Continuous Monitoring</p>
+      <div class="grid grid-cols-12 gap-3">
+        <div class="col-span-4">
+          <p class="text-[10px] font-semibold mb-2" style="color:#334155;">Evidence Freshness</p>
+          <div class="grid grid-cols-3 gap-2 mb-2">
+            <div class="rounded-lg p-1.5 text-center" style="background:#f0fdf4;border:1px solid #86efac;">
+              <p class="text-sm font-bold" style="color:#719F2A;">${d.completed||0}</p>
+              <p class="text-[9px]" style="color:#475569;">Current</p>
+            </div>
+            <div class="rounded-lg p-1.5 text-center" style="background:#fffbeb;border:1px solid #fcd34d;">
+              <p class="text-sm font-bold" style="color:#d97706;">${d.dueSoon||0}</p>
+              <p class="text-[9px]" style="color:#475569;">Due Soon</p>
+            </div>
+            <div class="rounded-lg p-1.5 text-center" style="background:#fef2f2;border:1px solid #fca5a5;">
+              <p class="text-sm font-bold sev-crit">${d.overdue||0}</p>
+              <p class="text-[9px]" style="color:#475569;">Overdue</p>
+            </div>
+          </div>
+          <p class="text-[10px] font-semibold mb-1" style="color:#334155;">Certificate Health</p>
+          <div class="flex gap-2 text-[10px]">
+            <span><strong class="sev-crit">${c.critical||0}</strong> &lt;7d</span>
+            <span><strong class="sev-high">${c.warning||0}</strong> 7-30d</span>
+            <span><strong style="color:#16a34a;">${c.ok||0}</strong> &gt;30d</span>
+          </div>
+        </div>
+        <div class="col-span-4">
+          <p class="text-[10px] font-semibold mb-2" style="color:#334155;">ConMon Delivery</p>
+          <p class="text-xs" style="color:#1e293b;">On time <strong>10 of 12</strong> months (83%)</p>
+          <div class="progress-bar mt-1 mb-3" style="height:8px;"><div class="progress-fill" style="width:83%;background:#d97706;"></div></div>
+          <p class="text-[10px] font-semibold mb-1" style="color:#334155;">Automation Status</p>
+          <div class="progress-bar mb-1" style="height:12px;border-radius:6px;display:flex;overflow:hidden;">
+            <div style="width:34%;background:#2378C3;height:100%;"></div>
+            <div style="width:66%;background:#e2e8f0;height:100%;"></div>
+          </div>
+          <div class="flex justify-between text-[10px]">
+            <span style="color:#2378C3;">34% Automated</span>
+            <span style="color:#475569;">66% Manual</span>
+          </div>
+          <p class="text-[9px] mt-1" style="color:#475569;">Target: 60% automated by Q4</p>
+        </div>
+        <div class="col-span-4">
+          <p class="text-[10px] font-semibold mb-2" style="color:#334155;">Missing Evidence by Control Family</p>
+          <div class="space-y-1.5">
+            ${missingEvidence.map(m=>`
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-mono font-bold" style="color:#1e293b;min-width:24px;">${m.fam}</span>
+                <div class="progress-bar flex-1"><div class="progress-fill" style="width:${m.c*20}%;background:#dc2626;"></div></div>
+                <span class="text-[10px] font-semibold sev-crit">${m.c}</span>
+              </div>`).join('')}
+          </div>
+          <p class="text-[10px] font-semibold mt-2 mb-1" style="color:#334155;">Control Coverage</p>
+          <div class="flex gap-2 text-[10px]">
+            ${(DATA.categories||[]).slice(0,4).map(cat => {
+              const cd = DATA.byCategory[cat] || {};
+              const ct = (cd.issues||[]).length;
+              return `<span class="pill pill-neutral">${cat}: ${ct}</span>`;
+            }).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`;
 
-  const c=DATA.certs;
-  document.getElementById('certSummary').innerHTML=`<div class="flex gap-3"><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('Certificate','critical')"><p class="text-xl font-bold sev-crit">${c.critical}</p><p class="text-[10px] text-slate-700">&lt;7d</p></div><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('Certificate','warning')"><p class="text-xl font-bold sev-high">${c.warning}</p><p class="text-[10px] text-slate-700">7-30d</p></div><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('Certificate','ok')"><p class="text-xl font-bold" style="color:#16a34a;">${c.ok}</p><p class="text-[10px] text-slate-700">&gt;30d</p></div></div>`;
-  document.getElementById('certList').innerHTML=c.items.map(i=>{const u=i.daysLeft<=7?'pill-crit':i.daysLeft<=30?'pill-high':i.daysLeft<=60?'pill-med':'pill-low';const n=i.title.replace(/^CERT-\d+:\s*(SSL |Code Signing |Mutual TLS )?Certificate\s*(Expiring\s*-\s*)?/i,'').substring(0,35);return`<div class="flex items-center justify-between text-xs cursor-pointer rounded p-1.5 -mx-1 hover:bg-slate-50" onclick="showDetail('${i.id}')"><span class="font-medium truncate max-w-[170px]" style="color:#1e293b;">${n}</span><span class="pill ${u} text-[10px]">${i.daysLeft}d</span></div>`;}).join('');
+  // ═══ SECTION F: System-by-System Scorecard ═══
+  const scorecards = [
+    { name:'CJAMS', fw:'NIST 800-53', ato:'Authorized', comp:87, poams:8, crit:1, evidence:92, nextAssess:'Aug 1, 2026', health:'green' },
+    { name:'CSMS', fw:'CMS ARC-AMPE', ato:'Conditional', comp:71, poams:12, crit:3, evidence:68, nextAssess:'Jul 15, 2026', health:'yellow' },
+    { name:'MORA', fw:'IRS Pub 1075', ato:'Authorized', comp:84, poams:5, crit:0, evidence:88, nextAssess:'Jun 15, 2026', health:'green' },
+    { name:'MD Benefits - Shared Data Platform', fw:'CMS ARC-AMPE, SSA', ato:'In Review', comp:58, poams:6, crit:2, evidence:52, nextAssess:'Jun 20, 2026', health:'red' }
+  ];
+  const healthColors = {green:'#719F2A',yellow:'#d97706',red:'#dc2626'};
 
-  const d=DATA.docs;
-  document.getElementById('docSummary').innerHTML=`<div class="flex gap-3"><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('Document Review','overdue')"><p class="text-xl font-bold sev-crit">${d.overdue}</p><p class="text-[10px] text-slate-700">Overdue</p></div><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('Document Review','dueSoon')"><p class="text-xl font-bold sev-high">${d.dueSoon}</p><p class="text-[10px] text-slate-700">&lt;30d</p></div><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('Document Review','completed')"><p class="text-xl font-bold" style="color:#16a34a;">${d.completed}</p><p class="text-[10px] text-slate-700">Done</p></div></div>`;
-  document.getElementById('docList').innerHTML=d.items.filter(i=>i.statusType!=='completed').map(i=>{const u=i.daysLeft<0?'pill-crit':i.daysLeft<=14?'pill-high':i.daysLeft<=30?'pill-med':'pill-low';const lb=i.daysLeft<0?`${Math.abs(i.daysLeft)}d over`:`${i.daysLeft}d`;const n=i.title.replace(/^DOC-\d+:\s*/,'').substring(0,35);return`<div class="flex items-center justify-between text-xs cursor-pointer rounded p-1.5 -mx-1 hover:bg-slate-50" onclick="showDetail('${i.id}')"><span class="font-medium truncate max-w-[170px]" style="color:#1e293b;">${n}</span><span class="pill ${u} text-[10px]">${lb}</span></div>`;}).join('');
-}
+  document.getElementById('systemScorecard').innerHTML = `
+    <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">System-by-System Scorecard</p>
+    <div class="grid grid-cols-2 gap-3 mb-3">
+      ${scorecards.map(sc => {
+        const hc = healthColors[sc.health];
+        const atoBg = sc.ato==='Authorized'?'#f0fdf4':sc.ato==='Conditional'?'#fffbeb':'#fef2f2';
+        const atoColor = sc.ato==='Authorized'?'#719F2A':sc.ato==='Conditional'?'#d97706':'#dc2626';
+        return `<div class="card p-3 card-hover" style="border-left:4px solid ${hc};">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="status-dot" style="background:${hc};box-shadow:0 0 0 2px ${hc}40;width:10px;height:10px;"></div>
+              <p class="text-sm font-bold" style="color:#1e293b;">${sc.name}</p>
+            </div>
+            <span class="pill" style="background:${atoBg};color:${atoColor};border:1px solid ${atoColor}40;">${sc.ato}</span>
+          </div>
+          <p class="text-[10px] mb-2" style="color:#475569;">${sc.fw}</p>
+          <div class="grid grid-cols-4 gap-2 text-center text-[10px]">
+            <div>
+              <p class="text-sm font-bold" style="color:${colorForPct(sc.comp)};">${sc.comp}%</p>
+              <p style="color:#475569;">Compliance</p>
+            </div>
+            <div>
+              <p class="text-sm font-bold" style="color:#1e293b;">${sc.poams}</p>
+              <p style="color:#475569;">Open POA&Ms</p>
+            </div>
+            <div>
+              <p class="text-sm font-bold" style="color:${sc.crit>0?'#dc2626':'#719F2A'};">${sc.crit}</p>
+              <p style="color:#475569;">Critical</p>
+            </div>
+            <div>
+              <p class="text-sm font-bold" style="color:${colorForPct(sc.evidence)};">${sc.evidence}%</p>
+              <p style="color:#475569;">Evidence</p>
+            </div>
+          </div>
+          <div class="progress-bar mt-2"><div class="progress-fill" style="width:${sc.comp}%;background:${colorForPct(sc.comp)};"></div></div>
+          <p class="text-[9px] mt-1" style="color:#475569;">Next assessment: ${sc.nextAssess}</p>
+        </div>`;
+      }).join('')}
+    </div>`;
 
-function renderTeamWorkload() {
+  // ═══ SECTION G: Team Performance ═══
   const bt = DATA.byTeam || {};
   const teams = DATA.teamLabels || [];
-  const colors = {'ISSO':'#2563eb','Assessors':'#7c3aed','Tenant Support':'#0891b2','POA&M Mgmt':'#ea580c','POA&M Management':'#ea580c','IR':'#dc2626'};
-  // Count overdue per team from notifications
+  const teamColors = {'ISSO':'#2563eb','Assessors':'#7c3aed','Tenant Support':'#0891b2','POA&M Mgmt':'#ea580c','POA&M Management':'#ea580c','IR':'#dc2626'};
+  const teamHardcoded = {'ISSO':{closed:18,avgResp:'1.2d',sla:91},'Assessors':{closed:12,avgResp:'2.4d',sla:85},'Tenant Support':{closed:8,avgResp:'0.8d',sla:94},'POA&M Management':{closed:14,avgResp:'1.8d',sla:78}};
+
   const overdueByTeam = {};
   (DATA.notifications||[]).filter(n=>n.type==='overdue').forEach(n => {
     const teamLabel = (n.labels||[]).find(l=>l.startsWith('Team:'));
@@ -877,33 +1060,110 @@ function renderTeamWorkload() {
       overdueByTeam[tn] = (overdueByTeam[tn]||0) + 1;
     }
   });
-  document.getElementById('teamWorkload').innerHTML = teams.map(t => {
-    const d = bt[t] || {};
-    const pct = d.total > 0 ? Math.round((d.closed / d.total) * 100) : 0;
-    const overdue = overdueByTeam[t] || 0;
-    return `<div class="rounded-lg p-3 border cursor-pointer card-hover" style="border-color:#e2e8f0;border-left:3px solid ${colors[t]||'#64748b'};" onclick="showTeamView('${t}')">
-      <div class="flex items-center justify-between mb-2">
-        <p class="text-xs font-semibold" style="color:#1e293b;">${t}</p>
-        ${overdue?`<span class="pill pill-crit text-[9px]">${overdue} overdue</span>`:''}
+
+  document.getElementById('teamPerformance').innerHTML = `
+    <div class="card p-4 mb-3">
+      <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">Team Performance</p>
+      <div class="grid grid-cols-${Math.min(teams.length,4)} gap-3">
+        ${teams.map(t => {
+          const td = bt[t] || {};
+          const tPct = td.total > 0 ? Math.round((td.closed / td.total) * 100) : 0;
+          const overdue = overdueByTeam[t] || 0;
+          const hc = teamHardcoded[t] || {closed:6,avgResp:'2.0d',sla:80};
+          const tc = teamColors[t] || '#64748b';
+          return `<div class="rounded-lg p-3 border cursor-pointer card-hover" style="border-color:#e2e8f0;border-left:3px solid ${tc};" onclick="showTeamView('${t}')">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-xs font-semibold" style="color:#1e293b;">${t}</p>
+              ${overdue?`<span class="pill pill-crit text-[9px]">${overdue} overdue</span>`:''}
+            </div>
+            <div class="flex gap-3 text-[10px] mb-2">
+              <span><strong style="color:#1e293b;">${td.open||0}</strong> open</span>
+              <span><strong style="color:#2378C3;">${td.inProgress||0}</strong> active</span>
+              <span><strong style="color:#719F2A;">${td.closed||0}</strong> done</span>
+            </div>
+            <div class="progress-bar mb-2"><div class="progress-fill" style="width:${tPct}%;background:${tc};"></div></div>
+            <div class="text-[10px] space-y-0.5" style="color:#475569;">
+              <div class="flex justify-between"><span>Closed this month</span><span class="font-semibold" style="color:#1e293b;">${hc.closed}</span></div>
+              <div class="flex justify-between"><span>Avg response</span><span class="font-semibold" style="color:#1e293b;">${hc.avgResp}</span></div>
+              <div class="flex justify-between"><span>SLA adherence</span><span class="font-semibold" style="color:${colorForPct(hc.sla)};">${hc.sla}%</span></div>
+            </div>
+          </div>`;
+        }).join('')}
       </div>
-      <div class="flex gap-3 text-[11px] mb-2">
-        <span><strong style="color:#1e293b;">${d.open||0}</strong> open</span>
-        <span><strong style="color:#2378C3;">${d.inProgress||0}</strong> active</span>
-        <span><strong style="color:#719F2A;">${d.closed||0}</strong> done</span>
-        ${d.critical?`<span><strong class="sev-crit">${d.critical}</strong> crit</span>`:''}
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${colors[t]||'#64748b'};"></div></div>
-      <p class="text-[10px] mt-1" style="color:#334155;">${pct}% complete</p>
     </div>`;
-  }).join('');
-}
 
-function renderCriticalTable(){updateTable('criticalTable',DATA.issues.filter(i=>(i.labels.includes('Critical')||i.labels.includes('High'))&&!['completed','canceled'].includes(i.statusType)));}
-function filterTable(){let items=DATA.issues.filter(i=>(i.labels.includes('Critical')||i.labels.includes('High'))&&!['completed','canceled'].includes(i.statusType));const fw=document.getElementById('filterFramework').value,cat=document.getElementById('filterCategory').value;if(fw)items=items.filter(i=>i.labels.includes(fw));if(cat)items=items.filter(i=>i.labels.includes(cat));updateTable('criticalTable',items);}
+  // ═══ SECTION H: Risk Register Summary ═══
+  const risks = [
+    {id:'RSK-001',risk:'FTI encryption gap',like:'High',impact:'Critical',rating:'Critical',ratingColor:'#dc2626',owner:'Tom Chen',status:'Mitigating'},
+    {id:'RSK-002',risk:'Staffing shortage - SOC',like:'Medium',impact:'High',rating:'High',ratingColor:'#ea580c',owner:'Rachel Adams',status:'Monitoring'},
+    {id:'RSK-003',risk:'Legacy mainframe EOL',like:'High',impact:'High',rating:'High',ratingColor:'#ea580c',owner:'Priya Sharma',status:'Accepted'},
+    {id:'RSK-004',risk:'ConMon report delays',like:'Medium',impact:'Medium',rating:'Medium',ratingColor:'#d97706',owner:'Mike Torres',status:'Mitigating'},
+    {id:'RSK-005',risk:'Third-party vendor risk',like:'Low',impact:'High',rating:'Medium',ratingColor:'#d97706',owner:'Lisa Park',status:'Monitoring'}
+  ];
+  const statusColors = {Mitigating:'#2378C3',Monitoring:'#d97706',Accepted:'#475569'};
 
-function updateTable(id,items){
-  const pm={1:['Urgent','pill-urgent'],2:['High','pill-high'],3:['Medium','pill-med'],4:['Low','pill-low']};
-  document.getElementById(id).innerHTML=items.map(i=>{const[p,pc]=pm[i.priority]||['--',''];const fw=i.labels.filter(l=>DATA.frameworks.includes(l)).join(', ')||'--';const team=(i.labels||[]).filter(l=>l.startsWith('Team:')).map(l=>l.replace('Team: ','')).join(', ')||i.team||'--';const due=i.dueDate?new Date(i.dueDate).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'--';return`<tr style="border-bottom:1px solid #e2e8f0;" class="hover:bg-blue-50/40 cursor-pointer" onclick="showDetail('${i.id}')"><td class="py-2.5 px-2 text-slate-700 font-mono text-[11px]">${i.id}</td><td class="py-2.5 px-2 font-medium max-w-xs truncate" style="color:#1e293b;">${i.title}</td><td class="py-2.5 px-2"><span class="pill ${pc}">${p}</span></td><td class="py-2.5 px-2 text-slate-700">${fw}</td><td class="py-2.5 px-2 text-slate-700 text-[11px]">${team}</td><td class="py-2.5 px-2 text-slate-700">${i.assignee||'Unassigned'}</td><td class="py-2.5 px-2 text-slate-700 text-[11px]">${due}</td><td class="py-2.5 px-2"><span class="status-dot status-${i.statusType}"></span>${i.status}</td></tr>`;}).join('')||'<tr><td colspan="8" class="py-4 text-center text-slate-700">No items match</td></tr>';
+  document.getElementById('riskRegister').innerHTML = `
+    <div class="card p-4 mb-3">
+      <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">Risk Register Summary</p>
+      <table class="w-full text-xs">
+        <thead><tr style="border-bottom:2px solid #e2e8f0;">
+          <th class="text-left py-2 px-2 text-slate-700 uppercase tracking-wider">Risk ID</th>
+          <th class="text-left py-2 px-2 text-slate-700 uppercase tracking-wider">Risk</th>
+          <th class="text-left py-2 px-2 text-slate-700 uppercase tracking-wider">Likelihood</th>
+          <th class="text-left py-2 px-2 text-slate-700 uppercase tracking-wider">Impact</th>
+          <th class="text-left py-2 px-2 text-slate-700 uppercase tracking-wider">Rating</th>
+          <th class="text-left py-2 px-2 text-slate-700 uppercase tracking-wider">Owner</th>
+          <th class="text-left py-2 px-2 text-slate-700 uppercase tracking-wider">Status</th>
+        </tr></thead>
+        <tbody>${risks.map((r,i) => `<tr style="background:${i%2===0?'#f8fafc':'#ffffff'};border-bottom:1px solid #e2e8f0;">
+          <td class="py-2 px-2 font-mono font-medium" style="color:#334155;">${r.id}</td>
+          <td class="py-2 px-2 font-medium" style="color:#1e293b;">${r.risk}</td>
+          <td class="py-2 px-2" style="color:#475569;">${r.like}</td>
+          <td class="py-2 px-2" style="color:#475569;">${r.impact}</td>
+          <td class="py-2 px-2"><span class="pill" style="background:${r.ratingColor}15;color:${r.ratingColor};border:1px solid ${r.ratingColor}40;">${r.rating}</span></td>
+          <td class="py-2 px-2" style="color:#334155;">${r.owner}</td>
+          <td class="py-2 px-2"><span class="pill" style="background:${statusColors[r.status]}15;color:${statusColors[r.status]};border:1px solid ${statusColors[r.status]}40;">${r.status}</span></td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>`;
+
+  // ═══ SECTION I: Compliance Calendar ═══
+  const calEvents = [
+    {date:'Jun 8',label:'Medicaid API cert expires',urgency:'crit'},
+    {date:'Jun 10',label:'CISA KEV deadline (Ivanti)',urgency:'crit'},
+    {date:'Jun 15',label:'IRS Safeguard Review',urgency:'high'},
+    {date:'Jun 20',label:'SSA ISA deadline',urgency:'high'},
+    {date:'Jun 28',label:'SSA mTLS cert expires',urgency:'high'},
+    {date:'Jun 30',label:'IRS Pub 1075 doc review due',urgency:'med'},
+    {date:'Jul 1',label:'Quarterly security training deadline',urgency:'med'},
+    {date:'Jul 15',label:'CMS MARS-E compliance review',urgency:'med'},
+    {date:'Aug 1',label:'NIST annual assessment begins',urgency:'low'},
+    {date:'Sep 30',label:'OLA ATO expires',urgency:'high'}
+  ];
+  const urgencyStyles = {
+    crit:{bg:'#fef2f2',border:'#fca5a5',dot:'#dc2626'},
+    high:{bg:'#fff7ed',border:'#fdba74',dot:'#ea580c'},
+    med:{bg:'#fffbeb',border:'#fcd34d',dot:'#d97706'},
+    low:{bg:'#f0fdf4',border:'#86efac',dot:'#719F2A'}
+  };
+
+  document.getElementById('complianceCalendar').innerHTML = `
+    <div class="card p-4 mb-3">
+      <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">Compliance Calendar - Next 90 Days</p>
+      <div class="relative" style="padding-left:60px;">
+        <div class="absolute left-[55px] top-0 bottom-0" style="width:2px;background:#e2e8f0;"></div>
+        ${calEvents.map(ev => {
+          const us = urgencyStyles[ev.urgency];
+          return `<div class="flex items-center gap-3 mb-2 relative">
+            <div class="text-[10px] font-bold absolute left-[-60px]" style="color:#334155;width:50px;text-align:right;">${ev.date}</div>
+            <div class="w-3 h-3 rounded-full relative z-10 flex-shrink-0" style="background:${us.dot};border:2px solid #fff;box-shadow:0 0 0 1px ${us.dot};margin-left:-7px;"></div>
+            <div class="flex-1 rounded-lg px-3 py-1.5" style="background:${us.bg};border:1px solid ${us.border};">
+              <p class="text-xs font-medium" style="color:#1e293b;">${ev.label}</p>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
 }
 
 // ─── ACTION ITEMS ─────────────────────────────────────────
