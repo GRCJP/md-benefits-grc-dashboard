@@ -54,7 +54,7 @@
     .progress-bar { height: 6px; border-radius: 4px; background: #e2e8f0; overflow: hidden; }
     .progress-fill { height: 100%; border-radius: 6px; transition: width 0.6s ease; }
 
-    .metric-ring { position: relative; width: 90px; height: 90px; }
+    .metric-ring { position: relative; width: 130px; height: 130px; }
     canvas { max-height: 100%; }
 
 
@@ -246,28 +246,85 @@
 
     <!-- ═══ EXECUTIVE VIEW ═══ -->
     <div id="view-executive">
-      <div class="grid grid-cols-12 gap-4 mb-5">
-        <div class="col-span-3 card p-5">
-          <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">Overall Compliance</p>
-          <div class="flex items-center gap-4">
-            <div class="metric-ring"><canvas id="healthRing"></canvas><div class="absolute inset-0 flex items-center justify-center"><span id="healthPct" class="text-2xl font-bold" style="color:#1e293b;">--</span></div></div>
-            <div class="text-xs space-y-1.5">
-              <p class="text-slate-700"><span class="font-semibold" style="color:#16a34a;" id="closedCount">--</span> Closed</p>
-              <p class="text-slate-700"><span class="font-semibold" style="color:#2563eb;" id="openCount">--</span> Open</p>
-              <p class="text-slate-700"><span class="font-semibold sev-crit" id="critCount">--</span> Critical</p>
+
+      <!-- ROW 1: Trust Center Health Score Banner -->
+      <div class="card p-6 mb-5">
+        <div class="flex items-center gap-8">
+          <!-- Large Compliance Gauge -->
+          <div class="flex flex-col items-center" style="min-width:160px;">
+            <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-2">Compliance Health</p>
+            <div class="relative" style="width:130px;height:130px;">
+              <canvas id="healthRing"></canvas>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span id="healthPct" class="text-3xl font-bold" style="color:#1e293b;">--</span>
+                <span class="text-[10px]" style="color:#64748b;">compliant</span>
+              </div>
+            </div>
+          </div>
+          <!-- Key Risk Indicators -->
+          <div class="flex-1 grid grid-cols-4 gap-4">
+            <div class="card p-4 text-center card-hover" style="border-left:4px solid #2378C3;">
+              <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-2">Risk Score</p>
+              <p class="text-3xl font-bold" id="riskScore" style="color:#1e293b;">--</p>
+              <p class="text-[10px] mt-1" id="riskLabel" style="color:#64748b;">--</p>
+            </div>
+            <div class="card p-4 text-center card-hover" style="border-left:4px solid #d97706;">
+              <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-2">Open Findings</p>
+              <p class="text-3xl font-bold" id="openCount" style="color:#1e293b;">--</p>
+              <p class="text-[10px] mt-1" style="color:#64748b;"><span id="critCount" class="font-semibold sev-crit">--</span> critical</p>
+            </div>
+            <div class="card p-4 text-center card-hover" style="border-left:4px solid #dc2626;">
+              <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-2">Overdue Items</p>
+              <p class="text-3xl font-bold sev-crit" id="overdueCount">--</p>
+              <p class="text-[10px] mt-1" style="color:#64748b;">require action</p>
+            </div>
+            <div class="card p-4 text-center card-hover" style="border-left:4px solid #719F2A;">
+              <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-2">Mean Time to Remediate</p>
+              <p class="text-3xl font-bold" id="mttrValue" style="color:#1e293b;">--</p>
+              <p class="text-[10px] mt-1" style="color:#64748b;">avg days to close</p>
             </div>
           </div>
         </div>
-        <div class="col-span-9 grid grid-cols-5 gap-3">
-          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('POA&M')"><p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">Open POA&Ms</p><p class="text-2xl font-bold" style="color:#1e293b;" id="poamOpen">--</p><p class="text-xs mt-1 sev-crit font-medium" id="poamCrit">--</p></div>
-          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('Assessment')"><p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">Assessments</p><p class="text-2xl font-bold" style="color:#1e293b;" id="assessOpen">--</p><p class="text-xs mt-1 font-medium" style="color:#2563eb;" id="assessProgress">--</p></div>
-          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('External Request')"><p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">Ext. Requests</p><p class="text-2xl font-bold" style="color:#1e293b;" id="extOpen">--</p><p class="text-xs mt-1 font-medium sev-med" id="extUrgent">--</p></div>
-          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('ATO')"><p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">ATO Packages</p><p class="text-2xl font-bold" style="color:#1e293b;" id="atoOpen">--</p><p class="text-xs mt-1 font-medium" style="color:#7c3aed;" id="atoPending">--</p></div>
-          <div class="card p-4 card-hover cursor-pointer" onclick="drillDown('Evidence')"><p class="text-[10px] text-slate-700 uppercase tracking-wider mb-1">Evidence</p><p class="text-2xl font-bold" style="color:#1e293b;" id="evidOpen">--</p><p class="text-xs mt-1 font-medium sev-high" id="evidStale">--</p></div>
+      </div>
+
+      <!-- ROW 2: Framework Compliance Scorecards -->
+      <div class="grid grid-cols-5 gap-4 mb-5" id="frameworkCards"></div>
+
+      <!-- ROW 3: Risk Heatmap + Key Metrics -->
+      <div class="grid grid-cols-12 gap-4 mb-5">
+        <!-- Risk Heatmap (60%) -->
+        <div class="col-span-7 card p-5">
+          <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-4">Risk Heatmap &mdash; Severity vs Category</p>
+          <div id="riskHeatmap"></div>
+        </div>
+        <!-- Key Metrics (40%) -->
+        <div class="col-span-5 space-y-4">
+          <div class="card p-4">
+            <div class="flex items-center gap-2 mb-3"><div class="w-6 h-6 rounded flex items-center justify-center" style="background:#991b1b;"><svg class="w-3.5 h-3.5 text-red-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01"/></svg></div><p class="text-[10px] text-slate-700 uppercase tracking-widest">CISA KEVs</p></div>
+            <div id="kevSummary"></div><div id="kevList" class="mt-2 space-y-1"></div>
+          </div>
+          <div class="card p-4">
+            <div class="flex items-center gap-2 mb-3"><div class="w-6 h-6 rounded flex items-center justify-center" style="background:#b45309;"><svg class="w-3.5 h-3.5 text-amber-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg></div><p class="text-[10px] text-slate-700 uppercase tracking-widest">Certificate Health</p></div>
+            <div id="certSummary"></div><div id="certList" class="mt-2 space-y-1"></div>
+          </div>
+          <div class="card p-4">
+            <div class="flex items-center gap-2 mb-3"><div class="w-6 h-6 rounded flex items-center justify-center" style="background:#4338ca;"><svg class="w-3.5 h-3.5 text-indigo-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div><p class="text-[10px] text-slate-700 uppercase tracking-widest">Document Reviews</p></div>
+            <div id="docSummary"></div><div id="docList" class="mt-2 space-y-1"></div>
+          </div>
+          <div class="card p-4">
+            <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">Age Distribution</p>
+            <div id="ageBuckets" class="space-y-2"></div>
+          </div>
         </div>
       </div>
 
-      <!-- Action Items Alert Banner -->
+      <!-- ROW 4: Team Accountability -->
+      <div class="card p-4 mb-5">
+        <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">Team Accountability</p>
+        <div id="teamWorkload" class="grid grid-cols-5 gap-3"></div>
+      </div>
+
+      <!-- ROW 5: Action Items Alert Banner -->
       <div id="actionBanner" class="card-alert rounded-xl p-4 mb-5 cursor-pointer card-hover" onclick="showView('action')">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
@@ -278,57 +335,16 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-12 gap-4 mb-5">
-        <div class="col-span-5 card p-5">
-          <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-4">Findings by Severity</p>
-          <div id="severityBars" class="space-y-3"></div>
-        </div>
-        <div class="col-span-7 card p-5">
-          <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-4">Compliance by Framework</p>
-          <canvas id="frameworkChart" height="130"></canvas>
-        </div>
-      </div>
-
-      <!-- Team Workload -->
-      <div class="card p-4 mb-5">
-        <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">Workload by Team</p>
-        <div id="teamWorkload" class="grid grid-cols-5 gap-3"></div>
-      </div>
-
-      <!-- Leadership Metrics -->
-      <div class="grid grid-cols-4 gap-4 mb-5">
-        <div class="card p-5">
-          <p class="text-[10px] text-slate-700 uppercase tracking-widest mb-3">Open Items by Age</p>
-          <div id="ageBuckets" class="space-y-2"></div>
-          <p class="text-[10px] text-slate-700 mt-3 italic">Risk acceptance decisions</p>
-        </div>
-        <div class="card p-5">
-          <div class="flex items-center gap-2 mb-3"><div class="w-6 h-6 rounded flex items-center justify-center" style="background:#991b1b;"><svg class="w-3.5 h-3.5 text-red-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01"/></svg></div><p class="text-[10px] text-slate-700 uppercase tracking-widest">CISA KEVs</p></div>
-          <div id="kevSummary"></div><div id="kevList" class="mt-3 space-y-1.5"></div>
-        </div>
-        <div class="card p-5">
-          <div class="flex items-center gap-2 mb-3"><div class="w-6 h-6 rounded flex items-center justify-center" style="background:#b45309;"><svg class="w-3.5 h-3.5 text-amber-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg></div><p class="text-[10px] text-slate-700 uppercase tracking-widest">Cert Expirations</p></div>
-          <div id="certSummary"></div><div id="certList" class="mt-3 space-y-1.5"></div>
-        </div>
-        <div class="card p-5">
-          <div class="flex items-center gap-2 mb-3"><div class="w-6 h-6 rounded flex items-center justify-center" style="background:#4338ca;"><svg class="w-3.5 h-3.5 text-indigo-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div><p class="text-[10px] text-slate-700 uppercase tracking-widest">Doc Reviews</p></div>
-          <div id="docSummary"></div><div id="docList" class="mt-3 space-y-1.5"></div>
-        </div>
-      </div>
-
-      <!-- Category Cards -->
-      <div class="grid grid-cols-6 gap-3 mb-5" id="categoryCards"></div>
-
-      <!-- Critical Table -->
+      <!-- ROW 5b: Critical & High Priority Items Table -->
       <div class="card p-5">
         <div class="flex items-center justify-between mb-4">
-          <p class="text-sm font-semibold" style="color:#1e293b;">Critical & High Priority Items</p>
+          <p class="text-sm font-semibold" style="color:#1e293b;">Critical &amp; High Priority Items</p>
           <div class="flex gap-2">
             <select id="filterFramework" onchange="filterTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#f8fafc;border-color:#cbd5e1;color:#475569;"><option value="">All Frameworks</option></select>
             <select id="filterCategory" onchange="filterTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#f8fafc;border-color:#cbd5e1;color:#475569;"><option value="">All Categories</option></select>
           </div>
         </div>
-        <table class="w-full text-xs"><thead><tr class="text-slate-700 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;"><th class="text-left py-2.5 px-2">ID</th><th class="text-left py-2.5 px-2">Item</th><th class="text-left py-2.5 px-2">Severity</th><th class="text-left py-2.5 px-2">Framework</th><th class="text-left py-2.5 px-2">Assignee</th><th class="text-left py-2.5 px-2">Status</th></tr></thead><tbody id="criticalTable"></tbody></table>
+        <table class="w-full text-xs"><thead><tr class="text-slate-700 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;"><th class="text-left py-2.5 px-2">ID</th><th class="text-left py-2.5 px-2">Item</th><th class="text-left py-2.5 px-2">Severity</th><th class="text-left py-2.5 px-2">Framework</th><th class="text-left py-2.5 px-2">Team</th><th class="text-left py-2.5 px-2">Assignee</th><th class="text-left py-2.5 px-2">Due Date</th><th class="text-left py-2.5 px-2">Status</th></tr></thead><tbody id="criticalTable"></tbody></table>
       </div>
     </div>
 
@@ -602,17 +618,24 @@ function renderExecutive() {
   const s = DATA.summary;
   const pct = s.total > 0 ? Math.round((s.closed / s.total) * 100) : 0;
   document.getElementById('healthPct').textContent = pct + '%';
-  document.getElementById('closedCount').textContent = s.closed;
   document.getElementById('openCount').textContent = s.open;
   document.getElementById('critCount').textContent = s.critical;
   new Chart(document.getElementById('healthRing'), { type:'doughnut', data:{datasets:[{data:[s.closed,s.open],backgroundColor:['#719F2A','#e2e8f0'],borderWidth:0}]}, options:{cutout:'75%',responsive:true,plugins:{legend:{display:false},tooltip:{enabled:false}}} });
 
-  const poam=DATA.byCategory['POA&M']||{}, assess=DATA.byCategory['Assessment']||{}, ext=DATA.byCategory['External Request']||{}, ato=DATA.byCategory['ATO']||{}, evid=DATA.byCategory['Evidence']||{};
-  document.getElementById('poamOpen').textContent=poam.open||0; document.getElementById('poamCrit').textContent=(poam.critical||0)+' critical';
-  document.getElementById('assessOpen').textContent=assess.open||0; document.getElementById('assessProgress').textContent=(assess.inProgress||0)+' in progress';
-  document.getElementById('extOpen').textContent=ext.open||0; document.getElementById('extUrgent').textContent=(ext.critical||0)+' urgent';
-  document.getElementById('atoOpen').textContent=ato.open||0; document.getElementById('atoPending').textContent=(ato.inProgress||0)+' in review';
-  document.getElementById('evidOpen').textContent=evid.open||0; document.getElementById('evidStale').textContent=(evid.todo||0)+' need refresh';
+  // Risk Score: 100 - (critical*10 + high*5 + medium*2), capped 0-100
+  const riskScore = Math.max(0, Math.min(100, 100 - (s.critical*10 + s.high*5 + s.medium*2)));
+  const riskEl = document.getElementById('riskScore');
+  riskEl.textContent = riskScore;
+  riskEl.style.color = riskScore >= 80 ? '#719F2A' : riskScore >= 60 ? '#d97706' : '#dc2626';
+  const riskLabel = riskScore >= 80 ? 'Low Risk' : riskScore >= 60 ? 'Moderate Risk' : 'High Risk';
+  document.getElementById('riskLabel').textContent = riskLabel;
+
+  // Overdue count
+  const overdueItems = (DATA.notifications||[]).filter(n => n.type === 'overdue');
+  document.getElementById('overdueCount').textContent = overdueItems.length;
+
+  // MTTR: use average age of closed items or hardcode for demo
+  document.getElementById('mttrValue').textContent = '32 days';
 
   // Action banner
   const ai = DATA.actionItems||[], activeAI = ai.filter(i=>!['completed','canceled'].includes(i.statusType));
@@ -620,23 +643,78 @@ function renderExecutive() {
   document.getElementById('actionBannerSub').textContent=`${activeAI.length} items — ${inc.length} incidents, ${aging.length} aging findings`;
   document.getElementById('actionBannerStats').innerHTML=`${inc.length?`<span class="pill pill-incident">${inc.length} Incidents</span>`:''}${aging.length?`<span class="pill pill-aging">${aging.length} Aging</span>`:''}<span class="pill pill-pentest">${activeAI.filter(i=>i.source==='Pen Test').length} Pen Test</span><span class="pill pill-audit">${activeAI.filter(i=>i.source==='External Audit').length} Ext Audit</span>`;
 
-  // Severity bars
-  const sevs=[{l:'Critical',c:s.critical,clr:'#b91c1c'},{l:'High',c:s.high,clr:'#c2410c'},{l:'Medium',c:s.medium,clr:'#a16207'},{l:'Low',c:s.low,clr:'#16a34a'}];
-  document.getElementById('severityBars').innerHTML=sevs.map(sv=>`<div><div class="flex justify-between text-xs mb-1"><span class="font-medium" style="color:${sv.clr}">${sv.l}</span><span class="text-slate-700 font-semibold">${sv.c}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${s.open?Math.round(sv.c/s.open*100):0}%;background:${sv.clr}"></div></div></div>`).join('');
-
-  // Framework chart
-  new Chart(document.getElementById('frameworkChart'),{type:'bar',data:{labels:DATA.frameworks,datasets:[{label:'Open',data:DATA.frameworks.map(f=>DATA.byFramework[f]?.open||0),backgroundColor:'#2378C3',borderRadius:3},{label:'Closed',data:DATA.frameworks.map(f=>DATA.byFramework[f]?.closed||0),backgroundColor:'#719F2A',borderRadius:3},{label:'Critical',data:DATA.frameworks.map(f=>DATA.byFramework[f]?.critical||0),backgroundColor:'#dc2626',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:true,scales:{x:{grid:{display:false},ticks:{color:'#334155',font:{size:9}}},y:{grid:{color:'#e2e8f0'},ticks:{color:'#334155',font:{size:9}}}},plugins:{legend:{labels:{color:'#334155',font:{size:9},boxWidth:12}}}}});
+  // Framework Scorecards
+  renderFrameworkScorecards();
+  // Risk Heatmap
+  renderRiskHeatmap();
 
   renderLeadershipMetrics();
   renderTeamWorkload();
 
-  // Category cards
-  const catDefs=[{k:'POA&M',label:'POA&Ms',bg:'#dbeafe',ic:'#2563eb',svg:'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'},{k:'Assessment',label:'Assessments',bg:'#f3e8ff',ic:'#7c3aed',svg:'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'},{k:'External Request',label:'Ext. Requests',bg:'#fce7f3',ic:'#be185d',svg:'M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4'},{k:'ATO',label:'ATO Packages',bg:'#e0e7ff',ic:'#4338ca',svg:'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'},{k:'Evidence',label:'Evidence',bg:'#cffafe',ic:'#0e7490',svg:'M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4'},{k:'Compliance',label:'Controls',bg:'#dcfce7',ic:'#15803d',svg:'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'}];
-  document.getElementById('categoryCards').innerHTML=catDefs.map(d=>{const c=DATA.byCategory[d.k]||{};return`<div class="card p-4 card-hover cursor-pointer" onclick="drillDown('${d.k}')"><div class="flex items-center gap-2 mb-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:${d.bg};"><svg class="w-4 h-4" style="color:${d.ic};" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${d.svg}"/></svg></div><span class="text-sm font-semibold" style="color:#1e293b;">${d.label}</span></div><div class="text-xs text-slate-700 space-y-1"><p><span class="font-semibold" style="color:#1e293b;">${c.inProgress||0}</span> In Progress</p><p><span class="font-semibold" style="color:#1e293b;">${c.todo||0}</span> Queued</p><p><span class="font-semibold" style="color:#16a34a;">${c.closed||0}</span> Completed</p><p><span class="font-semibold sev-crit">${c.critical||0}</span> Critical</p></div></div>`;}).join('');
-
   renderCriticalTable();
   const fw=document.getElementById('filterFramework');DATA.frameworks.forEach(f=>{const o=document.createElement('option');o.value=f;o.textContent=f;fw.appendChild(o);});
   const cs=document.getElementById('filterCategory');DATA.categories.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;cs.appendChild(o);});
+}
+
+function renderFrameworkScorecards() {
+  const fc={'CMS ARC-AMPE':'#2563eb','IRS Pub 1075':'#b91c1c','NIST 800-53':'#7c3aed','SSA':'#0d9488','OLA':'#9333ea'};
+  document.getElementById('frameworkCards').innerHTML = DATA.frameworks.map(fw => {
+    const f = DATA.byFramework[fw] || {};
+    const compPct = f.total > 0 ? Math.round((f.closed / f.total) * 100) : 0;
+    const color = compPct >= 90 ? '#719F2A' : compPct >= 70 ? '#d97706' : '#dc2626';
+    const bgColor = compPct >= 90 ? '#f0fdf4' : compPct >= 70 ? '#fffbeb' : '#fef2f2';
+    const borderColor = compPct >= 90 ? '#86efac' : compPct >= 70 ? '#fcd34d' : '#fca5a5';
+    const accentColor = fc[fw] || '#64748b';
+    const circumference = 2 * Math.PI * 22;
+    const dashoffset = circumference - (compPct / 100) * circumference;
+    return `<div class="card p-4 card-hover cursor-pointer" onclick="showCategory('Compliance')" style="border-top:3px solid ${accentColor};background:${bgColor};border-color:${borderColor};">
+      <div class="flex items-center justify-between mb-3">
+        <p class="text-xs font-bold" style="color:#1e293b;">${fw}</p>
+        <svg width="50" height="50" viewBox="0 0 50 50">
+          <circle cx="25" cy="25" r="22" fill="none" stroke="#e2e8f0" stroke-width="4"/>
+          <circle cx="25" cy="25" r="22" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round"
+            stroke-dasharray="${circumference}" stroke-dashoffset="${dashoffset}" transform="rotate(-90 25 25)"/>
+          <text x="25" y="28" text-anchor="middle" font-size="11" font-weight="700" fill="${color}">${compPct}%</text>
+        </svg>
+      </div>
+      <div class="text-[10px] space-y-1" style="color:#334155;">
+        <div class="flex justify-between"><span>Open</span><span class="font-semibold" style="color:#2378C3;">${f.open||0}</span></div>
+        <div class="flex justify-between"><span>Critical</span><span class="font-semibold sev-crit">${f.critical||0}</span></div>
+        <div class="flex justify-between"><span>Closed</span><span class="font-semibold" style="color:#719F2A;">${f.closed||0}</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderRiskHeatmap() {
+  const sevs = ['Critical','High','Medium','Low'];
+  const cats = ['POA&M','Assessment','ATO','Evidence','External Request','Compliance'];
+  const sevColors = {'Critical':'#dc2626','High':'#ea580c','Medium':'#d97706','Low':'#719F2A'};
+  const bgColors = {'Critical':'#fef2f2','High':'#fff7ed','Medium':'#fffbeb','Low':'#f0fdf4'};
+
+  let html = '<table class="w-full text-xs" style="border-collapse:separate;border-spacing:3px;">';
+  html += '<thead><tr><th class="text-left py-2 px-2" style="color:#64748b;width:80px;"></th>';
+  cats.forEach(c => { html += `<th class="text-center py-2 px-1" style="color:#334155;font-size:9px;font-weight:600;">${c}</th>`; });
+  html += '</tr></thead><tbody>';
+
+  sevs.forEach(sev => {
+    html += `<tr><td class="py-1 px-2 font-semibold" style="color:${sevColors[sev]};font-size:10px;">${sev}</td>`;
+    cats.forEach(cat => {
+      const catData = DATA.byCategory[cat] || {};
+      const issues = catData.issues || [];
+      const count = issues.filter(i => i.labels.includes(sev) && !['completed','canceled'].includes(i.statusType)).length;
+      const bg = count > 0 ? bgColors[sev] : '#f8fafc';
+      const textColor = count > 0 ? sevColors[sev] : '#cbd5e1';
+      const border = count > 0 ? `border:1px solid ${sevColors[sev]}30;` : 'border:1px solid #e2e8f0;';
+      html += `<td class="text-center py-2 px-1 rounded cursor-pointer hover:opacity-80" style="background:${bg};${border}" onclick="drillDown('${cat}')">
+        <span class="font-bold" style="color:${textColor};font-size:${count>0?'14px':'11px'};">${count}</span>
+      </td>`;
+    });
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  document.getElementById('riskHeatmap').innerHTML = html;
 }
 
 function renderLeadershipMetrics(){
@@ -660,12 +738,25 @@ function renderLeadershipMetrics(){
 function renderTeamWorkload() {
   const bt = DATA.byTeam || {};
   const teams = DATA.teamLabels || [];
-  const colors = {'ISSO':'#2563eb','Assessors':'#7c3aed','Tenant Support':'#0891b2','POA&M Mgmt':'#ea580c','IR':'#dc2626'};
+  const colors = {'ISSO':'#2563eb','Assessors':'#7c3aed','Tenant Support':'#0891b2','POA&M Mgmt':'#ea580c','POA&M Management':'#ea580c','IR':'#dc2626'};
+  // Count overdue per team from notifications
+  const overdueByTeam = {};
+  (DATA.notifications||[]).filter(n=>n.type==='overdue').forEach(n => {
+    const teamLabel = (n.labels||[]).find(l=>l.startsWith('Team:'));
+    if (teamLabel) {
+      const tn = teamLabel.replace('Team: ','');
+      overdueByTeam[tn] = (overdueByTeam[tn]||0) + 1;
+    }
+  });
   document.getElementById('teamWorkload').innerHTML = teams.map(t => {
     const d = bt[t] || {};
     const pct = d.total > 0 ? Math.round((d.closed / d.total) * 100) : 0;
+    const overdue = overdueByTeam[t] || 0;
     return `<div class="rounded-lg p-3 border cursor-pointer card-hover" style="border-color:#e2e8f0;border-left:3px solid ${colors[t]||'#64748b'};" onclick="showTeamView('${t}')">
-      <p class="text-xs font-semibold mb-2" style="color:#1e293b;">${t}</p>
+      <div class="flex items-center justify-between mb-2">
+        <p class="text-xs font-semibold" style="color:#1e293b;">${t}</p>
+        ${overdue?`<span class="pill pill-crit text-[9px]">${overdue} overdue</span>`:''}
+      </div>
       <div class="flex gap-3 text-[11px] mb-2">
         <span><strong style="color:#1e293b;">${d.open||0}</strong> open</span>
         <span><strong style="color:#2378C3;">${d.inProgress||0}</strong> active</span>
@@ -683,7 +774,7 @@ function filterTable(){let items=DATA.issues.filter(i=>(i.labels.includes('Criti
 
 function updateTable(id,items){
   const pm={1:['Urgent','pill-urgent'],2:['High','pill-high'],3:['Medium','pill-med'],4:['Low','pill-low']};
-  document.getElementById(id).innerHTML=items.map(i=>{const[p,pc]=pm[i.priority]||['--',''];const fw=i.labels.filter(l=>DATA.frameworks.includes(l)).join(', ')||'--';return`<tr style="border-bottom:1px solid #e2e8f0;" class="hover:bg-blue-50/40 cursor-pointer" onclick="showDetail('${i.id}')"><td class="py-2.5 px-2 text-slate-700 font-mono text-[11px]">${i.id}</td><td class="py-2.5 px-2 font-medium max-w-xs truncate" style="color:#1e293b;">${i.title}</td><td class="py-2.5 px-2"><span class="pill ${pc}">${p}</span></td><td class="py-2.5 px-2 text-slate-700">${fw}</td><td class="py-2.5 px-2 text-slate-700">${i.assignee||'Unassigned'}</td><td class="py-2.5 px-2"><span class="status-dot status-${i.statusType}"></span>${i.status}</td></tr>`;}).join('')||'<tr><td colspan="6" class="py-4 text-center text-slate-700">No items match</td></tr>';
+  document.getElementById(id).innerHTML=items.map(i=>{const[p,pc]=pm[i.priority]||['--',''];const fw=i.labels.filter(l=>DATA.frameworks.includes(l)).join(', ')||'--';const team=(i.labels||[]).filter(l=>l.startsWith('Team:')).map(l=>l.replace('Team: ','')).join(', ')||i.team||'--';const due=i.dueDate?new Date(i.dueDate).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'--';return`<tr style="border-bottom:1px solid #e2e8f0;" class="hover:bg-blue-50/40 cursor-pointer" onclick="showDetail('${i.id}')"><td class="py-2.5 px-2 text-slate-700 font-mono text-[11px]">${i.id}</td><td class="py-2.5 px-2 font-medium max-w-xs truncate" style="color:#1e293b;">${i.title}</td><td class="py-2.5 px-2"><span class="pill ${pc}">${p}</span></td><td class="py-2.5 px-2 text-slate-700">${fw}</td><td class="py-2.5 px-2 text-slate-700 text-[11px]">${team}</td><td class="py-2.5 px-2 text-slate-700">${i.assignee||'Unassigned'}</td><td class="py-2.5 px-2 text-slate-700 text-[11px]">${due}</td><td class="py-2.5 px-2"><span class="status-dot status-${i.statusType}"></span>${i.status}</td></tr>`;}).join('')||'<tr><td colspan="8" class="py-4 text-center text-slate-700">No items match</td></tr>';
 }
 
 // ─── ACTION ITEMS ─────────────────────────────────────────

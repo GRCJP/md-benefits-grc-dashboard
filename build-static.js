@@ -19,12 +19,13 @@ async function fetchFromLinear() {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: LINEAR_API_KEY },
     body: JSON.stringify({ query: \`{
-      issues(filter: { team: { id: { eq: "\${LINEAR_TEAM_ID}" } } }, first: 150) {
+      issues(first: 200) {
         nodes {
           id identifier title description priority url
           state { name type }
           labels { nodes { name } }
           project { name }
+          team { name }
           assignee { id name email }
           createdAt updatedAt dueDate
         }
@@ -124,16 +125,15 @@ function processLinearData(issues) {
   }
   notifications.sort((a,b)=>{const s={critical:0,high:1,medium:2,low:3};return(s[a.severity]??4)-(s[b.severity]??4);});
 
-  const teamLabelsList = ["Team: ISSO","Team: Assessors","Team: Tenant Support","Team: POA&M Mgmt","Team: IR"];
+  const realTeamNames = ["ISSO","Assessors","Tenant Support","POA&M Management","IR"];
   const byTeam = {};
-  for (const tl of teamLabelsList) {
-    const ti = workIssues.filter(i => hasLabel(i, tl));
-    const shortName = tl.replace("Team: ", "");
-    byTeam[shortName] = { total:ti.length, open:ti.filter(isOpen).length, closed:ti.filter(isDone).length, critical:ti.filter(i=>hasLabel(i,"Critical")).length, inProgress:ti.filter(i=>i.state.type==="started").length };
+  for (const tn of realTeamNames) {
+    const ti = workIssues.filter(i => i.team?.name === tn || hasLabel(i, "Team: " + tn) || hasLabel(i, "Team: " + tn.replace("Management","Mgmt")));
+    byTeam[tn] = { total:ti.length, open:ti.filter(isOpen).length, closed:ti.filter(isDone).length, critical:ti.filter(i=>hasLabel(i,"Critical")).length, inProgress:ti.filter(i=>i.state.type==="started").length };
   }
 
-  return { summary,byFramework,byCategory,byProject,byTeam,teamLabels:teamLabelsList.map(t=>t.replace("Team: ","")),poamByStatus,actionItems,incidents,ageBuckets,kevs,certs,docs,notifications,frameworks,categories,actionTags,
-    issues:workIssues.map(i=>({id:i.identifier,title:i.title,priority:i.priority,status:i.state.name,statusType:i.state.type,labels:getLabels(i),project:i.project?.name,description:i.description,dueDate:i.dueDate,assignee:resolveAssignee(i)})) };
+  return { summary,byFramework,byCategory,byProject,byTeam,teamLabels:realTeamNames,poamByStatus,actionItems,incidents,ageBuckets,kevs,certs,docs,notifications,frameworks,categories,actionTags,
+    issues:workIssues.map(i=>({id:i.identifier,title:i.title,priority:i.priority,status:i.state.name,statusType:i.state.type,labels:getLabels(i),project:i.project?.name,team:i.team?.name||'Unassigned',description:i.description,dueDate:i.dueDate,assignee:resolveAssignee(i)})) };
 }
 `;
 
