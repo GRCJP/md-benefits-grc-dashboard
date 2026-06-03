@@ -124,7 +124,15 @@ function processLinearData(issues) {
   }
   notifications.sort((a,b)=>{const s={critical:0,high:1,medium:2,low:3};return(s[a.severity]??4)-(s[b.severity]??4);});
 
-  return { summary,byFramework,byCategory,byProject,poamByStatus,actionItems,incidents,ageBuckets,kevs,certs,docs,notifications,frameworks,categories,actionTags,
+  const teamLabelsList = ["Team: ISSO","Team: Assessors","Team: Tenant Support","Team: POA&M Mgmt","Team: IR"];
+  const byTeam = {};
+  for (const tl of teamLabelsList) {
+    const ti = workIssues.filter(i => hasLabel(i, tl));
+    const shortName = tl.replace("Team: ", "");
+    byTeam[shortName] = { total:ti.length, open:ti.filter(isOpen).length, closed:ti.filter(isDone).length, critical:ti.filter(i=>hasLabel(i,"Critical")).length, inProgress:ti.filter(i=>i.state.type==="started").length };
+  }
+
+  return { summary,byFramework,byCategory,byProject,byTeam,teamLabels:teamLabelsList.map(t=>t.replace("Team: ","")),poamByStatus,actionItems,incidents,ageBuckets,kevs,certs,docs,notifications,frameworks,categories,actionTags,
     issues:workIssues.map(i=>({id:i.identifier,title:i.title,priority:i.priority,status:i.state.name,statusType:i.state.type,labels:getLabels(i),project:i.project?.name,description:i.description,dueDate:i.dueDate,assignee:resolveAssignee(i)})) };
 }
 `;

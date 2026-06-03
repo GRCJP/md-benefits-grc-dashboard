@@ -159,6 +159,10 @@
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
         Operations
       </a>
+      <a onclick="showView('integrations')" id="tab-integrations" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+        Integrations
+      </a>
       <a onclick="toggleChatPanel()" id="tab-chat" class="sidebar-item">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
         Ask AI
@@ -189,6 +193,28 @@
       <a onclick="showCategory('Compliance')" id="tab-cat-compliance" class="sidebar-item">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
         Controls
+      </a>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-label">Teams</div>
+      <a onclick="showTeamView('ISSO')" id="tab-team-isso" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        ISSO
+      </a>
+      <a onclick="showTeamView('Assessors')" id="tab-team-assessors" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Assessors
+      </a>
+      <a onclick="showTeamView('Tenant Support')" id="tab-team-tenant-support" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Tenant Support
+      </a>
+      <a onclick="showTeamView('POA&amp;M Mgmt')" id="tab-team-poam-mgmt" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        POA&amp;M Mgmt
+      </a>
+      <a onclick="showTeamView('IR')" id="tab-team-ir" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        IR
       </a>
     </div>
   </nav>
@@ -329,6 +355,16 @@
         <div class="flex items-center justify-between mb-4"><p class="text-sm font-semibold" style="color:#1e293b;">All GRC Items</p><div class="flex gap-2"><select id="opsFilterProject" onchange="filterOpsTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#f8fafc;border-color:#cbd5e1;color:#475569;"><option value="">All Projects</option></select><select id="opsFilterStatus" onchange="filterOpsTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#f8fafc;border-color:#cbd5e1;color:#475569;"><option value="">All Statuses</option><option value="In Progress">In Progress</option><option value="Todo">Todo</option><option value="Backlog">Backlog</option><option value="Done">Done</option></select></div></div>
         <table class="w-full text-xs"><thead><tr class="text-slate-700 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;"><th class="text-left py-2.5 px-2">ID</th><th class="text-left py-2.5 px-2">Item</th><th class="text-left py-2.5 px-2">Project</th><th class="text-left py-2.5 px-2">Priority</th><th class="text-left py-2.5 px-2">Assignee</th><th class="text-left py-2.5 px-2">Status</th></tr></thead><tbody id="opsTable"></tbody></table>
       </div>
+    </div>
+
+    <!-- ═══ INTEGRATIONS VIEW ═══ -->
+    <div id="view-integrations" class="hidden">
+      <div id="integrationsContent"></div>
+    </div>
+
+    <!-- ═══ TEAM VIEW ═══ -->
+    <div id="view-teamview" class="hidden">
+      <div id="teamViewContent"></div>
     </div>
 
     <!-- ═══ CATEGORY PAGE VIEW ═══ -->
@@ -492,7 +528,15 @@ function processLinearData(issues) {
   }
   notifications.sort((a,b)=>{const s={critical:0,high:1,medium:2,low:3};return(s[a.severity]??4)-(s[b.severity]??4);});
 
-  return { summary,byFramework,byCategory,byProject,poamByStatus,actionItems,incidents,ageBuckets,kevs,certs,docs,notifications,frameworks,categories,actionTags,
+  const teamLabelsList = ["Team: ISSO","Team: Assessors","Team: Tenant Support","Team: POA&M Mgmt","Team: IR"];
+  const byTeam = {};
+  for (const tl of teamLabelsList) {
+    const ti = workIssues.filter(i => hasLabel(i, tl));
+    const shortName = tl.replace("Team: ", "");
+    byTeam[shortName] = { total:ti.length, open:ti.filter(isOpen).length, closed:ti.filter(isDone).length, critical:ti.filter(i=>hasLabel(i,"Critical")).length, inProgress:ti.filter(i=>i.state.type==="started").length };
+  }
+
+  return { summary,byFramework,byCategory,byProject,byTeam,teamLabels:teamLabelsList.map(t=>t.replace("Team: ","")),poamByStatus,actionItems,incidents,ageBuckets,kevs,certs,docs,notifications,frameworks,categories,actionTags,
     issues:workIssues.map(i=>({id:i.identifier,title:i.title,priority:i.priority,status:i.state.name,statusType:i.state.type,labels:getLabels(i),project:i.project?.name,description:i.description,dueDate:i.dueDate,assignee:resolveAssignee(i)})) };
 }
 
@@ -508,7 +552,7 @@ async function loadData() {
   renderNotifications();
 }
 
-const ALL_VIEWS = ['executive','action','operations','category'];
+const ALL_VIEWS = ['executive','action','operations','category','integrations','teamview'];
 const CAT_IDS = ['poam','assessment','evidence','ato','external-request','compliance'];
 
 function showView(view) {
@@ -521,7 +565,10 @@ function showView(view) {
   if (tab) tab.classList.add('active');
   if (view === 'action') renderActionItems();
   if (view === 'operations') renderOperations();
+  if (view === 'integrations') renderIntegrations();
 }
+
+function drillDown(category) { showCategory(category); }
 
 function showCategory(category) {
   ALL_VIEWS.forEach(v => document.getElementById(`view-${v}`).classList.toggle('hidden', v !== 'category'));
@@ -728,15 +775,15 @@ function renderLeadershipMetrics(){
   document.getElementById('ageBuckets').innerHTML=[{l:'< 1 Month',c:ab.under1Month,clr:'#16a34a'},{l:'1–6 Months',c:ab.months1to6,clr:'#ca8a04'},{l:'6–12 Months',c:ab.months6to12,clr:'#ea580c'},{l:'> 12 Months',c:ab.over12,clr:'#b91c1c'}].map(b=>`<div><div class="flex justify-between text-xs mb-1"><span class="font-medium" style="color:${b.clr}">${b.l}</span><span class="font-semibold" style="color:#1e293b;">${b.c}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${tot?Math.round(b.c/tot*100):0}%;background:${b.clr}"></div></div></div>`).join('');
 
   const k=DATA.kevs;
-  document.getElementById('kevSummary').innerHTML=`<div class="flex gap-3"><div class="text-center"><p class="text-xl font-bold sev-crit">${k.open}</p><p class="text-[10px] text-slate-700">Open</p></div><div class="text-center"><p class="text-xl font-bold" style="color:#16a34a;">${k.resolved}</p><p class="text-[10px] text-slate-700">Resolved</p></div><div class="text-center"><p class="text-xl font-bold" style="color:${k.overdue?'#b91c1c':'#16a34a'};">${k.overdue}</p><p class="text-[10px] text-slate-700">Overdue</p></div></div>`;
+  document.getElementById('kevSummary').innerHTML=`<div class="flex gap-3"><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('KEV','open')"><p class="text-xl font-bold sev-crit">${k.open}</p><p class="text-[10px] text-slate-700">Open</p></div><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('KEV','resolved')"><p class="text-xl font-bold" style="color:#16a34a;">${k.resolved}</p><p class="text-[10px] text-slate-700">Resolved</p></div><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('KEV','overdue')"><p class="text-xl font-bold" style="color:${k.overdue?'#b91c1c':'#16a34a'};">${k.overdue}</p><p class="text-[10px] text-slate-700">Overdue</p></div></div>`;
   document.getElementById('kevList').innerHTML=k.items.filter(i=>i.statusType!=='completed').map(i=>{const u=i.daysLeft<=7?'pill-crit':i.daysLeft<=14?'pill-high':'pill-med';return`<div class="flex items-center justify-between text-xs cursor-pointer rounded p-1.5 -mx-1 hover:bg-slate-50" onclick="showDetail('${i.id}')"><span class="font-medium truncate max-w-[180px]" style="color:#1e293b;">${i.title.replace(/^KEV-\d+:\s*/,'').substring(0,40)}...</span><span class="pill ${u} text-[10px]">${i.daysLeft}d</span></div>`;}).join('');
 
   const c=DATA.certs;
-  document.getElementById('certSummary').innerHTML=`<div class="flex gap-3"><div class="text-center"><p class="text-xl font-bold sev-crit">${c.critical}</p><p class="text-[10px] text-slate-700">&lt;7d</p></div><div class="text-center"><p class="text-xl font-bold sev-high">${c.warning}</p><p class="text-[10px] text-slate-700">7-30d</p></div><div class="text-center"><p class="text-xl font-bold" style="color:#16a34a;">${c.ok}</p><p class="text-[10px] text-slate-700">&gt;30d</p></div></div>`;
+  document.getElementById('certSummary').innerHTML=`<div class="flex gap-3"><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('Certificate','critical')"><p class="text-xl font-bold sev-crit">${c.critical}</p><p class="text-[10px] text-slate-700">&lt;7d</p></div><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('Certificate','warning')"><p class="text-xl font-bold sev-high">${c.warning}</p><p class="text-[10px] text-slate-700">7-30d</p></div><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('Certificate','ok')"><p class="text-xl font-bold" style="color:#16a34a;">${c.ok}</p><p class="text-[10px] text-slate-700">&gt;30d</p></div></div>`;
   document.getElementById('certList').innerHTML=c.items.map(i=>{const u=i.daysLeft<=7?'pill-crit':i.daysLeft<=30?'pill-high':i.daysLeft<=60?'pill-med':'pill-low';const n=i.title.replace(/^CERT-\d+:\s*(SSL |Code Signing |Mutual TLS )?Certificate\s*(Expiring\s*-\s*)?/i,'').substring(0,35);return`<div class="flex items-center justify-between text-xs cursor-pointer rounded p-1.5 -mx-1 hover:bg-slate-50" onclick="showDetail('${i.id}')"><span class="font-medium truncate max-w-[170px]" style="color:#1e293b;">${n}</span><span class="pill ${u} text-[10px]">${i.daysLeft}d</span></div>`;}).join('');
 
   const d=DATA.docs;
-  document.getElementById('docSummary').innerHTML=`<div class="flex gap-3"><div class="text-center"><p class="text-xl font-bold sev-crit">${d.overdue}</p><p class="text-[10px] text-slate-700">Overdue</p></div><div class="text-center"><p class="text-xl font-bold sev-high">${d.dueSoon}</p><p class="text-[10px] text-slate-700">&lt;30d</p></div><div class="text-center"><p class="text-xl font-bold" style="color:#16a34a;">${d.completed}</p><p class="text-[10px] text-slate-700">Done</p></div></div>`;
+  document.getElementById('docSummary').innerHTML=`<div class="flex gap-3"><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('Document Review','overdue')"><p class="text-xl font-bold sev-crit">${d.overdue}</p><p class="text-[10px] text-slate-700">Overdue</p></div><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('Document Review','dueSoon')"><p class="text-xl font-bold sev-high">${d.dueSoon}</p><p class="text-[10px] text-slate-700">&lt;30d</p></div><div class="text-center cursor-pointer hover:opacity-75" onclick="showFilteredItems('Document Review','completed')"><p class="text-xl font-bold" style="color:#16a34a;">${d.completed}</p><p class="text-[10px] text-slate-700">Done</p></div></div>`;
   document.getElementById('docList').innerHTML=d.items.filter(i=>i.statusType!=='completed').map(i=>{const u=i.daysLeft<0?'pill-crit':i.daysLeft<=14?'pill-high':i.daysLeft<=30?'pill-med':'pill-low';const lb=i.daysLeft<0?`${Math.abs(i.daysLeft)}d over`:`${i.daysLeft}d`;const n=i.title.replace(/^DOC-\d+:\s*/,'').substring(0,35);return`<div class="flex items-center justify-between text-xs cursor-pointer rounded p-1.5 -mx-1 hover:bg-slate-50" onclick="showDetail('${i.id}')"><span class="font-medium truncate max-w-[170px]" style="color:#1e293b;">${n}</span><span class="pill ${u} text-[10px]">${lb}</span></div>`;}).join('');
 }
 
@@ -747,7 +794,7 @@ function renderTeamWorkload() {
   document.getElementById('teamWorkload').innerHTML = teams.map(t => {
     const d = bt[t] || {};
     const pct = d.total > 0 ? Math.round((d.closed / d.total) * 100) : 0;
-    return `<div class="rounded-lg p-3 border" style="border-color:#e2e8f0;border-left:3px solid ${colors[t]||'#64748b'};">
+    return `<div class="rounded-lg p-3 border cursor-pointer card-hover" style="border-color:#e2e8f0;border-left:3px solid ${colors[t]||'#64748b'};" onclick="showTeamView('${t}')">
       <p class="text-xs font-semibold mb-2" style="color:#1e293b;">${t}</p>
       <div class="flex gap-3 text-[11px] mb-2">
         <span><strong style="color:#1e293b;">${d.open||0}</strong> open</span>
@@ -910,6 +957,382 @@ async function sendChat() {
   document.getElementById('chatSendBtn').disabled = false;
 }
 
+
+// ─── TEAM VIEW ───────────────────────────────────────────
+function showTeamView(teamName) {
+  ALL_VIEWS.forEach(v => document.getElementById(`view-${v}`).classList.toggle('hidden', v !== 'teamview'));
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  const tabId = 'tab-team-' + teamName.toLowerCase().replace(/&/g,'').replace(/ /g,'-');
+  const tab = document.getElementById(tabId);
+  if (tab) tab.classList.add('active');
+  renderTeamView(teamName);
+}
+
+function renderTeamView(teamName) {
+  const colors = {'ISSO':'#2563eb','Assessors':'#7c3aed','Tenant Support':'#0891b2','POA&M Mgmt':'#ea580c','IR':'#dc2626'};
+  const color = colors[teamName] || '#64748b';
+  const teamLabel = 'Team: ' + teamName;
+  const issues = DATA.issues.filter(i => i.labels.includes(teamLabel));
+  const open = issues.filter(i => !['completed','canceled'].includes(i.statusType)).length;
+  const inProgress = issues.filter(i => i.statusType === 'started').length;
+  const completed = issues.filter(i => i.statusType === 'completed').length;
+  const critical = issues.filter(i => i.labels.includes('Critical') && !['completed','canceled'].includes(i.statusType)).length;
+  const total = issues.length;
+  const completionPct = total > 0 ? Math.round((completed / total) * 100) : 0;
+  const todo = issues.filter(i => i.statusType === 'unstarted').length;
+  const backlog = issues.filter(i => i.statusType === 'backlog').length;
+
+  const fwCounts = {};
+  DATA.frameworks.forEach(fw => {
+    const count = issues.filter(i => i.labels.includes(fw)).length;
+    if (count > 0) fwCounts[fw] = count;
+  });
+
+  const catCounts = {};
+  DATA.categories.forEach(cat => {
+    const count = issues.filter(i => i.labels.includes(cat)).length;
+    if (count > 0) catCounts[cat] = count;
+  });
+
+  const pm = {1:['Urgent','pill-urgent'],2:['High','pill-high'],3:['Medium','pill-med'],4:['Low','pill-low']};
+
+  let html = `
+    <div class="flex items-center gap-3 mb-5">
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:${color};">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      </div>
+      <div>
+        <h2 class="text-lg font-bold" style="color:#1e293b;">${teamName}</h2>
+        <p class="text-sm" style="color:#334155;">${total} total items assigned</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-6 gap-3 mb-5">
+      <div class="card p-4 text-center"><p class="text-2xl font-bold" style="color:#1e293b;">${open}</p><p class="text-xs" style="color:#334155;">Open</p></div>
+      <div class="card p-4 text-center"><p class="text-2xl font-bold" style="color:${color};">${inProgress}</p><p class="text-xs" style="color:#334155;">In Progress</p></div>
+      <div class="card p-4 text-center"><p class="text-2xl font-bold" style="color:#d97706;">${todo}</p><p class="text-xs" style="color:#334155;">Queued</p></div>
+      <div class="card p-4 text-center"><p class="text-2xl font-bold" style="color:#719F2A;">${completed}</p><p class="text-xs" style="color:#334155;">Completed</p></div>
+      <div class="card p-4 text-center"><p class="text-2xl font-bold sev-crit">${critical}</p><p class="text-xs" style="color:#334155;">Critical</p></div>
+      <div class="card p-4 text-center"><p class="text-2xl font-bold" style="color:#1e293b;">${completionPct}%</p><p class="text-xs" style="color:#334155;">Completion</p></div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 mb-5">
+      <div class="card p-4">
+        <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#334155;">Status Breakdown</p>
+        <div class="space-y-2">
+          <div><div class="flex justify-between text-xs mb-1"><span style="color:#1e293b;" class="font-medium">In Progress</span><span style="color:#334155;">${inProgress}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${total?Math.round(inProgress/total*100):0}%;background:${color};"></div></div></div>
+          <div><div class="flex justify-between text-xs mb-1"><span style="color:#1e293b;" class="font-medium">Queued</span><span style="color:#334155;">${todo}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${total?Math.round(todo/total*100):0}%;background:#d97706;"></div></div></div>
+          <div><div class="flex justify-between text-xs mb-1"><span style="color:#1e293b;" class="font-medium">Backlog</span><span style="color:#334155;">${backlog}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${total?Math.round(backlog/total*100):0}%;background:#94a3b8;"></div></div></div>
+          <div><div class="flex justify-between text-xs mb-1"><span style="color:#719F2A;" class="font-medium">Completed</span><span style="color:#334155;">${completed}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${completionPct}%;background:#719F2A;"></div></div></div>
+        </div>
+      </div>
+      <div class="card p-4">
+        <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#334155;">By Framework</p>
+        ${Object.keys(fwCounts).length ? Object.entries(fwCounts).map(([fw,count]) => `
+          <div class="flex justify-between items-center text-xs py-1.5 cursor-pointer hover:bg-slate-50 rounded px-1" style="border-bottom:1px solid #e2e8f0;" onclick="showCategory('${fw}')">
+            <span style="color:#1e293b;" class="font-medium">${fw}</span>
+            <span class="pill pill-blue">${count}</span>
+          </div>
+        `).join('') : '<p class="text-xs" style="color:#334155;">No framework-specific items</p>'}
+        <p class="text-xs font-semibold uppercase tracking-wider mt-4 mb-2" style="color:#334155;">By Category</p>
+        ${Object.keys(catCounts).length ? Object.entries(catCounts).map(([cat,count]) => `
+          <div class="flex justify-between items-center text-xs py-1.5 cursor-pointer hover:bg-slate-50 rounded px-1" style="border-bottom:1px solid #e2e8f0;" onclick="showCategory('${cat}')">
+            <span style="color:#1e293b;" class="font-medium">${cat}</span>
+            <span class="pill pill-neutral">${count}</span>
+          </div>
+        `).join('') : ''}
+      </div>
+    </div>
+
+    <div class="card p-4">
+      <p class="text-sm font-semibold mb-3" style="color:#1e293b;">All ${teamName} Items</p>
+      <table class="w-full text-xs">
+        <thead><tr class="text-slate-700 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;">
+          <th class="text-left py-2.5 px-2">ID</th>
+          <th class="text-left py-2.5 px-2">Item</th>
+          <th class="text-left py-2.5 px-2">Severity</th>
+          <th class="text-left py-2.5 px-2">Framework</th>
+          <th class="text-left py-2.5 px-2">Assignee</th>
+          <th class="text-left py-2.5 px-2">Status</th>
+        </tr></thead>
+        <tbody>${issues.map(i => {
+          const [p,pc] = pm[i.priority] || ['--',''];
+          const fw = i.labels.filter(l => DATA.frameworks.includes(l)).join(', ') || '--';
+          return `<tr style="border-bottom:1px solid #e2e8f0;" class="hover:bg-blue-50/40 cursor-pointer" onclick="showDetail('${i.id}')">
+            <td class="py-2.5 px-2 font-mono text-[11px]" style="color:#334155;">${i.id}</td>
+            <td class="py-2.5 px-2 font-medium max-w-sm truncate" style="color:#1e293b;">${i.title}</td>
+            <td class="py-2.5 px-2"><span class="pill ${pc}">${p}</span></td>
+            <td class="py-2.5 px-2" style="color:#334155;">${fw}</td>
+            <td class="py-2.5 px-2" style="color:#334155;">${i.assignee || 'Unassigned'}</td>
+            <td class="py-2.5 px-2"><span class="status-dot status-${i.statusType}"></span>${i.status}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>
+  `;
+  document.getElementById('teamViewContent').innerHTML = html;
+}
+
+// ─── FILTERED ITEMS (for clickable summary numbers) ──────
+function showFilteredItems(type, filter) {
+  let items = [];
+  let title = '';
+  const now = new Date();
+  const DAY = 86400000;
+
+  if (type === 'KEV') {
+    const kevItems = DATA.kevs?.items || [];
+    if (filter === 'open') { items = kevItems.filter(i => i.statusType !== 'completed'); title = 'Open KEVs'; }
+    else if (filter === 'resolved') { items = kevItems.filter(i => i.statusType === 'completed'); title = 'Resolved KEVs'; }
+    else if (filter === 'overdue') { items = kevItems.filter(i => i.statusType !== 'completed' && i.daysLeft !== null && i.daysLeft < 0); title = 'Overdue KEVs'; }
+  } else if (type === 'Certificate') {
+    const certItems = DATA.certs?.items || [];
+    if (filter === 'critical') { items = certItems.filter(i => i.daysLeft !== null && i.daysLeft <= 7); title = 'Certificates Expiring < 7 Days'; }
+    else if (filter === 'warning') { items = certItems.filter(i => i.daysLeft !== null && i.daysLeft > 7 && i.daysLeft <= 30); title = 'Certificates Expiring 7-30 Days'; }
+    else if (filter === 'ok') { items = certItems.filter(i => i.daysLeft === null || i.daysLeft > 30); title = 'Certificates > 30 Days'; }
+  } else if (type === 'Document Review') {
+    const docItems = DATA.docs?.items || [];
+    if (filter === 'overdue') { items = docItems.filter(i => i.statusType !== 'completed' && i.daysLeft !== null && i.daysLeft < 0); title = 'Overdue Document Reviews'; }
+    else if (filter === 'dueSoon') { items = docItems.filter(i => i.statusType !== 'completed' && i.daysLeft !== null && i.daysLeft >= 0 && i.daysLeft <= 30); title = 'Document Reviews Due < 30 Days'; }
+    else if (filter === 'completed') { items = docItems.filter(i => i.statusType === 'completed'); title = 'Completed Document Reviews'; }
+  }
+
+  if (items.length === 0) return;
+  // Show first item detail if only one, otherwise show a list modal
+  if (items.length === 1) { showDetail(items[0].id); return; }
+
+  // Build a list in the detail modal
+  const listHtml = `<div class="space-y-2">${items.map(i => {
+    const badge = i.daysLeft !== null && i.daysLeft !== undefined
+      ? (i.daysLeft < 0 ? `<span class="pill pill-crit">${Math.abs(i.daysLeft)}d overdue</span>` : `<span class="pill ${i.daysLeft<=7?'pill-crit':i.daysLeft<=30?'pill-high':'pill-low'}">${i.daysLeft}d</span>`)
+      : '';
+    return `<div class="flex items-center justify-between p-2 rounded hover:bg-slate-50 cursor-pointer" onclick="closeDetail();showDetail('${i.id}')">
+      <div class="flex-1 min-w-0"><span class="text-xs font-mono text-slate-700 mr-2">${i.id}</span><span class="text-sm font-medium" style="color:#1e293b;">${i.title.substring(0,60)}${i.title.length>60?'...':''}</span></div>
+      <div class="flex items-center gap-2"><span class="status-dot status-${i.statusType}"></span>${badge}</div>
+    </div>`;
+  }).join('')}</div>`;
+
+  document.getElementById('detailTitle').textContent = title;
+  document.getElementById('detailBody').innerHTML = `<p class="text-xs text-slate-700 mb-3">${items.length} items</p>${listHtml}`;
+  document.getElementById('detailModal').classList.remove('hidden');
+}
+
+// ─── INTEGRATIONS VIEW ───────────────────────────────────
+function renderIntegrations() {
+  const n = DATA.notifications || [];
+  const overdue = n.filter(x => x.type === 'overdue');
+  const dueSoon = n.filter(x => x.type === 'due_soon' || x.type === 'due_imminent');
+  const unassigned = n.filter(x => x.type === 'unassigned');
+  const incidents = (DATA.actionItems || []).filter(i => i.source === 'Incident' && !['completed','canceled'].includes(i.statusType));
+  const certs = DATA.certs || {};
+  const critCerts = (certs.items || []).filter(i => i.daysLeft !== null && i.daysLeft <= 7);
+  const overduePoams = (DATA.actionItems || []).filter(i => {
+    if (['completed','canceled'].includes(i.statusType)) return false;
+    const created = new Date(i.createdAt);
+    return (Date.now() - created) > 30 * 86400000;
+  });
+
+  const html = `
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:#2378C3;">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+      </div>
+      <div>
+        <h2 class="text-lg font-bold" style="color:#1e293b;">Integrations</h2>
+        <p class="text-sm" style="color:#334155;">Notification channels and connected services</p>
+      </div>
+    </div>
+
+    <!-- Integration Status Panel -->
+    <div class="card p-5 mb-5">
+      <p class="text-sm font-semibold mb-4" style="color:#1e293b;">Integration Status</p>
+      <table class="w-full text-xs">
+        <thead><tr class="text-slate-700 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;">
+          <th class="text-left py-2.5 px-3">Integration</th>
+          <th class="text-left py-2.5 px-3">Status</th>
+          <th class="text-left py-2.5 px-3">Description</th>
+        </tr></thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #e2e8f0;">
+            <td class="py-3 px-3"><div class="flex items-center gap-2"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="#6264A7"><path d="M20.625 7.875h-3.75V5.25A2.625 2.625 0 0014.25 2.625h-4.5A2.625 2.625 0 007.125 5.25v2.625h-3.75A1.875 1.875 0 001.5 9.75v9.375A2.625 2.625 0 004.125 21.75h15.75a2.625 2.625 0 002.625-2.625V9.75a1.875 1.875 0 00-1.875-1.875zM9.75 5.25a.375.375 0 01.375-.375h3.75a.375.375 0 01.375.375v2.625h-4.5V5.25z"/></svg><span class="font-semibold" style="color:#1e293b;">Microsoft Teams</span></div></td>
+            <td class="py-3 px-3"><span class="pill pill-low">Ready</span></td>
+            <td class="py-3 px-3" style="color:#334155;">Webhook notifications for daily alerts, incidents, escalations</td>
+          </tr>
+          <tr style="border-bottom:1px solid #e2e8f0;">
+            <td class="py-3 px-3"><div class="flex items-center gap-2"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="#00AC47"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.66-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.42-.88.03-.24.37-.49 1.02-.75 3.99-1.73 6.65-2.87 7.97-3.44 3.8-1.58 4.59-1.86 5.1-1.87.11 0 .37.03.54.17.14.12.18.28.2.45.02.11.01.25-.01.36z"/></svg><span class="font-semibold" style="color:#1e293b;">Google Chat</span></div></td>
+            <td class="py-3 px-3"><span class="pill pill-low">Ready</span></td>
+            <td class="py-3 px-3" style="color:#334155;">Space notifications for team updates</td>
+          </tr>
+          <tr style="border-bottom:1px solid #e2e8f0;">
+            <td class="py-3 px-3"><div class="flex items-center gap-2"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="#5E6AD2"><path d="M3 7.5L12 2l9 5.5v9L12 22l-9-5.5v-9zm9 9.5a5 5 0 100-10 5 5 0 000 10z"/></svg><span class="font-semibold" style="color:#1e293b;">Linear</span></div></td>
+            <td class="py-3 px-3"><span class="pill" style="background:#dcfce7;border:1px solid #86efac;color:#166534;">Connected</span></td>
+            <td class="py-3 px-3" style="color:#334155;">Live issue tracking, team assignments, workflow automation</td>
+          </tr>
+          <tr>
+            <td class="py-3 px-3"><div class="flex items-center gap-2"><svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg><span class="font-semibold" style="color:#1e293b;">Email (SMTP)</span></div></td>
+            <td class="py-3 px-3"><span class="pill pill-neutral">Available</span></td>
+            <td class="py-3 px-3" style="color:#334155;">Direct notifications to assignees</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Teams Notification Preview -->
+    <div class="mb-5">
+      <p class="text-sm font-semibold mb-3" style="color:#1e293b;">Microsoft Teams Notification Previews</p>
+      <div class="grid grid-cols-2 gap-4">
+
+        <!-- Daily GRC Alert Card -->
+        <div class="card p-0 overflow-hidden">
+          <div style="border-left:4px solid #2378C3;" class="p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="#6264A7"><path d="M20.625 7.875h-3.75V5.25A2.625 2.625 0 0014.25 2.625h-4.5A2.625 2.625 0 007.125 5.25v2.625h-3.75A1.875 1.875 0 001.5 9.75v9.375A2.625 2.625 0 004.125 21.75h15.75a2.625 2.625 0 002.625-2.625V9.75a1.875 1.875 0 00-1.875-1.875z"/></svg>
+              <span class="text-sm font-bold" style="color:#1e293b;">Daily GRC Alert</span>
+              <span class="text-[10px] text-slate-700 ml-auto">Today, 8:00 AM</span>
+            </div>
+            <table class="w-full text-xs mb-3">
+              <tr style="border-bottom:1px solid #e2e8f0;"><td class="py-1.5 font-medium" style="color:#334155;">Overdue Items</td><td class="py-1.5 font-bold sev-crit text-right">${overdue.length}</td></tr>
+              <tr style="border-bottom:1px solid #e2e8f0;"><td class="py-1.5 font-medium" style="color:#334155;">Due Within 7 Days</td><td class="py-1.5 font-bold sev-high text-right">${dueSoon.length}</td></tr>
+              <tr style="border-bottom:1px solid #e2e8f0;"><td class="py-1.5 font-medium" style="color:#334155;">Unassigned (High Priority)</td><td class="py-1.5 font-bold" style="color:#2378C3;" align="right">${unassigned.length}</td></tr>
+              <tr><td class="py-1.5 font-medium" style="color:#334155;">Active Incidents</td><td class="py-1.5 font-bold sev-crit text-right">${incidents.length}</td></tr>
+            </table>
+            <div class="flex gap-2">
+              <button class="text-[11px] font-medium px-3 py-1.5 rounded" style="background:#2378C3;color:white;cursor:default;">View Dashboard</button>
+              <button class="text-[11px] font-medium px-3 py-1.5 rounded" style="background:#f1f5f9;color:#334155;border:1px solid #cbd5e1;cursor:default;">View All Items</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Incident Alert Card -->
+        <div class="card p-0 overflow-hidden">
+          <div style="border-left:4px solid #dc2626;" class="p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="#6264A7"><path d="M20.625 7.875h-3.75V5.25A2.625 2.625 0 0014.25 2.625h-4.5A2.625 2.625 0 007.125 5.25v2.625h-3.75A1.875 1.875 0 001.5 9.75v9.375A2.625 2.625 0 004.125 21.75h15.75a2.625 2.625 0 002.625-2.625V9.75a1.875 1.875 0 00-1.875-1.875z"/></svg>
+              <span class="text-sm font-bold sev-crit">Incident Alert</span>
+              <span class="pill pill-crit ml-auto text-[9px]">CRITICAL</span>
+            </div>
+            <table class="w-full text-xs mb-3">
+              <tr style="border-bottom:1px solid #e2e8f0;"><td class="py-1.5 font-medium" style="color:#334155;">Type</td><td class="py-1.5 text-right" style="color:#1e293b;">Security Incident</td></tr>
+              <tr style="border-bottom:1px solid #e2e8f0;"><td class="py-1.5 font-medium" style="color:#334155;">Active Incidents</td><td class="py-1.5 font-bold sev-crit text-right">${incidents.length}</td></tr>
+              <tr style="border-bottom:1px solid #e2e8f0;"><td class="py-1.5 font-medium" style="color:#334155;">Status</td><td class="py-1.5 text-right"><span class="pill pill-incident text-[10px]">ACTIVE RESPONSE</span></td></tr>
+              <tr><td class="py-1.5 font-medium" style="color:#334155;">Commander</td><td class="py-1.5 text-right" style="color:#1e293b;">${incidents[0]?.assignee || 'TBD'}</td></tr>
+            </table>
+            <div class="flex gap-2">
+              <button class="text-[11px] font-medium px-3 py-1.5 rounded" style="background:#dc2626;color:white;cursor:default;">View Incident</button>
+              <button class="text-[11px] font-medium px-3 py-1.5 rounded" style="background:#f1f5f9;color:#334155;border:1px solid #cbd5e1;cursor:default;">Acknowledge</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Certificate Expiration Warning -->
+        <div class="card p-0 overflow-hidden">
+          <div style="border-left:4px solid #ea580c;" class="p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="#6264A7"><path d="M20.625 7.875h-3.75V5.25A2.625 2.625 0 0014.25 2.625h-4.5A2.625 2.625 0 007.125 5.25v2.625h-3.75A1.875 1.875 0 001.5 9.75v9.375A2.625 2.625 0 004.125 21.75h15.75a2.625 2.625 0 002.625-2.625V9.75a1.875 1.875 0 00-1.875-1.875z"/></svg>
+              <span class="text-sm font-bold" style="color:#c2410c;">Certificate Expiration Warning</span>
+              <span class="pill pill-high ml-auto text-[9px]">HIGH</span>
+            </div>
+            <table class="w-full text-xs mb-3">
+              <tr style="border-bottom:1px solid #e2e8f0;"><td class="py-1.5 font-medium" style="color:#334155;">Expiring &lt; 7 Days</td><td class="py-1.5 font-bold sev-crit text-right">${certs.critical || 0}</td></tr>
+              <tr style="border-bottom:1px solid #e2e8f0;"><td class="py-1.5 font-medium" style="color:#334155;">Expiring 7-30 Days</td><td class="py-1.5 font-bold sev-high text-right">${certs.warning || 0}</td></tr>
+              ${critCerts.length ? `<tr><td class="py-1.5 font-medium" style="color:#334155;">Most Urgent</td><td class="py-1.5 text-right text-[11px]" style="color:#1e293b;">${critCerts[0].title.replace(/^CERT-\d+:\s*/,'').substring(0,30)}...</td></tr>` : ''}
+            </table>
+            <div class="flex gap-2">
+              <button class="text-[11px] font-medium px-3 py-1.5 rounded" style="background:#ea580c;color:white;cursor:default;">View Certificates</button>
+              <button class="text-[11px] font-medium px-3 py-1.5 rounded" style="background:#f1f5f9;color:#334155;border:1px solid #cbd5e1;cursor:default;">Assign Renewal</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- POA&M Escalation Card -->
+        <div class="card p-0 overflow-hidden">
+          <div style="border-left:4px solid #b91c1c;" class="p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="#6264A7"><path d="M20.625 7.875h-3.75V5.25A2.625 2.625 0 0014.25 2.625h-4.5A2.625 2.625 0 007.125 5.25v2.625h-3.75A1.875 1.875 0 001.5 9.75v9.375A2.625 2.625 0 004.125 21.75h15.75a2.625 2.625 0 002.625-2.625V9.75a1.875 1.875 0 00-1.875-1.875z"/></svg>
+              <span class="text-sm font-bold sev-crit">POA&M Escalation</span>
+              <span class="pill pill-crit ml-auto text-[9px]">ESCALATION</span>
+            </div>
+            <p class="text-xs mb-3" style="color:#334155;">${overduePoams.length} POA&M items overdue &gt;30 days require management review.</p>
+            <table class="w-full text-xs mb-3">
+              <tr style="border-bottom:1px solid #e2e8f0;"><td class="py-1.5 font-medium" style="color:#334155;">Items Overdue &gt;30d</td><td class="py-1.5 font-bold sev-crit text-right">${overduePoams.length}</td></tr>
+              <tr style="border-bottom:1px solid #e2e8f0;"><td class="py-1.5 font-medium" style="color:#334155;">Escalation Level</td><td class="py-1.5 text-right" style="color:#1e293b;">Management Review</td></tr>
+              <tr><td class="py-1.5 font-medium" style="color:#334155;">Action Required</td><td class="py-1.5 text-right" style="color:#b91c1c;">Risk Acceptance / Remediation Plan</td></tr>
+            </table>
+            <div class="flex gap-2">
+              <button class="text-[11px] font-medium px-3 py-1.5 rounded" style="background:#b91c1c;color:white;cursor:default;">Review POA&Ms</button>
+              <button class="text-[11px] font-medium px-3 py-1.5 rounded" style="background:#f1f5f9;color:#334155;border:1px solid #cbd5e1;cursor:default;">Schedule Meeting</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Google Chat Preview -->
+    <div class="card p-5 mb-5">
+      <p class="text-sm font-semibold mb-4" style="color:#1e293b;">Google Chat Notification Previews</p>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="rounded-lg p-4" style="background:#f8fafc;border:1px solid #e2e8f0;">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="#00AC47"><circle cx="12" cy="12" r="10"/></svg>
+            <span class="text-xs font-bold" style="color:#1e293b;">GRC Trust Center Bot</span>
+            <span class="text-[10px] text-slate-700">8:00 AM</span>
+          </div>
+          <div class="text-xs space-y-1" style="color:#334155;font-family:monospace;">
+            <p style="font-family:inherit;font-weight:600;">Daily GRC Summary</p>
+            <p>&#x1F534; Overdue: ${overdue.length} items</p>
+            <p>&#x1F7E0; Due soon: ${dueSoon.length} items</p>
+            <p>&#x1F535; Unassigned: ${unassigned.length} high-priority</p>
+            <p>&#x1F6A8; Active incidents: ${incidents.length}</p>
+            <p style="margin-top:8px;color:#2378C3;text-decoration:underline;cursor:default;">View Dashboard &#8594;</p>
+          </div>
+        </div>
+        <div class="rounded-lg p-4" style="background:#f8fafc;border:1px solid #e2e8f0;">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="#00AC47"><circle cx="12" cy="12" r="10"/></svg>
+            <span class="text-xs font-bold" style="color:#1e293b;">GRC Trust Center Bot</span>
+            <span class="text-[10px] text-slate-700">Just now</span>
+          </div>
+          <div class="text-xs space-y-1" style="color:#334155;font-family:monospace;">
+            <p style="font-family:inherit;font-weight:600;">&#x1F6A8; Incident Alert</p>
+            <p>&#x1F534; *CRITICAL* - Active security incident detected</p>
+            <p>&#x1F464; Commander: ${incidents[0]?.assignee || 'Unassigned'}</p>
+            <p>&#x23F0; Response required immediately</p>
+            <p style="margin-top:8px;color:#dc2626;text-decoration:underline;cursor:default;">View Incident &#8594;</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- How to Connect -->
+    <div class="card p-5">
+      <p class="text-sm font-semibold mb-4" style="color:#1e293b;">How to Connect</p>
+      <div class="grid grid-cols-2 gap-6">
+        <div>
+          <p class="text-xs font-semibold mb-2" style="color:#334155;">Microsoft Teams Webhook</p>
+          <div class="rounded-lg p-3 mb-3" style="background:#f1f5f9;border:1px solid #e2e8f0;">
+            <code class="text-[11px] break-all" style="color:#1e293b;">node notify.js --teams https://outlook.office.com/webhook/...</code>
+          </div>
+          <p class="text-xs font-semibold mb-2" style="color:#334155;">Google Chat Webhook</p>
+          <div class="rounded-lg p-3 mb-3" style="background:#f1f5f9;border:1px solid #e2e8f0;">
+            <code class="text-[11px] break-all" style="color:#1e293b;">node notify.js --google https://chat.googleapis.com/v1/spaces/...</code>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-semibold mb-2" style="color:#334155;">Cron Schedule (Daily at 8 AM, weekdays)</p>
+          <div class="rounded-lg p-3 mb-3" style="background:#f1f5f9;border:1px solid #e2e8f0;">
+            <code class="text-[11px] break-all" style="color:#1e293b;">0 8 * * 1-5 cd /path/to/dashboard && node notify.js --teams &lt;url&gt;</code>
+          </div>
+          <p class="text-xs font-semibold mb-2" style="color:#334155;">Dry Run (console output)</p>
+          <div class="rounded-lg p-3" style="background:#f1f5f9;border:1px solid #e2e8f0;">
+            <code class="text-[11px] break-all" style="color:#1e293b;">node notify.js</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('integrationsContent').innerHTML = html;
+}
 
 loadData();
 </script>
