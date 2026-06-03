@@ -100,14 +100,15 @@ async function gql(query) {
 }
 
 async function fetchLinearData() {
-  // Fetch issues with labels, state, project, priority
+  // Fetch issues across ALL teams in the organization
   const issueData = await gql(`{
-    issues(filter: { team: { id: { eq: "${TEAM_ID}" } } }, first: 150) {
+    issues(first: 200) {
       nodes {
         id identifier title description priority url
         state { name type }
         labels { nodes { name } }
         project { name }
+        team { name }
         assignee { id name email }
         createdAt updatedAt dueDate
       }
@@ -382,16 +383,18 @@ async function fetchLinearData() {
     id: i.identifier, title: i.title, priority: i.priority,
     status: i.state.name, statusType: i.state.type,
     labels: getLabels(i), project: i.project?.name,
+    team: i.team?.name || "Unassigned",
     description: i.description, dueDate: i.dueDate,
     assignee: resolveAssignee(i),
   });
 
-  // ─── BY TEAM ─────────────────────────────────────────
+  // ─── BY TEAM (using actual Linear teams now) ─────────
+  const realTeamNames = ["ISSO", "Assessors", "Tenant Support", "POA&M Management", "IR"];
   const byTeam = {};
-  for (const tl of teamLabels) {
-    const ti = workIssues.filter(i => hasLabel(i, tl));
-    const shortName = tl.replace("Team: ", "");
-    byTeam[shortName] = {
+  for (const tn of realTeamNames) {
+    // Match by actual Linear team OR by "Team:" label (fallback)
+    const ti = workIssues.filter(i => i.team?.name === tn || hasLabel(i, "Team: " + tn) || hasLabel(i, "Team: " + tn.replace("Management","Mgmt")));
+    byTeam[tn] = {
       total: ti.length, open: ti.filter(isOpen).length, closed: ti.filter(isDone).length,
       critical: ti.filter(i => hasLabel(i, "Critical")).length,
       inProgress: ti.filter(i => i.state.type === "started").length,
@@ -404,7 +407,7 @@ async function fetchLinearData() {
     byCategory,
     byProject,
     byTeam,
-    teamLabels: teamLabels.map(t => t.replace("Team: ", "")),
+    teamLabels: realTeamNames,
     poamByStatus,
     actionItems,
     incidents,
