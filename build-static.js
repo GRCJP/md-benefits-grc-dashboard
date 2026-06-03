@@ -129,11 +129,98 @@ function processLinearData(issues) {
 }
 `;
 
+// Client-side chat logic for static build (calls Anthropic directly from browser)
+const CLIENT_CHAT_LOGIC = `
+const ANTHROPIC_API_KEY = localStorage.getItem("anthropic_api_key") || prompt("Enter Anthropic API Key (for AI chat, or press Cancel to skip):");
+if (ANTHROPIC_API_KEY && !localStorage.getItem("anthropic_api_key")) localStorage.setItem("anthropic_api_key", ANTHROPIC_API_KEY);
+`;
+
+const CLIENT_CHAT_SEND = `
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg || chatBusy) return;
+
+  const apiKey = localStorage.getItem("anthropic_api_key");
+  if (!apiKey) {
+    const k = prompt("Enter Anthropic API Key:");
+    if (k) localStorage.setItem("anthropic_api_key", k);
+    else return;
+  }
+
+  chatBusy = true;
+  input.value = '';
+  document.getElementById('chatSendBtn').disabled = true;
+  document.getElementById('chatSuggestions').style.display = 'none';
+
+  const messages = document.getElementById('chatMessages');
+  messages.innerHTML += \`<div class="chat-msg user"><div class="chat-bubble">\${msg.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>\`;
+  messages.innerHTML += \`<div id="chatTyping" class="chat-msg assistant"><div class="chat-bubble"><div class="chat-typing"><span></span><span></span><span></span></div></div></div>\`;
+  messages.scrollTop = messages.scrollHeight;
+
+  try {
+    // Build system prompt from current DATA
+    const issueSummaries = (DATA.issues||[]).map(i =>
+      i.id+': '+i.title+' ['+i.status+'] P'+i.priority+' '+(i.assignee||'Unassigned')+' '+i.labels.filter(l=>!l.startsWith('Team:')).join(',')
+    ).join('\\n');
+
+    const s = DATA.summary||{};
+    const systemPrompt = 'You are a GRC operations assistant for MD Benefits Trust Center. Answer concisely with issue IDs when possible.\\n'+
+      'Total: '+s.total+' Open: '+s.open+' Closed: '+s.closed+' Critical: '+s.critical+' High: '+s.high+'\\n'+
+      'Frameworks: '+(DATA.frameworks||[]).map(f => f+': '+(DATA.byFramework[f]?.open||0)+' open, '+(DATA.byFramework[f]?.critical||0)+' critical').join(' | ')+'\\n'+
+      'KEVs: '+(DATA.kevs?.open||0)+' open, '+(DATA.kevs?.overdue||0)+' overdue | Certs: '+(DATA.certs?.critical||0)+' expiring <7d\\n'+
+      'Issues:\\n'+issueSummaries.substring(0,3000);
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': localStorage.getItem('anthropic_api_key'),
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: msg }],
+      }),
+    });
+    const data = await res.json();
+    const typing = document.getElementById('chatTyping');
+    if (typing) typing.remove();
+
+    if (data.error) {
+      messages.innerHTML += '<div class="chat-msg assistant"><div class="chat-bubble" style="color:#b91c1c;">Error: '+data.error.message+'</div></div>';
+    } else {
+      const reply = data.content?.[0]?.text || 'No response.';
+      messages.innerHTML += '<div class="chat-msg assistant"><div class="chat-bubble">'+formatChatReply(reply)+'</div></div>';
+    }
+  } catch (err) {
+    const typing = document.getElementById('chatTyping');
+    if (typing) typing.remove();
+    messages.innerHTML += '<div class="chat-msg assistant"><div class="chat-bubble" style="color:#b91c1c;">Failed to connect: '+err.message+'</div></div>';
+  }
+
+  messages.scrollTop = messages.scrollHeight;
+  chatBusy = false;
+  document.getElementById('chatSendBtn').disabled = false;
+}
+`;
+
 // Replace the loadData function to use client-side fetch
-const output = src.replace(
+let output = src.replace(
   `async function loadData() {\n  const res = await fetch('/api/data');\n  DATA = await res.json();`,
-  `${CLIENT_DATA_LOGIC}\nasync function loadData() {\n  DATA = await fetchFromLinear();`
+  `${CLIENT_DATA_LOGIC}\n${CLIENT_CHAT_LOGIC}\nasync function loadData() {\n  DATA = await fetchFromLinear();`
 );
+
+// Replace the server-side sendChat with client-side version
+output = output.replace(
+  /let chatBusy = false;\nasync function sendChat\(\) \{[\s\S]*?document\.getElementById\('chatSendBtn'\)\.disabled = false;\n\}/,
+  `let chatBusy = false;\n${CLIENT_CHAT_SEND}`
+);
+
+// Replace fetch('/api/chat'...) call pattern — the above regex handles the whole function
 
 fs.writeFileSync(path.join(__dirname, "docs", "index.html"), output);
 console.log("Built docs/index.html for GitHub Pages");

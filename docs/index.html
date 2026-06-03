@@ -92,6 +92,38 @@
 
     .main-with-sidebar { margin-left: 220px; min-width: 0; overflow-x: hidden; box-sizing: border-box; }
     .header-with-sidebar { margin-left: 220px; }
+
+    /* Chatbot */
+    .chat-fab { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #0d2137, #2378C3); color: white; border: none; cursor: pointer; box-shadow: 0 4px 16px rgba(13,33,55,0.35); z-index: 50; display: flex; align-items: center; justify-content: center; transition: transform 0.2s, box-shadow 0.2s; }
+    .chat-fab:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(13,33,55,0.45); }
+    .chat-panel { position: fixed; bottom: 92px; right: 24px; width: 400px; max-height: 560px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 50; display: none; flex-direction: column; background: #ffffff; border: 1px solid #d1d9e0; overflow: hidden; }
+    .chat-panel.open { display: flex; }
+    .chat-header { background: #0d2137; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .chat-header h3 { color: #ffffff; font-size: 14px; font-weight: 600; margin: 0; }
+    .chat-header button { color: rgba(191,219,254,0.7); background: none; border: none; cursor: pointer; padding: 4px; }
+    .chat-header button:hover { color: #ffffff; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; min-height: 200px; max-height: 380px; }
+    .chat-msg { margin-bottom: 12px; max-width: 85%; }
+    .chat-msg.user { margin-left: auto; }
+    .chat-msg.user .chat-bubble { background: #2378C3; color: #ffffff; border-radius: 12px 12px 4px 12px; }
+    .chat-msg.assistant .chat-bubble { background: #f1f5f9; color: #1e293b; border-radius: 12px 12px 12px 4px; }
+    .chat-bubble { padding: 10px 14px; font-size: 13px; line-height: 1.5; }
+    .chat-bubble p { margin: 0 0 8px 0; } .chat-bubble p:last-child { margin-bottom: 0; }
+    .chat-bubble strong { font-weight: 600; }
+    .chat-bubble ul, .chat-bubble ol { margin: 4px 0; padding-left: 18px; }
+    .chat-bubble li { margin-bottom: 2px; }
+    .chat-bubble code { background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+    .chat-suggestions { padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .chat-chip { background: #eff6ff; border: 1px solid #93c5fd; color: #1e40af; padding: 6px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; transition: all 0.15s; line-height: 1.3; }
+    .chat-chip:hover { background: #dbeafe; border-color: #60a5fa; }
+    .chat-input-area { padding: 12px 16px; border-top: 1px solid #e2e8f0; display: flex; gap: 8px; }
+    .chat-input-area input { flex: 1; border: 1px solid #d1d9e0; border-radius: 8px; padding: 8px 12px; font-size: 13px; color: #1e293b; outline: none; }
+    .chat-input-area input:focus { border-color: #2378C3; box-shadow: 0 0 0 2px rgba(35,120,195,0.15); }
+    .chat-input-area button { background: #2378C3; color: white; border: none; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
+    .chat-input-area button:hover { background: #1a5f9e; }
+    .chat-input-area button:disabled { background: #94a3b8; cursor: not-allowed; }
+    .chat-typing { display: flex; gap: 4px; padding: 10px 14px; } .chat-typing span { width: 6px; height: 6px; background: #94a3b8; border-radius: 50%; animation: typingDot 1.2s infinite; } .chat-typing span:nth-child(2) { animation-delay: 0.2s; } .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingDot { 0%,60%,100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-4px); } }
   </style>
 </head>
 <body class="min-h-screen">
@@ -126,6 +158,10 @@
       <a onclick="showView('operations')" id="tab-operations" class="sidebar-item">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
         Operations
+      </a>
+      <a onclick="toggleChatPanel()" id="tab-chat" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+        Ask AI
       </a>
       <div class="sidebar-divider"></div>
       <div class="sidebar-section-label">Categories</div>
@@ -308,6 +344,36 @@
     </div>
   </div>
 
+  <!-- Chatbot FAB -->
+  <button class="chat-fab" onclick="toggleChatPanel()" title="Ask AI about GRC data">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+  </button>
+
+  <!-- Chat Panel -->
+  <div id="chatPanel" class="chat-panel">
+    <div class="chat-header">
+      <div class="flex items-center gap-2">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" style="color:#60a5fa;"/></svg>
+        <h3>GRC Compliance Assistant</h3>
+      </div>
+      <button onclick="toggleChatPanel()"><svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div id="chatMessages" class="chat-messages">
+      <div class="chat-msg assistant"><div class="chat-bubble">How can I help with your GRC compliance data? Ask me about POA&Ms, assessments, frameworks, team workload, or any compliance topic.</div></div>
+    </div>
+    <div id="chatSuggestions" class="chat-suggestions">
+      <button class="chat-chip" onclick="sendSuggestion(this)">What POA&Ms are overdue?</button>
+      <button class="chat-chip" onclick="sendSuggestion(this)">Show critical findings by team</button>
+      <button class="chat-chip" onclick="sendSuggestion(this)">What certificates are expiring soon?</button>
+      <button class="chat-chip" onclick="sendSuggestion(this)">Summarize the IRS Pub 1075 compliance status</button>
+      <button class="chat-chip" onclick="sendSuggestion(this)">What items need assignees?</button>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" placeholder="Ask about compliance data..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button onclick="sendChat()" id="chatSendBtn">Send</button>
+    </div>
+  </div>
+
 <script>
 let DATA = null;
 
@@ -429,6 +495,10 @@ function processLinearData(issues) {
   return { summary,byFramework,byCategory,byProject,poamByStatus,actionItems,incidents,ageBuckets,kevs,certs,docs,notifications,frameworks,categories,actionTags,
     issues:workIssues.map(i=>({id:i.identifier,title:i.title,priority:i.priority,status:i.state.name,statusType:i.state.type,labels:getLabels(i),project:i.project?.name,description:i.description,dueDate:i.dueDate,assignee:resolveAssignee(i)})) };
 }
+
+
+const ANTHROPIC_API_KEY = localStorage.getItem("anthropic_api_key") || prompt("Enter Anthropic API Key (for AI chat, or press Cancel to skip):");
+if (ANTHROPIC_API_KEY && !localStorage.getItem("anthropic_api_key")) localStorage.setItem("anthropic_api_key", ANTHROPIC_API_KEY);
 
 async function loadData() {
   DATA = await fetchFromLinear();
@@ -736,7 +806,111 @@ const sv=item.labels?.find(l=>['Critical','High','Medium','Low'].includes(l));co
 const bar=`<div class="flex flex-wrap gap-2 mb-4 pb-4" style="border-bottom:1px solid #e6dfd4;"><span class="pill pill-neutral"><span class="status-dot status-${item.statusType}"></span>${item.status}</span>${sv?`<span class="pill pill-${sv.toLowerCase()}">${sv}</span>`:''}${src?`<span class="pill pill-${src==='Pen Test'?'pentest':src==='External Audit'?'audit':src==='Incident'?'incident':'neutral'}">${src}</span>`:''}${fws.map(f=>`<span class="pill pill-neutral">${f}</span>`).join('')}${item.project?`<span class="pill pill-blue">${item.project}</span>`:''}<span class="pill pill-neutral">${item.assignee||'Unassigned'}</span>${item.dueDate?`<span class="pill pill-notif">Due: ${item.dueDate}</span>`:''}</div>`;
 document.getElementById('detailBody').innerHTML=bar+desc;document.getElementById('detailModal').classList.remove('hidden');}
 function closeDetail(){document.getElementById('detailModal').classList.add('hidden');}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();document.getElementById('notifPanel').classList.remove('open');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();document.getElementById('notifPanel').classList.remove('open');document.getElementById('chatPanel').classList.remove('open');}});
+
+// ─── CHATBOT ─────────────────────────────────────────────
+function toggleChatPanel() {
+  document.getElementById('chatPanel').classList.toggle('open');
+}
+
+function sendSuggestion(el) {
+  document.getElementById('chatInput').value = el.textContent;
+  sendChat();
+}
+
+function formatChatReply(text) {
+  // Convert markdown-like formatting to HTML
+  let html = text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`(.*?)`/g, '<code>$1</code>')
+    .replace(/^### (.*$)/gm, '<strong>$1</strong>')
+    .replace(/^## (.*$)/gm, '<strong>$1</strong>')
+    .replace(/^- (.*$)/gm, '<li>$1</li>')
+    .replace(/^(\d+)\. (.*$)/gm, '<li>$2</li>');
+  // Wrap consecutive <li> in <ul>
+  html = html.replace(/((?:<li>.*?<\/li>\n?)+)/g, '<ul>$1</ul>');
+  // Paragraphs
+  html = html.split('\n\n').map(p => p.trim()).filter(Boolean).map(p => {
+    if (p.startsWith('<ul>') || p.startsWith('<strong>')) return p;
+    return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
+  }).join('');
+  return html || text;
+}
+
+let chatBusy = false;
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg || chatBusy) return;
+
+  const apiKey = localStorage.getItem("anthropic_api_key");
+  if (!apiKey) {
+    const k = prompt("Enter Anthropic API Key:");
+    if (k) localStorage.setItem("anthropic_api_key", k);
+    else return;
+  }
+
+  chatBusy = true;
+  input.value = '';
+  document.getElementById('chatSendBtn').disabled = true;
+  document.getElementById('chatSuggestions').style.display = 'none';
+
+  const messages = document.getElementById('chatMessages');
+  messages.innerHTML += `<div class="chat-msg user"><div class="chat-bubble">${msg.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;
+  messages.innerHTML += `<div id="chatTyping" class="chat-msg assistant"><div class="chat-bubble"><div class="chat-typing"><span></span><span></span><span></span></div></div></div>`;
+  messages.scrollTop = messages.scrollHeight;
+
+  try {
+    // Build system prompt from current DATA
+    const issueSummaries = (DATA.issues||[]).map(i =>
+      i.id+': '+i.title+' ['+i.status+'] P'+i.priority+' '+(i.assignee||'Unassigned')+' '+i.labels.filter(l=>!l.startsWith('Team:')).join(',')
+    ).join('\n');
+
+    const s = DATA.summary||{};
+    const systemPrompt = 'You are a GRC operations assistant for MD Benefits Trust Center. Answer concisely with issue IDs when possible.\n'+
+      'Total: '+s.total+' Open: '+s.open+' Closed: '+s.closed+' Critical: '+s.critical+' High: '+s.high+'\n'+
+      'Frameworks: '+(DATA.frameworks||[]).map(f => f+': '+(DATA.byFramework[f]?.open||0)+' open, '+(DATA.byFramework[f]?.critical||0)+' critical').join(' | ')+'\n'+
+      'KEVs: '+(DATA.kevs?.open||0)+' open, '+(DATA.kevs?.overdue||0)+' overdue | Certs: '+(DATA.certs?.critical||0)+' expiring <7d\n'+
+      'Issues:\n'+issueSummaries.substring(0,3000);
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': localStorage.getItem('anthropic_api_key'),
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: msg }],
+      }),
+    });
+    const data = await res.json();
+    const typing = document.getElementById('chatTyping');
+    if (typing) typing.remove();
+
+    if (data.error) {
+      messages.innerHTML += '<div class="chat-msg assistant"><div class="chat-bubble" style="color:#b91c1c;">Error: '+data.error.message+'</div></div>';
+    } else {
+      const reply = data.content?.[0]?.text || 'No response.';
+      messages.innerHTML += '<div class="chat-msg assistant"><div class="chat-bubble">'+formatChatReply(reply)+'</div></div>';
+    }
+  } catch (err) {
+    const typing = document.getElementById('chatTyping');
+    if (typing) typing.remove();
+    messages.innerHTML += '<div class="chat-msg assistant"><div class="chat-bubble" style="color:#b91c1c;">Failed to connect: '+err.message+'</div></div>';
+  }
+
+  messages.scrollTop = messages.scrollHeight;
+  chatBusy = false;
+  document.getElementById('chatSendBtn').disabled = false;
+}
+
+
 loadData();
 </script>
 </body>

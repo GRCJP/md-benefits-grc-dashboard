@@ -7,7 +7,75 @@ const PORT = 3000;
 const API_KEY = process.env.LINEAR_API_KEY;
 const TEAM_ID = "d4d5bf63-fae7-4938-9531-b1fb80618a8a";
 
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
+
+// ─── CHAT ENDPOINT ───────────────────────────────────────
+app.post("/api/chat", async (req, res) => {
+  try {
+    const { message } = req.body;
+    if (!message) return res.status(400).json({ error: "No message provided" });
+
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+    if (!anthropicKey) return res.status(500).json({ error: "ANTHROPIC_API_KEY not configured" });
+
+    const data = await fetchLinearData();
+
+    // Build concise data summary for context (under 4000 chars)
+    const issueSummaries = data.issues.map(i =>
+      `${i.id}: ${i.title} [${i.status}] P${i.priority} ${i.assignee||'Unassigned'} ${i.labels.filter(l=>!l.startsWith('Team:')).join(',')}`
+    ).join('\n');
+
+    const systemPrompt = `You are a GRC (Governance, Risk, and Compliance) operations assistant for the MD Benefits Trust Center. Answer questions about compliance data concisely and accurately. Use specific issue IDs and data when possible.
+
+Current Data Summary:
+- Total items: ${data.summary.total} | Open: ${data.summary.open} | Closed: ${data.summary.closed}
+- Critical: ${data.summary.critical} | High: ${data.summary.high} | Medium: ${data.summary.medium} | Low: ${data.summary.low}
+
+Frameworks: ${data.frameworks.map(f => `${f}: ${data.byFramework[f].open} open, ${data.byFramework[f].closed} closed, ${data.byFramework[f].critical} critical`).join(' | ')}
+
+Teams: ${(data.teamLabels||[]).map(t => `${t}: ${data.byTeam[t]?.open||0} open, ${data.byTeam[t]?.critical||0} critical`).join(' | ')}
+
+POA&M Status: In Progress: ${data.poamByStatus.inProgress}, Todo: ${data.poamByStatus.todo}, Backlog: ${data.poamByStatus.backlog}, Done: ${data.poamByStatus.done}
+
+KEVs: ${data.kevs.open} open, ${data.kevs.resolved} resolved, ${data.kevs.overdue} overdue
+Certs: ${data.certs.critical} expiring <7d, ${data.certs.warning} expiring 7-30d, ${data.certs.ok} ok
+Docs: ${data.docs.overdue} overdue, ${data.docs.dueSoon} due soon, ${data.docs.completed} completed
+
+Categories: ${data.categories.map(c => `${c}: ${data.byCategory[c]?.open||0} open`).join(', ')}
+
+Action Items: ${data.actionItems.filter(i=>!['completed','canceled'].includes(i.statusType)).length} active (${data.incidents.filter(i=>!['completed','canceled'].includes(i.statusType)).length} incidents)
+
+All Issues:
+${issueSummaries.substring(0, 3000)}`;
+
+    const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "x-api-key": anthropicKey,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages: [{ role: "user", content: message }],
+      }),
+    });
+
+    const anthropicJson = await anthropicRes.json();
+    if (anthropicJson.error) {
+      return res.status(500).json({ error: anthropicJson.error.message });
+    }
+
+    const reply = anthropicJson.content?.[0]?.text || "No response generated.";
+    res.json({ reply });
+  } catch (err) {
+    console.error("Chat error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Proxy endpoint to Linear API (keeps key server-side)
 app.get("/api/data", async (_req, res) => {
