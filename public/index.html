@@ -314,6 +314,11 @@
     <div id="view-framework" class="hidden">
       <div id="frameworkPageContent"></div>
     </div>
+
+    <!-- ═══ SYSTEM VIEW ═══ -->
+    <div id="view-system" class="hidden">
+      <div id="systemPageContent"></div>
+    </div>
   </main>
 
   <div id="detailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" style="background:rgba(15,23,42,0.4);backdrop-filter:blur(2px);" onclick="if(event.target===this)closeDetail()">
@@ -365,7 +370,7 @@ async function loadData() {
   renderNotifications();
 }
 
-const ALL_VIEWS = ['executive','action','operations','category','integrations','teamview','framework'];
+const ALL_VIEWS = ['executive','action','operations','category','integrations','teamview','framework','system'];
 const CAT_IDS = ['poam','assessment','evidence','ato','external-request','compliance'];
 
 function showView(view) {
@@ -465,7 +470,8 @@ function renderCategoryPage(category) {
         ${urgentOpen > 0 ? `<div class="mt-3 p-2 rounded-lg" style="background:#fef2f2;border:1px solid #fca5a5;"><p class="text-xs font-semibold sev-crit">${urgentOpen} urgent item${urgentOpen>1?'s':''} requiring immediate attention</p></div>` : ''}
         <p class="text-xs font-semibold uppercase tracking-wider mt-4 mb-2" style="color:#334155;">By Team</p>
         ${(DATA.teamLabels||[]).map(t => {
-          const count = cat.issues.filter(i => i.labels.includes('Team: '+t)).length;
+          const mainIssues = DATA.issues.filter(i => i.team === t || i.labels.includes('Team: '+t));
+          const count = cat.issues.filter(ci => mainIssues.some(mi => mi.id === ci.id)).length;
           if (!count) return '';
           const colors = {'ISSO':'#2563eb','Assessors':'#7c3aed','Tenant Support':'#0891b2','POA&M Mgmt':'#ea580c','IR':'#dc2626'};
           return `<div class="flex justify-between items-center text-xs py-1.5" style="border-bottom:1px solid #e2e8f0;"><span style="color:#1e293b;" class="font-medium">${t}</span><span class="pill" style="background:${colors[t]||'#f1f5f9'};color:white;border:none;">${count}</span></div>`;
@@ -883,7 +889,7 @@ function renderExecutive() {
         const hc = healthColors[sc.health];
         const atoBg = sc.ato==='Authorized'?'#f0fdf4':sc.ato==='Conditional'?'#fffbeb':'#fef2f2';
         const atoColor = sc.ato==='Authorized'?'#719F2A':sc.ato==='Conditional'?'#d97706':'#dc2626';
-        return `<div class="card p-3 card-hover" style="border-left:4px solid ${hc};">
+        return `<div class="card p-3 card-hover" style="border-left:4px solid ${hc};cursor:pointer;" onclick="showSystem('${sc.name}')">
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2">
               <div class="status-dot" style="background:${hc};box-shadow:0 0 0 2px ${hc}40;width:10px;height:10px;"></div>
@@ -1302,10 +1308,12 @@ function showTeamView(teamName) {
 }
 
 function renderTeamView(teamName) {
-  const colors = {'ISSO':'#2563eb','Assessors':'#7c3aed','Tenant Support':'#0891b2','POA&M Mgmt':'#ea580c','IR':'#dc2626'};
+  const colors = {'ISSO':'#2563eb','Assessors':'#7c3aed','Tenant Support':'#0891b2','POA&M Management':'#ea580c','POA&M Mgmt':'#ea580c','IR':'#dc2626'};
   const color = colors[teamName] || '#64748b';
+  // Match by actual Linear team field OR by Team: label (fallback)
   const teamLabel = 'Team: ' + teamName;
-  const issues = DATA.issues.filter(i => i.labels.includes(teamLabel));
+  const teamLabelAlt = 'Team: ' + teamName.replace('Management','Mgmt');
+  const issues = DATA.issues.filter(i => i.team === teamName || i.labels.includes(teamLabel) || i.labels.includes(teamLabelAlt));
   const open = issues.filter(i => !['completed','canceled'].includes(i.statusType)).length;
   const inProgress = issues.filter(i => i.statusType === 'started').length;
   const completed = issues.filter(i => i.statusType === 'completed').length;
@@ -1788,6 +1796,403 @@ function renderIntegrations() {
   `;
 
   document.getElementById('integrationsContent').innerHTML = html;
+}
+
+// ─── SYSTEM DETAIL PAGE ──────────────────────────────────
+const SYSTEMS = {
+  'CJAMS': {
+    fullName: 'Criminal Justice Application Management System',
+    framework: 'NIST 800-53',
+    atoStatus: 'Authorized',
+    atoExpires: 'Dec 2026',
+    atoAuth: 'State CISO',
+    compliance: 87,
+    isso: 'Sarah Chen',
+    owner: 'Dept. of Public Safety',
+    environment: 'AWS GovCloud',
+    dataTypes: 'Criminal justice records, PII',
+    userCount: 450,
+    poams: { total: 8, critical: 1, high: 3, medium: 3, low: 1, overdue: 1 },
+    evidence: { total: 48, current: 44, stale: 3, missing: 1, pct: 92 },
+    controls: { total: 261, assessed: 235, compliant: 227, partial: 18, nonCompliant: 6, notAssessed: 26 },
+    lastAssessment: 'Mar 15, 2026',
+    nextAssessment: 'Aug 1, 2026',
+    lastPenTest: 'Feb 2026',
+    conmonStatus: 'Current',
+    riskAcceptances: [
+      { id: 'RA-001', desc: 'Legacy batch processing without MFA', risk: 'Medium', expires: 'Sep 2026', owner: 'Sarah Chen' }
+    ],
+    gaps: [
+      { control: 'AC-2', desc: 'Service account expiration not automated', severity: 'High', status: 'Remediation planned' },
+      { control: 'SI-2', desc: 'Patch SLA breach on 3 servers', severity: 'High', status: 'In progress' },
+      { control: 'AU-6', desc: 'Log review cadence behind schedule', severity: 'Medium', status: 'In progress' }
+    ],
+    recentFindings: [
+      { source: 'Vuln Scan', count: 3, severity: 'High', date: 'May 28' },
+      { source: 'Annual Assessment', count: 6, severity: 'Mixed', date: 'Mar 15' }
+    ]
+  },
+  'CSMS': {
+    fullName: 'Client Services Management System',
+    framework: 'CMS ARC-AMPE',
+    atoStatus: 'Conditional',
+    atoExpires: 'Sep 2026',
+    atoAuth: 'CMS AO',
+    compliance: 71,
+    isso: 'Maria Gonzalez',
+    owner: 'Dept. of Health',
+    environment: 'AWS GovCloud + On-Prem Hybrid',
+    dataTypes: 'Medicaid PII, CMS FTI, PHI',
+    userCount: 1200,
+    poams: { total: 12, critical: 3, high: 4, medium: 4, low: 1, overdue: 3 },
+    evidence: { total: 72, current: 49, stale: 12, missing: 11, pct: 68 },
+    controls: { total: 372, assessed: 280, compliant: 264, partial: 32, nonCompliant: 25, notAssessed: 92 },
+    lastAssessment: 'May 1, 2026',
+    nextAssessment: 'Jul 15, 2026',
+    lastPenTest: 'May 2026',
+    conmonStatus: '2 months behind',
+    riskAcceptances: [
+      { id: 'RA-003', desc: 'Shared service account for CSMS batch jobs', risk: 'Medium', expires: 'Oct 2026', owner: 'Maria Gonzalez' },
+      { id: 'RA-004', desc: 'Legacy API without rate limiting', risk: 'Medium', expires: 'Aug 2026', owner: 'Carlos Reyes' }
+    ],
+    gaps: [
+      { control: 'SC-28', desc: 'FTI database encryption non-FIPS', severity: 'Critical', status: 'Remediation planned' },
+      { control: 'IA-2', desc: 'MFA not enforced for 45 FDSH users', severity: 'High', status: 'In progress (80%)' },
+      { control: 'CA-7', desc: 'ConMon reports 2 months overdue', severity: 'High', status: 'Catch-up in progress' },
+      { control: 'AC-2', desc: 'Monthly access review not documented', severity: 'Medium', status: 'Template created' },
+      { control: 'CP-4', desc: 'Contingency plan test 14 months overdue', severity: 'High', status: 'Scheduled Jun 20' }
+    ],
+    recentFindings: [
+      { source: 'CMS Assessment', count: 8, severity: 'High', date: 'May 15' },
+      { source: 'Pen Test', count: 4, severity: 'Critical/High', date: 'May 28' },
+      { source: 'Vuln Scan', count: 14, severity: 'Mixed', date: 'May 25' }
+    ]
+  },
+  'MORA': {
+    fullName: 'Maryland Online Revenue Application',
+    framework: 'IRS Pub 1075',
+    atoStatus: 'Authorized',
+    atoExpires: 'Mar 2027',
+    atoAuth: 'State CISO + IRS Safeguards',
+    compliance: 84,
+    isso: 'Robert Chen',
+    owner: 'Comptroller of Maryland',
+    environment: 'On-Premises Data Center',
+    dataTypes: 'Federal Tax Information (FTI), State tax records',
+    userCount: 320,
+    poams: { total: 5, critical: 0, high: 2, medium: 2, low: 1, overdue: 0 },
+    evidence: { total: 24, current: 21, stale: 2, missing: 1, pct: 88 },
+    controls: { total: 87, assessed: 87, compliant: 73, partial: 8, nonCompliant: 4, notAssessed: 0 },
+    lastAssessment: 'Apr 2026',
+    nextAssessment: 'Jun 15, 2026',
+    lastPenTest: 'Mar 2026',
+    conmonStatus: 'Current',
+    riskAcceptances: [
+      { id: 'RA-005', desc: 'Legacy Oracle DB pending encryption upgrade', risk: 'High', expires: 'Jul 2026', owner: 'Tom Chen' }
+    ],
+    gaps: [
+      { control: 'SC-28', desc: 'FTI encryption not FIPS 140-2 on legacy DB', severity: 'High', status: 'Procurement approved' },
+      { control: 'PS-3', desc: '7 personnel background checks overdue', severity: 'Medium', status: 'Submitted to OPM' }
+    ],
+    recentFindings: [
+      { source: 'IRS Safeguard Review', count: 3, severity: 'Medium', date: 'Apr 20' },
+      { source: 'Vuln Scan', count: 2, severity: 'High', date: 'May 27' }
+    ]
+  },
+  'MD Benefits - Shared Data Platform': {
+    fullName: 'Maryland Benefits Shared Data Platform',
+    framework: 'CMS ARC-AMPE, SSA EIEP',
+    atoStatus: 'In Review',
+    atoExpires: '--',
+    atoAuth: 'Pending — CMS AO + SSA',
+    compliance: 58,
+    isso: 'Priya Sharma',
+    owner: 'Dept. of Human Services',
+    environment: 'AWS GovCloud (migrating)',
+    dataTypes: 'CMS Medicaid, SSA disability, Multi-agency PII',
+    userCount: 2100,
+    poams: { total: 6, critical: 2, high: 2, medium: 1, low: 1, overdue: 2 },
+    evidence: { total: 86, current: 45, stale: 22, missing: 19, pct: 52 },
+    controls: { total: 372, assessed: 220, compliant: 195, partial: 41, nonCompliant: 25, notAssessed: 152 },
+    lastAssessment: 'Ongoing',
+    nextAssessment: 'Jun 20, 2026 (SSA)',
+    lastPenTest: 'May 2026',
+    conmonStatus: 'Not yet established',
+    riskAcceptances: [
+      { id: 'RA-006', desc: 'Legacy mainframe SSA without MFA', risk: 'High', expires: 'Aug 2026', owner: 'Priya Sharma' },
+      { id: 'RA-007', desc: 'Temporary elevated access during migration', risk: 'Medium', expires: 'Jul 2026', owner: 'Jake Morrison' }
+    ],
+    gaps: [
+      { control: 'AC-3', desc: 'SSA API authorization bypass (remediated, pending retest)', severity: 'Critical', status: 'Awaiting validation' },
+      { control: 'IA-2', desc: 'Mainframe MFA not supported', severity: 'High', status: 'Accepted risk — migration Q4' },
+      { control: 'SC-7', desc: 'Boundary documentation incomplete post-migration', severity: 'High', status: 'In progress' },
+      { control: 'CA-7', desc: 'ConMon not established for new environment', severity: 'High', status: 'Planning' },
+      { control: 'AU-6', desc: 'Audit logs not forwarding from 2 legacy systems', severity: 'Medium', status: 'Splunk expansion pending' }
+    ],
+    recentFindings: [
+      { source: 'Pen Test', count: 5, severity: 'Critical/High', date: 'May 28' },
+      { source: 'SSA Review', count: 2, severity: 'Medium', date: 'Apr 20' },
+      { source: 'Vuln Scan', count: 18, severity: 'Mixed', date: 'May 25' }
+    ]
+  }
+};
+
+function showSystem(name) {
+  ALL_VIEWS.forEach(v => document.getElementById(`view-${v}`).classList.toggle('hidden', v !== 'system'));
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  renderSystemPage(name);
+}
+
+function renderSystemPage(name) {
+  const sys = SYSTEMS[name];
+  if (!sys) return;
+
+  const hc = sys.compliance >= 80 ? '#719F2A' : sys.compliance >= 60 ? '#d97706' : '#dc2626';
+  const hLabel = sys.compliance >= 80 ? 'Healthy' : sys.compliance >= 60 ? 'At Risk' : 'Critical';
+  const atoBg = sys.atoStatus==='Authorized'?'#f0fdf4':sys.atoStatus==='Conditional'?'#fffbeb':'#fef2f2';
+  const atoColor = sys.atoStatus==='Authorized'?'#719F2A':sys.atoStatus==='Conditional'?'#d97706':'#dc2626';
+  const conmonColor = sys.conmonStatus==='Current'?'#719F2A':'#dc2626';
+
+  function sevPill(sev) {
+    const s = sev.toLowerCase();
+    if (s === 'critical') return 'pill-crit';
+    if (s === 'high') return 'pill-high';
+    if (s === 'medium') return 'pill-med';
+    if (s === 'low') return 'pill-low';
+    return 'pill-neutral';
+  }
+
+  function riskPill(risk) {
+    const r = risk.toLowerCase();
+    if (r === 'high') return 'pill-high';
+    if (r === 'medium') return 'pill-med';
+    if (r === 'low') return 'pill-low';
+    return 'pill-neutral';
+  }
+
+  const c = sys.controls;
+  const cTotal = c.compliant + c.partial + c.nonCompliant + c.notAssessed;
+  const cCompliantPct = cTotal ? Math.round(c.compliant / cTotal * 100) : 0;
+  const cPartialPct = cTotal ? Math.round(c.partial / cTotal * 100) : 0;
+  const cNonCompliantPct = cTotal ? Math.round(c.nonCompliant / cTotal * 100) : 0;
+  const cNotAssessedPct = cTotal ? Math.round(c.notAssessed / cTotal * 100) : 0;
+
+  const e = sys.evidence;
+
+  const html = `
+    <div class="fade-in">
+      <!-- Back button -->
+      <button onclick="showView('executive');switchExecTab('leadership')" class="flex items-center gap-1 text-xs font-medium mb-3 px-2 py-1 rounded-lg hover:bg-slate-100 transition-colors" style="color:#2378C3;">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        Back to Leadership Metrics
+      </button>
+
+      <!-- Header -->
+      <div class="card p-5 mb-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="status-dot" style="background:${hc};box-shadow:0 0 0 3px ${hc}40;width:14px;height:14px;"></div>
+            <div>
+              <h2 class="text-lg font-bold" style="color:#1e293b;">${name}</h2>
+              <p class="text-xs" style="color:#475569;">${sys.fullName}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="pill" style="background:${atoBg};color:${atoColor};border:1px solid ${atoColor}40;">${sys.atoStatus}${sys.atoExpires !== '--' ? ' — Expires ' + sys.atoExpires : ''}</span>
+            <span class="pill pill-blue">${sys.framework}</span>
+            <span class="pill pill-neutral">ISSO: ${sys.isso}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 1: Key Metrics -->
+      <div class="grid grid-cols-6 gap-3 mb-4">
+        <div class="card p-4 text-center" style="border-top:3px solid ${hc};">
+          <p class="text-2xl font-bold" style="color:${hc};">${sys.compliance}%</p>
+          <p class="text-[10px] uppercase tracking-wider" style="color:#475569;">Compliance</p>
+          <p class="text-[9px] font-medium mt-1" style="color:${hc};">${hLabel}</p>
+        </div>
+        <div class="card p-4 text-center">
+          <p class="text-2xl font-bold" style="color:#1e293b;">${sys.poams.total}</p>
+          <p class="text-[10px] uppercase tracking-wider" style="color:#475569;">Open POA&Ms</p>
+          <p class="text-[9px] mt-1" style="color:${sys.poams.overdue > 0 ? '#dc2626' : '#475569'};">${sys.poams.overdue} overdue</p>
+        </div>
+        <div class="card p-4 text-center">
+          <p class="text-2xl font-bold" style="color:${sys.poams.critical > 0 ? '#dc2626' : '#719F2A'};">${sys.poams.critical}</p>
+          <p class="text-[10px] uppercase tracking-wider" style="color:#475569;">Critical Findings</p>
+        </div>
+        <div class="card p-4 text-center" style="border-top:3px solid ${colorForPct(e.pct)};">
+          <p class="text-2xl font-bold" style="color:${colorForPct(e.pct)};">${e.pct}%</p>
+          <p class="text-[10px] uppercase tracking-wider" style="color:#475569;">Evidence</p>
+          <p class="text-[9px] mt-1" style="color:#475569;">${e.missing} missing</p>
+        </div>
+        <div class="card p-4 text-center">
+          <p class="text-2xl font-bold" style="color:#1e293b;">${c.assessed}</p>
+          <p class="text-[10px] uppercase tracking-wider" style="color:#475569;">Controls Assessed</p>
+          <p class="text-[9px] mt-1" style="color:#475569;">of ${c.total}</p>
+        </div>
+        <div class="card p-4 text-center">
+          <p class="text-sm font-bold" style="color:${conmonColor};">${sys.conmonStatus}</p>
+          <p class="text-[10px] uppercase tracking-wider mt-1" style="color:#475569;">ConMon Status</p>
+        </div>
+      </div>
+
+      <!-- Row 2: Gaps + Risk Acceptances -->
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <!-- Compliance Gaps -->
+        <div class="card p-4">
+          <p class="text-sm font-semibold mb-3" style="color:#1e293b;">Compliance Gaps</p>
+          <table class="w-full text-xs">
+            <thead><tr class="text-slate-700 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;">
+              <th class="text-left py-2 px-2">Control</th>
+              <th class="text-left py-2 px-2">Description</th>
+              <th class="text-left py-2 px-2">Severity</th>
+              <th class="text-left py-2 px-2">Status</th>
+            </tr></thead>
+            <tbody>
+              ${sys.gaps.map(g => `<tr style="border-bottom:1px solid #e2e8f0;">
+                <td class="py-2 px-2 font-mono font-medium" style="color:#1e293b;">${g.control}</td>
+                <td class="py-2 px-2" style="color:#334155;">${g.desc}</td>
+                <td class="py-2 px-2"><span class="pill ${sevPill(g.severity)}">${g.severity}</span></td>
+                <td class="py-2 px-2" style="color:#475569;">${g.status}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Risk Acceptances -->
+        <div class="card p-4">
+          <p class="text-sm font-semibold mb-3" style="color:#1e293b;">Risk Acceptances</p>
+          <table class="w-full text-xs">
+            <thead><tr class="text-slate-700 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;">
+              <th class="text-left py-2 px-2">ID</th>
+              <th class="text-left py-2 px-2">Description</th>
+              <th class="text-left py-2 px-2">Risk</th>
+              <th class="text-left py-2 px-2">Expires</th>
+              <th class="text-left py-2 px-2">Owner</th>
+            </tr></thead>
+            <tbody>
+              ${sys.riskAcceptances.map(r => `<tr style="border-bottom:1px solid #e2e8f0;">
+                <td class="py-2 px-2 font-mono font-medium" style="color:#1e293b;">${r.id}</td>
+                <td class="py-2 px-2" style="color:#334155;">${r.desc}</td>
+                <td class="py-2 px-2"><span class="pill ${riskPill(r.risk)}">${r.risk}</span></td>
+                <td class="py-2 px-2" style="color:#475569;">${r.expires}</td>
+                <td class="py-2 px-2" style="color:#475569;">${r.owner}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Row 3: Controls + Evidence -->
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <!-- Control Assessment Summary -->
+        <div class="card p-4">
+          <p class="text-sm font-semibold mb-3" style="color:#1e293b;">Control Assessment Summary</p>
+          <div class="flex rounded-lg overflow-hidden h-8 mb-3">
+            <div style="width:${cCompliantPct}%;background:#719F2A;" class="flex items-center justify-center text-white text-[10px] font-bold">${c.compliant}</div>
+            <div style="width:${cPartialPct}%;background:#d97706;" class="flex items-center justify-center text-white text-[10px] font-bold">${c.partial}</div>
+            <div style="width:${cNonCompliantPct}%;background:#dc2626;" class="flex items-center justify-center text-white text-[10px] font-bold">${c.nonCompliant}</div>
+            <div style="width:${cNotAssessedPct}%;background:#94a3b8;" class="flex items-center justify-center text-white text-[10px] font-bold">${c.notAssessed}</div>
+          </div>
+          <div class="grid grid-cols-4 gap-2 text-[10px] text-center">
+            <div><span class="inline-block w-2 h-2 rounded-full mr-1" style="background:#719F2A;"></span>Compliant (${c.compliant})</div>
+            <div><span class="inline-block w-2 h-2 rounded-full mr-1" style="background:#d97706;"></span>Partial (${c.partial})</div>
+            <div><span class="inline-block w-2 h-2 rounded-full mr-1" style="background:#dc2626;"></span>Non-Compliant (${c.nonCompliant})</div>
+            <div><span class="inline-block w-2 h-2 rounded-full mr-1" style="background:#94a3b8;"></span>Not Assessed (${c.notAssessed})</div>
+          </div>
+        </div>
+
+        <!-- Evidence Status -->
+        <div class="card p-4">
+          <p class="text-sm font-semibold mb-3" style="color:#1e293b;">Evidence Status</p>
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between text-xs mb-1"><span class="font-medium" style="color:#719F2A;">Current</span><span style="color:#334155;">${e.current} of ${e.total}</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:${e.total ? Math.round(e.current/e.total*100) : 0}%;background:#719F2A;"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1"><span class="font-medium" style="color:#d97706;">Stale</span><span style="color:#334155;">${e.stale}</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:${e.total ? Math.round(e.stale/e.total*100) : 0}%;background:#d97706;"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1"><span class="font-medium" style="color:#dc2626;">Missing</span><span style="color:#334155;">${e.missing}</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:${e.total ? Math.round(e.missing/e.total*100) : 0}%;background:#dc2626;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 4: Recent Findings -->
+      <div class="card p-4 mb-4">
+        <p class="text-sm font-semibold mb-3" style="color:#1e293b;">Recent Findings</p>
+        <table class="w-full text-xs">
+          <thead><tr class="text-slate-700 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;">
+            <th class="text-left py-2 px-2">Source</th>
+            <th class="text-left py-2 px-2">Findings</th>
+            <th class="text-left py-2 px-2">Severity</th>
+            <th class="text-left py-2 px-2">Date</th>
+          </tr></thead>
+          <tbody>
+            ${sys.recentFindings.map(f => {
+              const sp = f.severity.toLowerCase().includes('critical') ? 'pill-crit' : f.severity.toLowerCase() === 'high' ? 'pill-high' : f.severity.toLowerCase() === 'medium' ? 'pill-med' : 'pill-neutral';
+              return `<tr style="border-bottom:1px solid #e2e8f0;">
+                <td class="py-2 px-2 font-medium" style="color:#1e293b;">${f.source}</td>
+                <td class="py-2 px-2" style="color:#334155;">${f.count}</td>
+                <td class="py-2 px-2"><span class="pill ${sp}">${f.severity}</span></td>
+                <td class="py-2 px-2" style="color:#475569;">${f.date}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer: System Details -->
+      <div class="card p-4">
+        <p class="text-sm font-semibold mb-3" style="color:#1e293b;">System Details</p>
+        <div class="grid grid-cols-3 gap-4 text-xs">
+          <div>
+            <p class="text-[10px] uppercase tracking-wider mb-1" style="color:#475569;">Environment</p>
+            <p class="font-medium" style="color:#1e293b;">${sys.environment}</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider mb-1" style="color:#475569;">Data Types</p>
+            <p class="font-medium" style="color:#1e293b;">${sys.dataTypes}</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider mb-1" style="color:#475569;">User Count</p>
+            <p class="font-medium" style="color:#1e293b;">${sys.userCount.toLocaleString()}</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider mb-1" style="color:#475569;">System Owner</p>
+            <p class="font-medium" style="color:#1e293b;">${sys.owner}</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider mb-1" style="color:#475569;">Last Pen Test</p>
+            <p class="font-medium" style="color:#1e293b;">${sys.lastPenTest}</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider mb-1" style="color:#475569;">Next Assessment</p>
+            <p class="font-medium" style="color:#1e293b;">${sys.nextAssessment}</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider mb-1" style="color:#475569;">ATO Authority</p>
+            <p class="font-medium" style="color:#1e293b;">${sys.atoAuth}</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider mb-1" style="color:#475569;">Last Assessment</p>
+            <p class="font-medium" style="color:#1e293b;">${sys.lastAssessment}</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider mb-1" style="color:#475569;">POA&M Breakdown</p>
+            <p class="font-medium" style="color:#1e293b;"><span class="sev-crit">${sys.poams.critical}C</span> / <span class="sev-high">${sys.poams.high}H</span> / <span class="sev-med">${sys.poams.medium}M</span> / <span class="sev-low">${sys.poams.low}L</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('systemPageContent').innerHTML = html;
 }
 
 loadData();
