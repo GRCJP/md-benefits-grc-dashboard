@@ -159,6 +159,14 @@
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
         Operations
       </a>
+      <a onclick="showView('datasecurity')" id="tab-datasecurity" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        Data Security
+      </a>
+      <a onclick="showView('whylinear')" id="tab-whylinear" class="sidebar-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        Why Linear
+      </a>
       <a onclick="showView('integrations')" id="tab-integrations" class="sidebar-item">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
         Integrations
@@ -293,6 +301,16 @@
         <div class="flex items-center justify-between mb-4"><p class="text-sm font-semibold" style="color:#1e293b;">All GRC Items</p><div class="flex gap-2"><select id="opsFilterProject" onchange="filterOpsTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#f8fafc;border-color:#cbd5e1;color:#475569;"><option value="">All Projects</option></select><select id="opsFilterStatus" onchange="filterOpsTable()" class="text-xs rounded-lg px-3 py-1.5 border" style="background:#f8fafc;border-color:#cbd5e1;color:#475569;"><option value="">All Statuses</option><option value="In Progress">In Progress</option><option value="Todo">Todo</option><option value="Backlog">Backlog</option><option value="Done">Done</option></select></div></div>
         <table class="w-full text-xs"><thead><tr class="text-slate-700 uppercase tracking-wider" style="border-bottom:2px solid #e2e8f0;"><th class="text-left py-2.5 px-2">ID</th><th class="text-left py-2.5 px-2">Item</th><th class="text-left py-2.5 px-2">Project</th><th class="text-left py-2.5 px-2">Priority</th><th class="text-left py-2.5 px-2">Assignee</th><th class="text-left py-2.5 px-2">Status</th></tr></thead><tbody id="opsTable"></tbody></table>
       </div>
+    </div>
+
+    <!-- ═══ DATA SECURITY VIEW ═══ -->
+    <div id="view-datasecurity" class="hidden">
+      <div id="dataSecurityContent"></div>
+    </div>
+
+    <!-- ═══ WHY LINEAR VIEW ═══ -->
+    <div id="view-whylinear" class="hidden">
+      <div id="whyLinearContent"></div>
     </div>
 
     <!-- ═══ INTEGRATIONS VIEW ═══ -->
@@ -500,7 +518,7 @@ async function loadData() {
   renderNotifications();
 }
 
-const ALL_VIEWS = ['executive','action','operations','category','integrations','teamview','framework','system'];
+const ALL_VIEWS = ['executive','action','operations','datasecurity','whylinear','category','integrations','teamview','framework','system'];
 const CAT_IDS = ['poam','assessment','evidence','ato','external-request','compliance'];
 
 function showView(view) {
@@ -513,6 +531,8 @@ function showView(view) {
   if (tab) tab.classList.add('active');
   if (view === 'action') renderActionItems();
   if (view === 'operations') renderOperations();
+  if (view === 'datasecurity') renderDataSecurity();
+  if (view === 'whylinear') renderWhyLinear();
   if (view === 'integrations') renderIntegrations();
 }
 
@@ -2353,6 +2373,391 @@ function renderSystemPage(name) {
   `;
 
   document.getElementById('systemPageContent').innerHTML = html;
+}
+
+// ═══ DATA SECURITY VIEW ═══
+function renderDataSecurity() {
+  const html = `
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#0d2137,#2378C3);">
+        <svg class="w-5 h-5 text-blue-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      </div>
+      <div>
+        <h2 class="text-lg font-bold" style="color:#1e293b;">Data Classification &amp; Security Architecture</h2>
+        <p class="text-xs" style="color:#64748b;">How compliance data flows between systems &mdash; and what goes where</p>
+      </div>
+    </div>
+
+    <!-- Section A: Data Flow Architecture Diagram -->
+    <div class="card p-6 mb-5">
+      <p class="text-sm font-semibold mb-5" style="color:#1e293b;">Data Flow Architecture</p>
+      <div style="position:relative;display:flex;flex-direction:column;gap:16px;max-width:900px;margin:0 auto;">
+
+        <!-- Layer 1: Workflow Layer -->
+        <div style="background:#eff6ff;border:2px solid #3b82f6;border-radius:12px;padding:20px;position:relative;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="background:#2563eb;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;">LAYER 1</span>
+            <span style="font-size:13px;font-weight:700;color:#1e40af;">Workflow Layer &mdash; Linear</span>
+            <span style="font-size:10px;color:#3b82f6;border:1px solid #93c5fd;background:#dbeafe;padding:2px 8px;border-radius:99px;margin-left:auto;">SOC 2 Type II</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+            <span style="background:#fff;border:1px solid #bfdbfe;padding:3px 10px;border-radius:6px;font-size:11px;color:#1e3a5f;">Task titles</span>
+            <span style="background:#fff;border:1px solid #bfdbfe;padding:3px 10px;border-radius:6px;font-size:11px;color:#1e3a5f;">Assignees</span>
+            <span style="background:#fff;border:1px solid #bfdbfe;padding:3px 10px;border-radius:6px;font-size:11px;color:#1e3a5f;">Due dates</span>
+            <span style="background:#fff;border:1px solid #bfdbfe;padding:3px 10px;border-radius:6px;font-size:11px;color:#1e3a5f;">Status</span>
+            <span style="background:#fff;border:1px solid #bfdbfe;padding:3px 10px;border-radius:6px;font-size:11px;color:#1e3a5f;">Framework labels</span>
+            <span style="background:#fff;border:1px solid #bfdbfe;padding:3px 10px;border-radius:6px;font-size:11px;color:#1e3a5f;">Evidence reference IDs</span>
+            <span style="background:#fff;border:1px solid #bfdbfe;padding:3px 10px;border-radius:6px;font-size:11px;color:#1e3a5f;">Remediation milestones</span>
+          </div>
+          <div style="background:#dbeafe;border-radius:6px;padding:6px 12px;display:inline-flex;align-items:center;gap:6px;">
+            <svg style="width:14px;height:14px;color:#2563eb;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span style="font-size:11px;font-weight:600;color:#1e40af;">NO sensitive data</span>
+          </div>
+        </div>
+
+        <!-- Arrow: Linear <-> Teams -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 40px;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <span style="font-size:18px;color:#6366f1;">&#8595;</span>
+            <span style="font-size:9px;color:#64748b;text-align:center;">Status alerts,<br>due date reminders</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <span style="font-size:18px;color:#6366f1;">&#8593;</span>
+            <span style="font-size:9px;color:#64748b;text-align:center;">Sanitized<br>task creation</span>
+          </div>
+        </div>
+
+        <!-- Layer 2: Communication Layer -->
+        <div style="background:#f5f3ff;border:2px solid #8b5cf6;border-radius:12px;padding:20px;position:relative;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="background:#7c3aed;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;">LAYER 2</span>
+            <span style="font-size:13px;font-weight:700;color:#5b21b6;">Communication Layer &mdash; Microsoft Teams</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+            <span style="background:#fff;border:1px solid #c4b5fd;padding:3px 10px;border-radius:6px;font-size:11px;color:#3b0764;">Notifications</span>
+            <span style="background:#fff;border:1px solid #c4b5fd;padding:3px 10px;border-radius:6px;font-size:11px;color:#3b0764;">Task creation from conversations</span>
+            <span style="background:#fff;border:1px solid #c4b5fd;padding:3px 10px;border-radius:6px;font-size:11px;color:#3b0764;">Status updates</span>
+          </div>
+          <div style="background:#ede9fe;border-radius:6px;padding:6px 12px;display:inline-flex;align-items:center;gap:6px;">
+            <svg style="width:14px;height:14px;color:#7c3aed;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+            <span style="font-size:11px;font-weight:600;color:#5b21b6;">Sanitized &mdash; auto-strips hostnames, IPs, sensitive patterns</span>
+          </div>
+        </div>
+
+        <!-- Arrow: Linear <-> Evidence Vault -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 40px;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <span style="font-size:18px;color:#16a34a;">&#8693;</span>
+            <span style="font-size:9px;color:#64748b;text-align:center;">Reference IDs only<br>(EV-AC2-001)</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <span style="font-size:9px;color:#64748b;text-align:center;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:6px;padding:4px 10px;">Linear &#8596; Evidence Vault: Reference IDs only</span>
+          </div>
+        </div>
+
+        <!-- Layer 3: Evidence Vault -->
+        <div style="background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;padding:20px;position:relative;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="background:#16a34a;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;">LAYER 3</span>
+            <svg style="width:18px;height:18px;color:#16a34a;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <span style="font-size:13px;font-weight:700;color:#15803d;">Evidence Vault &mdash; SharePoint GCC High</span>
+            <span style="font-size:10px;color:#16a34a;border:1px solid #86efac;background:#dcfce7;padding:2px 8px;border-radius:99px;margin-left:auto;">FedRAMP High</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+            <span style="background:#fff;border:1px solid #bbf7d0;padding:3px 10px;border-radius:6px;font-size:11px;color:#14532d;">Screenshots</span>
+            <span style="background:#fff;border:1px solid #bbf7d0;padding:3px 10px;border-radius:6px;font-size:11px;color:#14532d;">Scan results</span>
+            <span style="background:#fff;border:1px solid #bbf7d0;padding:3px 10px;border-radius:6px;font-size:11px;color:#14532d;">Log exports</span>
+            <span style="background:#fff;border:1px solid #bbf7d0;padding:3px 10px;border-radius:6px;font-size:11px;color:#14532d;">Configuration artifacts</span>
+            <span style="background:#fff;border:1px solid #bbf7d0;padding:3px 10px;border-radius:6px;font-size:11px;color:#14532d;">Architecture diagrams</span>
+            <span style="background:#fff;border:1px solid #bbf7d0;padding:3px 10px;border-radius:6px;font-size:11px;color:#14532d;">Vulnerability details</span>
+          </div>
+          <div style="background:#dcfce7;border-radius:6px;padding:6px 12px;display:inline-flex;align-items:center;gap:6px;">
+            <svg style="width:14px;height:14px;color:#16a34a;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            <span style="font-size:11px;font-weight:600;color:#15803d;">All sensitive artifacts stored here</span>
+          </div>
+        </div>
+
+        <!-- OSCAL Pipeline -->
+        <div style="display:flex;align-items:center;justify-content:center;padding:8px 0;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <span style="font-size:18px;color:#475569;">&#8593; &#8593;</span>
+            <div style="display:flex;gap:24px;">
+              <span style="font-size:9px;color:#64748b;text-align:center;">Automated findings<br>(sanitized) &rarr; Linear</span>
+              <span style="font-size:9px;color:#64748b;text-align:center;">Raw scan output,<br>evidence &rarr; Evidence Vault</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:#f8fafc;border:2px solid #94a3b8;border-radius:12px;padding:16px;border-style:dashed;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="background:#475569;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;">INPUT</span>
+            <span style="font-size:13px;font-weight:700;color:#334155;">OSCAL Pipeline</span>
+            <span style="font-size:10px;color:#64748b;margin-left:8px;">Automated compliance scanning &amp; evidence collection</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section B: Data Classification Matrix -->
+    <div class="card p-6 mb-5">
+      <p class="text-sm font-semibold mb-4" style="color:#1e293b;">Data Classification Matrix</p>
+      <div style="overflow-x:auto;">
+        <table class="w-full text-xs">
+          <thead>
+            <tr style="border-bottom:2px solid #e2e8f0;">
+              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#64748b;">Data Element</th>
+              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#64748b;">Classification</th>
+              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#64748b;">Stored In</th>
+              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#64748b;">Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${[
+              ['Task title','Internal','Linear','"Remediate AC-2 finding for CSMS"','#1e40af','#eff6ff','#bfdbfe'],
+              ['Assignee &amp; due date','Internal','Linear','"Maria Gonzalez &mdash; Due Jun 30"','#1e40af','#eff6ff','#bfdbfe'],
+              ['Framework &amp; control ID','Public','Linear','"CMS ARC-AMPE, AC-2"','#15803d','#f0fdf4','#86efac'],
+              ['Evidence reference ID','Internal','Linear','"EV-AC2-CSMS-001"','#1e40af','#eff6ff','#bfdbfe'],
+              ['Remediation status','Internal','Linear','"In Progress &mdash; 80% complete"','#1e40af','#eff6ff','#bfdbfe'],
+              ['Vulnerability scan output','Sensitive','SharePoint GCC','Raw Qualys/Wiz/Tenable reports','#c2410c','#fff7ed','#fdba74'],
+              ['Screenshots','Sensitive','SharePoint GCC','System configuration evidence','#c2410c','#fff7ed','#fdba74'],
+              ['Hostnames &amp; IP addresses','Sensitive','SharePoint GCC','Never in Linear','#c2410c','#fff7ed','#fdba74'],
+              ['Architecture diagrams','Sensitive','SharePoint GCC','Network topology, data flows','#c2410c','#fff7ed','#fdba74'],
+              ['FTI data references','Restricted (IRS 1075)','SharePoint GCC','Any Federal Tax Information','#b91c1c','#fef2f2','#fca5a5'],
+              ['CMS/Medicaid PII','Restricted (HIPAA)','SharePoint GCC','Beneficiary data references','#b91c1c','#fef2f2','#fca5a5'],
+              ['SSA disability records','Restricted (SSA)','SharePoint GCC','SSN, determination data','#b91c1c','#fef2f2','#fca5a5'],
+              ['Pen test details','Sensitive','SharePoint GCC','Exploitation details, attack paths','#c2410c','#fff7ed','#fdba74'],
+            ].map((r,i) => \`<tr style="border-bottom:1px solid #f1f5f9;\${i%2===1?'background:#f8fafc;':''}">
+              <td class="py-2.5 px-3 font-medium" style="color:#1e293b;">\${r[0]}</td>
+              <td class="py-2.5 px-3"><span style="background:\${r[5]};border:1px solid \${r[6]};color:\${r[4]};padding:2px 10px;border-radius:99px;font-size:10px;font-weight:600;">\${r[1]}</span></td>
+              <td class="py-2.5 px-3" style="color:#475569;">\${r[2]}</td>
+              <td class="py-2.5 px-3" style="color:#64748b;font-style:italic;">\${r[3]}</td>
+            </tr>\`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;">
+        <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:#64748b;"><span style="width:10px;height:10px;border-radius:3px;background:#eff6ff;border:1px solid #bfdbfe;display:inline-block;"></span> Internal = Blue</span>
+        <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:#64748b;"><span style="width:10px;height:10px;border-radius:3px;background:#f0fdf4;border:1px solid #86efac;display:inline-block;"></span> Public = Green</span>
+        <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:#64748b;"><span style="width:10px;height:10px;border-radius:3px;background:#fff7ed;border:1px solid #fdba74;display:inline-block;"></span> Sensitive = Orange</span>
+        <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:#64748b;"><span style="width:10px;height:10px;border-radius:3px;background:#fef2f2;border:1px solid #fca5a5;display:inline-block;"></span> Restricted = Red</span>
+      </div>
+    </div>
+
+    <!-- Section C: Input Sanitization Rules -->
+    <div class="card p-6 mb-5">
+      <p class="text-sm font-semibold mb-4" style="color:#1e293b;">Input Sanitization Rules</p>
+      <p class="text-xs mb-4" style="color:#64748b;">What the Teams &rarr; Linear integration automatically handles</p>
+      <div style="overflow-x:auto;">
+        <table class="w-full text-xs">
+          <thead>
+            <tr style="border-bottom:2px solid #e2e8f0;">
+              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#64748b;">Pattern</th>
+              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#64748b;">Action</th>
+              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#64748b;">Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td class="py-2.5 px-3 font-medium" style="color:#1e293b;">IP addresses (x.x.x.x)</td>
+              <td class="py-2.5 px-3"><span class="pill pill-high">Redacted &rarr; [IP-REDACTED]</span></td>
+              <td class="py-2.5 px-3" style="color:#64748b;"><code style="background:#fef2f2;color:#b91c1c;padding:1px 6px;border-radius:4px;text-decoration:line-through;">10.0.1.50</code> &rarr; <code style="background:#f0fdf4;color:#15803d;padding:1px 6px;border-radius:4px;">[IP-REDACTED]</code></td>
+            </tr>
+            <tr style="border-bottom:1px solid #f1f5f9;background:#f8fafc;">
+              <td class="py-2.5 px-3 font-medium" style="color:#1e293b;">Hostnames (*.gov, *.state.*)</td>
+              <td class="py-2.5 px-3"><span class="pill pill-high">Redacted &rarr; [HOST-REDACTED]</span></td>
+              <td class="py-2.5 px-3" style="color:#64748b;"><code style="background:#fef2f2;color:#b91c1c;padding:1px 6px;border-radius:4px;text-decoration:line-through;">medicaid-db01.state.md.us</code> &rarr; <code style="background:#f0fdf4;color:#15803d;padding:1px 6px;border-radius:4px;">[HOST-REDACTED]</code></td>
+            </tr>
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td class="py-2.5 px-3 font-medium" style="color:#1e293b;">SSN patterns (xxx-xx-xxxx)</td>
+              <td class="py-2.5 px-3"><span class="pill pill-crit">Blocked &mdash; not created</span></td>
+              <td class="py-2.5 px-3" style="color:#64748b;">Task rejected with warning</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f1f5f9;background:#f8fafc;">
+              <td class="py-2.5 px-3 font-medium" style="color:#1e293b;">CVE exploitation details</td>
+              <td class="py-2.5 px-3"><span class="pill pill-high">Stripped &mdash; reference only</span></td>
+              <td class="py-2.5 px-3" style="color:#64748b;"><code style="background:#f0fdf4;color:#15803d;padding:1px 6px;border-radius:4px;">"See pen test report SEC-2026-14"</code></td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-medium" style="color:#1e293b;">File paths / UNC paths</td>
+              <td class="py-2.5 px-3"><span class="pill pill-high">Redacted</span></td>
+              <td class="py-2.5 px-3" style="color:#64748b;"><code style="background:#fef2f2;color:#b91c1c;padding:1px 6px;border-radius:4px;text-decoration:line-through;">\\\\server\\share</code> &rarr; <code style="background:#f0fdf4;color:#15803d;padding:1px 6px;border-radius:4px;">[PATH-REDACTED]</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Section D: Compliance Alignment -->
+    <div class="card p-6 mb-5">
+      <p class="text-sm font-semibold mb-4" style="color:#1e293b;">Compliance Alignment</p>
+      <p class="text-xs mb-4" style="color:#64748b;">How this architecture meets each framework's data handling requirements</p>
+      <div style="overflow-x:auto;">
+        <table class="w-full text-xs">
+          <thead>
+            <tr style="border-bottom:2px solid #e2e8f0;">
+              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#64748b;">Requirement</th>
+              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#64748b;">Framework</th>
+              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#64748b;">How We Meet It</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${[
+              ['FTI must be encrypted at rest','IRS Pub 1075 &sect;7.3','FTI never enters Linear. Stored in SharePoint GCC (AES-256, FIPS 140-2).'],
+              ['FTI access limited to authorized personnel','IRS Pub 1075 &sect;5','SharePoint access controls. Linear has no FTI.'],
+              ['CMS data in FedRAMP environment','CMS ARC-AMPE','Evidence in SharePoint GCC High (FedRAMP High). Linear holds workflow only.'],
+              ['SSA PII breach notification within 1 hour','SSA EIEP','Incident tracked in Linear (sanitized). Details in SharePoint. Notification via Teams.'],
+              ['Audit trail for all access','NIST AU-2','Linear audit log for workflow. SharePoint audit log for evidence access.'],
+              ['Data disposal procedures','IRS Pub 1075 &sect;9','Linear tasks track disposal workflow. Actual disposal in SharePoint/on-prem.'],
+            ].map((r,i) => \`<tr style="border-bottom:1px solid #f1f5f9;\${i%2===1?'background:#f8fafc;':''}">
+              <td class="py-2.5 px-3 font-medium" style="color:#1e293b;">\${r[0]}</td>
+              <td class="py-2.5 px-3"><span class="pill pill-blue">\${r[1]}</span></td>
+              <td class="py-2.5 px-3" style="color:#475569;">\${r[2]}</td>
+            </tr>\`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Section E: Key Differentiator -->
+    <div style="background:linear-gradient(135deg,#0d2137 0%,#1a3a5c 100%);border-radius:12px;padding:24px;margin-bottom:20px;">
+      <div style="display:flex;align-items:flex-start;gap:14px;">
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg style="width:20px;height:20px;color:#93c5fd;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <div>
+          <p style="font-size:14px;font-weight:700;color:#ffffff;margin-bottom:8px;">Key Differentiator</p>
+          <p style="font-size:13px;color:#cbd5e1;line-height:1.7;">Linear is the <strong style="color:#fff;">workflow engine</strong>, not the data store. Sensitive compliance artifacts never leave the FedRAMP-authorized boundary. This architecture maintains full <strong style="color:#93c5fd;">IRS Pub 1075</strong>, <strong style="color:#93c5fd;">CMS ARC-AMPE</strong>, and <strong style="color:#93c5fd;">SSA EIEP</strong> compliance while giving teams a modern, fast workflow tool.</p>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('dataSecurityContent').innerHTML = html;
+}
+
+// ═══ WHY LINEAR VIEW ═══
+function renderWhyLinear() {
+  const html = \`
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);">
+        <svg class="w-5 h-5 text-purple-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      </div>
+      <div>
+        <h2 class="text-lg font-bold" style="color:#1e293b;">Linear vs Jira &mdash; Why Linear for GRC</h2>
+        <p class="text-xs" style="color:#64748b;">Head-to-head comparison and rationale for government compliance workflows</p>
+      </div>
+    </div>
+
+    <!-- Section A: Head-to-Head Comparison -->
+    <div class="card p-6 mb-5">
+      <p class="text-sm font-semibold mb-4" style="color:#1e293b;">Head-to-Head Comparison</p>
+      <div style="overflow-x:auto;">
+        <table class="w-full text-xs">
+          <thead>
+            <tr style="border-bottom:2px solid #e2e8f0;">
+              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#64748b;">Capability</th>
+              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#64748b;"><span style="background:#5b21b6;color:#fff;padding:2px 8px;border-radius:6px;">Linear</span></th>
+              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#64748b;">Jira Cloud</th>
+              <th class="text-left py-2.5 px-3 uppercase tracking-wider" style="color:#64748b;">Jira Data Center</th>
+            </tr>
+          </thead>
+          <tbody>
+            \${[
+              ['Speed &amp; UX','Sub-100ms UI, keyboard-first','Slow page loads, complex menus','Slower, self-hosted overhead'],
+              ['API Quality','GraphQL, real-time, clean schema','REST, rate-limited, complex','REST, same limitations'],
+              ['Custom Dashboard','Full API access, easy integration','Requires plugins, marketplace','Same + server management'],
+              ['Teams Integration','Bidirectional via webhooks','Native plugin (basic)','Native plugin'],
+              ['Workflow Automation','Built-in automations, cycles','Requires Jira Automation add-on','Same'],
+              ['AI Features','Native AI assistant, search','Atlassian Intelligence (beta)','Limited'],
+              ['FedRAMP Status','Not authorized (workflow only)','Not authorized (Cloud)','Self-hosted (you control)'],
+              ['Data Residency','US/EU options','Atlassian Cloud regions','On your infrastructure'],
+              ['Cost (12 users)','~$96/mo (Standard)','~$84/mo (Standard)','~$42K/yr (server license)'],
+              ['Setup Time','Same day','1-2 weeks (admin overhead)','2-4 weeks (infrastructure)'],
+              ['Mobile','Native iOS/Android','Native iOS/Android','Web only'],
+              ['Roadmap/Projects','Built-in initiatives, roadmaps','Requires Jira Portfolio/Advanced','Same'],
+            ].map((r,i) => \`<tr style="border-bottom:1px solid #f1f5f9;\${i%2===1?'background:#f8fafc;':''}">
+              <td class="py-2.5 px-3 font-semibold" style="color:#1e293b;">\${r[0]}</td>
+              <td class="py-2.5 px-3" style="color:#5b21b6;font-weight:500;">\${r[1]}</td>
+              <td class="py-2.5 px-3" style="color:#475569;">\${r[2]}</td>
+              <td class="py-2.5 px-3" style="color:#475569;">\${r[3]}</td>
+            </tr>\`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Section B: Why Linear for GRC Specifically -->
+    <div class="card p-6 mb-5">
+      <p class="text-sm font-semibold mb-5" style="color:#1e293b;">Why Linear Wins for GRC</p>
+      <div class="grid grid-cols-1 gap-4" style="max-width:900px;">
+
+        <div class="card-hover" style="background:#f5f3ff;border:1px solid #c4b5fd;border-radius:10px;padding:18px;border-left:4px solid #7c3aed;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="background:#7c3aed;color:#fff;font-size:10px;font-weight:700;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;">1</span>
+            <span style="font-size:13px;font-weight:700;color:#5b21b6;">Speed matters for GRC teams</span>
+          </div>
+          <p style="font-size:12px;color:#475569;line-height:1.6;">GRC analysts touch 50+ items daily. Linear's sub-100ms UI means less time navigating, more time closing findings. Jira's page loads add up to hours lost per week.</p>
+        </div>
+
+        <div class="card-hover" style="background:#eff6ff;border:1px solid #93c5fd;border-radius:10px;padding:18px;border-left:4px solid #2563eb;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="background:#2563eb;color:#fff;font-size:10px;font-weight:700;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;">2</span>
+            <span style="font-size:13px;font-weight:700;color:#1e40af;">API-first = Trust Center possible</span>
+          </div>
+          <p style="font-size:12px;color:#475569;line-height:1.6;">The dashboard you're looking at exists because Linear's GraphQL API returns everything we need in a single call. Building this on Jira's REST API would take 3x longer and require pagination workarounds.</p>
+        </div>
+
+        <div class="card-hover" style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:18px;border-left:4px solid #16a34a;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="background:#16a34a;color:#fff;font-size:10px;font-weight:700;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;">3</span>
+            <span style="font-size:13px;font-weight:700;color:#15803d;">The data classification model works with both</span>
+          </div>
+          <p style="font-size:12px;color:#475569;line-height:1.6;">This architecture isn't Linear-specific. If the client prefers Jira, the same workflow-only / evidence-vault separation applies. Linear is recommended but not required.</p>
+        </div>
+
+        <div class="card-hover" style="background:#fff7ed;border:1px solid #fdba74;border-radius:10px;padding:18px;border-left:4px solid #ea580c;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="background:#ea580c;color:#fff;font-size:10px;font-weight:700;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;">4</span>
+            <span style="font-size:13px;font-weight:700;color:#c2410c;">Real-time sync</span>
+          </div>
+          <p style="font-size:12px;color:#475569;line-height:1.6;">When an analyst closes a POA&amp;M in Linear, the Trust Center updates immediately. Jira webhooks have latency. Linear's subscriptions are real-time.</p>
+        </div>
+
+        <div class="card-hover" style="background:#fdf2f8;border:1px solid #f9a8d4;border-radius:10px;padding:18px;border-left:4px solid #db2777;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="background:#db2777;color:#fff;font-size:10px;font-weight:700;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;">5</span>
+            <span style="font-size:13px;font-weight:700;color:#be185d;">AI assistant built in</span>
+          </div>
+          <p style="font-size:12px;color:#475569;line-height:1.6;">Linear's AI can answer "What POA&amp;Ms are overdue for CSMS?" directly in the tool. Jira's Atlassian Intelligence is still catching up.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section C: "But Jira is already here" -->
+    <div style="background:linear-gradient(135deg,#0d2137 0%,#1a3a5c 100%);border-radius:12px;padding:24px;margin-bottom:20px;">
+      <div style="display:flex;align-items:flex-start;gap:14px;">
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg style="width:20px;height:20px;color:#fbbf24;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div>
+          <p style="font-size:14px;font-weight:700;color:#ffffff;margin-bottom:10px;">"But Jira is already here..."</p>
+          <p style="font-size:13px;color:#cbd5e1;line-height:1.7;margin-bottom:14px;">Many state agencies already use Jira. This solution doesn't require ripping out Jira. Options:</p>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:12px 14px;">
+              <p style="font-size:12px;color:#fff;"><strong>1. Use Linear for GRC, keep Jira for dev</strong> <span style="color:#94a3b8;">&mdash; teams already separate</span></p>
+            </div>
+            <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:12px 14px;">
+              <p style="font-size:12px;color:#fff;"><strong>2. Build the Trust Center on Jira instead</strong> <span style="color:#94a3b8;">&mdash; same architecture, different backend</span></p>
+            </div>
+            <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:12px 14px;">
+              <p style="font-size:12px;color:#fff;"><strong>3. Pilot Linear for 90 days</strong> <span style="color:#94a3b8;">&mdash; migrate the POA&amp;M workflow, compare team velocity</span></p>
+            </div>
+          </div>
+          <p style="font-size:12px;color:#93c5fd;margin-top:14px;line-height:1.6;">The Trust Center dashboard is <strong style="color:#fff;">backend-agnostic</strong>. The data classification model is <strong style="color:#fff;">tool-agnostic</strong>. We recommend Linear for speed and API quality, but the compliance architecture works regardless.</p>
+        </div>
+      </div>
+    </div>
+  \`;
+  document.getElementById('whyLinearContent').innerHTML = html;
 }
 
 loadData();
