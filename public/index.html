@@ -3265,7 +3265,48 @@ function renderWhyLinear() {
       </div>
     </div>
 
-    <!-- Section D: Integrations -->
+    <!-- Section D: Why Not ServiceNow -->
+    <div class="card p-6 mb-5">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <div style="width:36px;height:36px;border-radius:10px;background:#374151;display:flex;align-items:center;justify-content:center;">
+          <svg style="width:18px;height:18px;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <p class="text-sm font-bold" style="color:#1e293b;">Why Not ServiceNow?</p>
+      </div>
+      <p style="font-size:13px;color:#374151;line-height:1.7;margin-bottom:20px;">ServiceNow GRC is an enterprise platform designed for large organizations with dedicated ITSM teams. For a state GRC program managing 4 systems with a 12-person team, it introduces significant overhead without proportional value.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        ${[
+          {title:'Cost', icon:'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+            desc:'ServiceNow GRC starts at $50-100K/year before implementation. Linear is $96/month for 12 users. The custom Trust Center dashboard costs zero in licensing — it runs on existing infrastructure. For a program this size, ServiceNow pricing doesn\'t justify the capability gap.'},
+          {title:'Implementation Timeline', icon:'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
+            desc:'ServiceNow GRC implementations typically take 6-12 months with dedicated consultants. Linear was operational in days. The Trust Center dashboard was built alongside it. A state agency can\'t wait a year to get visibility into compliance posture when assessments are happening now.'},
+          {title:'Complexity vs Need', icon:'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z',
+            desc:'ServiceNow is built for enterprises with 50+ GRC staff managing hundreds of systems. It requires dedicated administrators, custom workflows, and ongoing configuration management. A 12-person GRC team managing 4 systems needs speed and simplicity, not a platform that becomes its own project to maintain.'},
+          {title:'User Adoption', icon:'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z',
+            desc:'ServiceNow\'s UI has a steep learning curve. GRC analysts spend time navigating the tool instead of closing findings. Linear\'s interface is intuitive — analysts are productive from day one. The Teams integration means they don\'t even need to leave their daily tools. ServiceNow adoption rates in GRC teams are notoriously low.'},
+          {title:'API & Integration', icon:'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
+            desc:'ServiceNow\'s API is powerful but requires specialized developers. The Trust Center dashboard exists because Linear\'s GraphQL API is clean, fast, and accessible. Building equivalent dashboards on ServiceNow requires ServiceNow-certified developers and custom scripted REST APIs. The OSCAL pipeline integration would take months instead of weeks.'},
+          {title:'FedRAMP Position', icon:'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
+            desc:'ServiceNow has FedRAMP authorization — but so does our evidence vault (SharePoint GCC High). We get FedRAMP compliance where it matters (sensitive data storage) without paying for it in the workflow tool. Linear handles sanitized task tracking. The data classification model makes FedRAMP authorization of the workflow tool unnecessary.'},
+        ].map(item => `
+          <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <svg style="width:16px;height:16px;color:#374151;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${item.icon}"/></svg>
+              <span style="font-size:14px;font-weight:700;color:#111827;">${item.title}</span>
+            </div>
+            <p style="font-size:12px;color:#374151;line-height:1.6;">${item.desc}</p>
+          </div>
+        `).join('')}
+      </div>
+
+      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:16px;">
+        <p style="font-size:13px;font-weight:600;color:#15803d;margin-bottom:6px;">The Bottom Line</p>
+        <p style="font-size:13px;color:#374151;line-height:1.6;">ServiceNow GRC is the right tool for a federal agency with 200+ systems and a dedicated GRC platform team. For a state program managing 4 systems under CMS, IRS, SSA, and OLA frameworks — Linear + Trust Center + SharePoint GCC delivers the same visibility at 1/50th the cost, in 1/10th the time, with higher team adoption. If the program scales to warrant ServiceNow, the data classification model and workflow patterns transfer directly.</p>
+      </div>
+    </div>
+
+    <!-- Section E: Integrations -->
     <div class="card p-6 mb-5">
       <p class="text-sm font-semibold mb-4" style="color:#1e293b;">Platform Integrations</p>
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;">
